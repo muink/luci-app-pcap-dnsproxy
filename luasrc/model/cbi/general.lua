@@ -19,10 +19,145 @@ s.anonymous = true
 
 --[[ Tab section ]]--
 
+s:tab("proxy_set", translate("Proxy"))
 s:tab("dnscurve_set", translate("DNSCurve"))
 
 
 --[[ General Settings ]]--
+
+
+--[[ Proxy ]]--
+
+--== SOCKS ==---
+
+proxy_socks = s:taboption("proxy_set", Flag, "proxy_socks", translate("SOCKS Proxy"))
+
+proxy_socks_ol = s:taboption("proxy_set", Flag, "proxy_socks_ol", translate("SOCKS Proxy Only"),
+	translate("All Non-local requests will only be made via the SOCKS protocol"))
+proxy_socks_ol.rmempty = false
+proxy_socks_ol:depends("proxy_socks", "1")
+
+proxy_socks_ver = s:taboption("proxy_set", ListValue, "proxy_socks_ver", translate("SOCKS Version"))
+proxy_socks_ver:value("4")
+proxy_socks_ver:value("4a")
+proxy_socks_ver:value("5")
+--proxy_socks_ver.default = "5"
+proxy_socks_ver.rmempty = false
+proxy_socks_ver:depends("proxy_socks", "1")
+
+proxy_socks_proto = s:taboption("proxy_set", ListValue, "proxy_socks_proto", translate("SOCKS Protocol"))
+proxy_socks_proto:value("IPv4 + TCP")
+proxy_socks_proto:value("IPv4 + Force UDP")
+proxy_socks_proto:value("IPv4 + TCP + UDP")
+proxy_socks_proto:value("IPv6 + TCP")
+proxy_socks_proto:value("IPv6 + Force UDP")
+proxy_socks_proto:value("IPv6 + TCP + UDP")
+proxy_socks_proto:value("IPv4 + IPv6 + TCP")
+proxy_socks_proto:value("IPv4 + IPv6 + Force UDP")
+proxy_socks_proto:value("IPv4 + IPv6 + TCP + UDP")
+--proxy_socks_proto.default = "IPv4 + TCP"
+proxy_socks_proto.rmempty = false
+proxy_socks_proto:depends("proxy_socks", "1")
+
+proxy_socks_nohandshake = s:taboption("proxy_set", Flag, "proxy_socks_nohandshake", translate("SOCKS UDP No Handshake"))
+--proxy_socks_nohandshake.default = "1"
+proxy_socks_nohandshake.rmempty = false
+proxy_socks_nohandshake:depends("proxy_socks", "1")
+
+proxy_socks_ipv4_addr = s:taboption("proxy_set", Value, "proxy_socks_ipv4_addr", translate("SOCKS IPv4 Address"))
+proxy_socks_ipv4_addr.placeholder = "127.0.0.1:1080"
+proxy_socks_ipv4_addr.rmempty = false
+proxy_socks_ipv4_addr:depends("proxy_socks","1")
+
+proxy_socks_ipv6_addr = s:taboption("proxy_set", Value, "proxy_socks_ipv6_addr", translate("SOCKS IPv6 Address"))
+proxy_socks_ipv6_addr.placeholder = "[::1]:1080"
+proxy_socks_ipv6_addr.rmempty = false
+proxy_socks_ipv6_addr:depends("proxy_socks","1")
+
+proxy_socks_target_serv = s:taboption("proxy_set", Value, "proxy_socks_target_serv", translate("Target DNS Server"))
+proxy_socks_target_serv.placeholder = "8.8.4.4:53"
+proxy_socks_target_serv.rmempty = false
+proxy_socks_target_serv:depends("proxy_socks","1")
+
+proxy_socks_auth = s:taboption("proxy_set", Flag, "proxy_socks_auth", translate("SOCKS Authorization"))
+proxy_socks_auth.rmempty = false
+proxy_socks_auth:depends("proxy_socks", "1")
+
+proxy_socks_user = s:taboption("proxy_set", Value, "proxy_socks_user", translate("SOCKS Username"))
+proxy_socks_user.placeholder = translate("Username")
+proxy_socks_user.rmempty = false
+proxy_socks_user:depends("proxy_socks_auth","1")
+
+proxy_socks_pw = s:taboption("proxy_set", Value, "proxy_socks_pw", translate("SOCKS Password"))
+proxy_socks_pw.placeholder = translate("Password")
+proxy_socks_pw.rmempty = false
+proxy_socks_pw:depends("proxy_socks_auth","1")
+
+--== HTTP ==---
+
+proxy_http = s:taboption("proxy_set", Flag, "proxy_http", translate("HTTP CONNECT Proxy"))
+
+proxy_http_ol = s:taboption("proxy_set", Flag, "proxy_http_ol", translate("HTTP CONNECT Proxy Only"),
+	translate("All Non-local requests will only be made via the HTTP CONNECT protocol"))
+proxy_http_ol.rmempty = false
+proxy_http_ol:depends("proxy_http", "1")
+
+proxy_http_proto = s:taboption("proxy_set", ListValue, "proxy_http_proto", translate("HTTP CONNECT Protocol"))
+proxy_http_proto:value("IPv4")
+proxy_http_proto:value("IPv6")
+proxy_http_proto:value("IPv4 + IPv6")
+--proxy_http_proto.default = "IPv4"
+proxy_http_proto.rmempty = false
+proxy_http_proto:depends("proxy_http", "1")
+
+proxy_http_ipv4_addr = s:taboption("proxy_set", Value, "proxy_http_ipv4_addr", translate("HTTP CONNECT IPv4 Address"))
+proxy_http_ipv4_addr.placeholder = "127.0.0.1:1080"
+proxy_http_ipv4_addr.rmempty = false
+proxy_http_ipv4_addr:depends("proxy_http","1")
+
+proxy_http_ipv6_addr = s:taboption("proxy_set", Value, "proxy_http_ipv6_addr", translate("HTTP CONNECT IPv6 Address"))
+proxy_http_ipv6_addr.placeholder = "[::1]:1080"
+proxy_http_ipv6_addr.rmempty = false
+proxy_http_ipv6_addr:depends("proxy_http","1")
+
+proxy_http_target_serv = s:taboption("proxy_set", Value, "proxy_http_target_serv", translate("Target DNS Server"))
+proxy_http_target_serv.placeholder = "8.8.4.4:53"
+proxy_http_target_serv.rmempty = false
+proxy_http_target_serv:depends("proxy_http","1")
+
+proxy_http_ver = s:taboption("proxy_set", ListValue, "proxy_http_ver", translate("HTTP CONNECT Version"))
+proxy_http_ver:value("0", translate("0 - Auto choice"))
+proxy_http_ver:value("1.1")
+proxy_http_ver:value("2")
+--proxy_http_ver.default = "1.1"
+proxy_http_ver.rmempty = false
+proxy_http_ver:depends("proxy_http", "1")
+
+--proxy_http_head = s:taboption("proxy_set", DynamicList, "proxy_http_head", translate("HTTP CONNECT Header Field"),
+--	translate("The region can not fill in any of the following fields:")
+--	.. "<br/>"
+--	.. translate("Connection, Content-Length, Proxy-Connection, Transfer-Encoding, Upgrade"))
+--proxy_http_head.optional = true
+--proxy_http_head.rmempty = false
+--proxy_http_head:depends("proxy_http", "1")
+
+proxy_http_auth = s:taboption("proxy_set", Flag, "proxy_http_auth", translate("HTTP CONNECT Authorization"))
+proxy_http_auth.rmempty = false
+proxy_http_auth:depends("proxy_http", "1")
+
+proxy_http_user = s:taboption("proxy_set", Value, "proxy_http_user", translate("HTTP CONNECT Username"))
+proxy_http_user.placeholder = translate("Username")
+proxy_http_user.rmempty = false
+proxy_http_user:depends("proxy_http_auth","1")
+
+proxy_http_pw = s:taboption("proxy_set", Value, "proxy_http_pw", translate("HTTP CONNECT Password"))
+proxy_http_pw.placeholder = translate("Password")
+proxy_http_pw.rmempty = false
+proxy_http_pw:depends("proxy_http_auth","1")
+
+--proxy_http_tls = s:taboption("proxy_set", Flag, "proxy_http_tls", translate("Enable TLS Link"))
+--proxy_http_tls.rmempty = false
+--proxy_http_tls:depends("proxy_http", "1")
 
 
 --[[ DNSCurve ]]--
