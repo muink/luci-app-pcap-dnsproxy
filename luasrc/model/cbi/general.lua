@@ -19,12 +19,121 @@ s.anonymous = true
 
 --[[ Tab section ]]--
 
+s:tab("parameter", translate("Parameter"))
 s:tab("adv_set", translate("Advanced"))
 s:tab("proxy_set", translate("Proxy"))
 s:tab("dnscurve_set", translate("DNSCurve"))
 
 
 --[[ General Settings ]]--
+
+
+--[[ Parameter ]]--
+
+mult_req_time = s:taboption("parameter", Value, "mult_req_time", translate("Multiple requests"),
+	translate("Send parallel requests to the same remote server at a time")
+	.. "<br/>"
+	.. translate("Unless the packet loss is very high, not recommended to open"))
+mult_req_time.datatype = "or('0',range(2,32))"
+mult_req_time:value("", translate("Use Default"))
+mult_req_time:value("0", translate("0 - Disable - Once"))
+mult_req_time:value("2", translate("2 - Double"))
+mult_req_time:value("3", translate("3 - Triple"))
+
+cache_type = s:taboption("parameter", ListValue, "cache_type", translate("DNS Cache Type"))
+cache_type:value("", translate("Use Default"))
+cache_type:value("0", translate("0 - Disable"))
+cache_type:value("Timer", translate("Timer"))
+cache_type:value("Queue", translate("Queue"))
+cache_type:value("Timer + Queue", translate("Timer + Queue"))
+
+cache_parameter = s:taboption("parameter", Value, "cache_parameter", translate("DNS Cache Parameter"))
+cache_parameter.datatype = "ufloat"
+cache_parameter.placeholder = "4096"
+
+cache_default_ttl = s:taboption("parameter", Value, "cache_default_ttl", translate("DNS Cache Default TTL"),
+	translate("In seconds"))
+cache_default_ttl.datatype = "ufloat"
+cache_default_ttl.placeholder = "900"
+cache_default_ttl.rmempty = false
+cache_default_ttl:depends({["cache_type"] = "Timer", ["!reverse"] = true })
+
+--------
+
+reliable_once_socket_timeout = s:taboption("parameter", Value, "reliable_once_socket_timeout", translate("Reliable Once Socket Timeout"),
+	translate("In milliseconds, with a minimum of 500")
+--	.. "<br/>"
+--	.. translate("One-time refers to the request in a RTT round-trip network transmission can be completed, such as standard DNS and DNSCurve (DNSCrypt) agreement")
+--	.. "<br/>"
+--	.. translate("Reliable port refers to TCP protocol")
+	)
+reliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_once_socket_timeout.placeholder = "3000"
+
+reliable_serial_socket_timeout = s:taboption("parameter", Value, "reliable_serial_socket_timeout", translate("Reliable Serial Socket Timeout"),
+	translate("In milliseconds, with a minimum of 500")
+--	.. "<br/>"
+--	.. translate("Tandem means that this operation requires multiple interactive network transmission to complete, such as SOCKS and HTTP CONNECT agreement")
+--	.. "<br/>"
+--	.. translate("Reliable port refers to TCP protocol")
+	)
+reliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_serial_socket_timeout.placeholder = "1500"
+
+unreliable_once_socket_timeout = s:taboption("parameter", Value, "unreliable_once_socket_timeout", translate("Unreliable Once Socket Timeout"),
+	translate("In milliseconds, with a minimum of 500")
+--	.. "<br/>"
+--	.. translate("One-time refers to the request in a RTT round-trip network transmission can be completed, such as standard DNS and DNSCurve (DNSCrypt) agreement")
+--	.. "<br/>"
+--	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
+	)
+unreliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_once_socket_timeout.placeholder = "2000"
+
+unreliable_serial_socket_timeout = s:taboption("parameter", Value, "unreliable_serial_socket_timeout", translate("Unreliable Serial Socket Timeout"),
+	translate("In milliseconds, with a minimum of 500")
+--	.. "<br/>"
+--	.. translate("Tandem means that this operation requires multiple interactive network transmission to complete, such as SOCKS and HTTP CONNECT agreement")
+--	.. "<br/>"
+--	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
+	)
+unreliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_serial_socket_timeout.placeholder = "1000"
+
+--------
+
+icmp_test = s:taboption("parameter", Value, "icmp_test", translate("ICMP Test"),
+	translate("In seconds"))
+icmp_test.datatype = "or('0',range(5,2147483647))"
+icmp_test:value("", translate("Use Default"))
+icmp_test:value("0", translate("0 - Disable"))
+icmp_test:value("900")
+--icmp_test.default = "0"
+
+domain_test = s:taboption("parameter", Value, "domain_test", translate("Domain Test"),
+	translate("In seconds"))
+domain_test.datatype = "or('0',range(5,2147483647))"
+domain_test:value("", translate("Use Default"))
+domain_test:value("0", translate("0 - Disable"))
+domain_test:value("900")
+--domain_test.default = "0"
+
+--------
+
+alternate_times = s:taboption("parameter", Value, "alternate_times", translate("Alternate Server Failure Thresholds"))
+alternate_times.datatype = "min(1)"
+alternate_times.placeholder = "10"
+
+alternate_times_range = s:taboption("parameter", Value, "alternate_times_range", translate("Alternate Server Failed Thresholds Calculation Period"),
+	translate("In seconds, with a minimum of 5"))
+alternate_times_range.datatype = "min(5)"
+alternate_times_range.placeholder = "60"
+
+alternate_reset_time = s:taboption("parameter", Value, "alternate_reset_time", translate("Alternate Server Reset Time"),
+	translate("In seconds, with a minimum of 5"))
+alternate_reset_time.datatype = "min(5)"
+alternate_reset_time.placeholder = "300"
+
 
 --[[ Advanced ]]--
 
