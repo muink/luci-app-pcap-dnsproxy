@@ -19,11 +19,115 @@ s.anonymous = true
 
 --[[ Tab section ]]--
 
+s:tab("adv_set", translate("Advanced"))
 s:tab("proxy_set", translate("Proxy"))
 s:tab("dnscurve_set", translate("DNSCurve"))
 
 
 --[[ General Settings ]]--
+
+--[[ Advanced ]]--
+
+server_domain = s:taboption("adv_set", Value, "server_domain", translate("Pcap_DNSProxy Server Name"))
+server_domain.placeholder = "pcap-dnsproxy.local"
+
+pcap_capt = s:taboption("adv_set", Flag, "pcap_capt", translate("Pcap Capture"),
+	translate("If disabled, it will automatically open the 'Direct Request' feature"))
+
+pcap_devices_blklist = s:taboption("adv_set", Value, "pcap_devices_blklist", translate("Pcap Devices Blacklist"),
+	translate("Format: AnyConnect|Host|Hyper|ISATAP|IKE|L2TP|Only|Oracle|PPTP|Pseudo|Teredo|Tunnel|Virtual|VMNet|VMware|VPN|any|gif|ifb|lo|nflog|nfqueue|stf|tunl|utun"))
+pcap_devices_blklist.placeholder = "AnyConnect|Host|Hyper|ISATAP|IKE|L2TP|Only|Oracle|PPTP|Pseudo|Teredo|Tunnel|Virtual|VMNet|VMware|VPN|any|gif|ifb|lo|nflog|nfqueue|stf|tunl|utun"
+pcap_devices_blklist.rmempty = false
+pcap_devices_blklist:depends("pcap_capt", "1")
+
+pcap_reading_timeout = s:taboption("adv_set", Value, "pcap_reading_timeout", translate("Pcap Reading Timeout"),
+	translate("In milliseconds, with a minimum of 10"))
+pcap_reading_timeout.datatype = "min(10)"
+pcap_reading_timeout.placeholder = "250"
+pcap_reading_timeout.rmempty = false
+pcap_reading_timeout:depends("pcap_capt", "1")
+
+direct_req = s:taboption("adv_set", ListValue, "direct_req", translate("Direct Request"),
+	translate("The system needs run in global proxy mode"))
+direct_req:value("", translate("Use Default"))
+direct_req:value("0", translate("0 - Disable"))
+direct_req:value("IPv4")
+direct_req:value("IPv6")
+direct_req:value("IPv4 + IPv6")
+
+tcp_fast_op = s:taboption("adv_set", Flag, "tcp_fast_op", translate("TCP Fast Open"),
+	translate("IPv4 support needs Liunx version newer than 3.7. IPv6 TFO support needs Liunx version newer than 3.16"))
+
+receive_waiting = s:taboption("adv_set", Value, "receive_waiting", translate("Receive Waiting"),
+	translate("In milliseconds, must greater than value of 'Pcap Reading Timeout'"))
+receive_waiting.datatype = "ufloat"
+receive_waiting:value("", translate("Use Default"))
+receive_waiting:value("0", translate("0 - Disable"))
+
+domain_case_conv = s:taboption("adv_set", Flag, "domain_case_conv", translate("Domain Case Conversion"))
+--domain_case_conv.default = "1"
+
+compression_pointer_mutation = s:taboption("adv_set", ListValue, "compression_pointer_mutation", translate("Compression Pointer Mutation"))
+compression_pointer_mutation:value("", translate("Use Default"))
+compression_pointer_mutation:value("0", translate("0 - Disable"))
+compression_pointer_mutation:value("1")
+compression_pointer_mutation:value("2")
+compression_pointer_mutation:value("3")
+compression_pointer_mutation:value("1 + 2")
+compression_pointer_mutation:value("2 + 3")
+compression_pointer_mutation:value("1 + 3")
+compression_pointer_mutation:value("1 + 2 + 3")
+compression_pointer_mutation.rmempty = false
+compression_pointer_mutation:depends("edns_label", "")
+compression_pointer_mutation:depends("edns_label", "0")
+
+edns_label = s:taboption("adv_set", ListValue, "edns_label", translate("EDNS Label"))
+edns_label:value("", translate("Use Default"))
+edns_label:value("0", translate("0 - Disable"))
+edns_label:value("1", translate("1 - All request to enable"))
+edns_label:value("2", translate("2 - Enable request below list"))
+edns_label.rmempty = true
+edns_label:depends("compression_pointer_mutation", "")
+edns_label:depends("compression_pointer_mutation", "0")
+
+edns_list = s:taboption("adv_set", Value, "edns_list", translate("EDNS Label List"),
+	translate("Include format: Local + SOCKS Proxy + HTTP CONNECT Proxy + Direct Request + DNSCurve + TCP + UDP")
+	.. "<br/>"
+	.. translate("Exclude format: All - Local - SOCKS Proxy - HTTP CONNECT Proxy - Direct Request - DNSCurve - TCP - UDP"))
+edns_list.placeholder = "DNSCurve + TCP + UDP"
+edns_list.rmempty = false
+edns_list:depends("edns_label", "2")
+
+edns_client_subnet_relay = s:taboption("adv_set", Flag, "edns_client_subnet_relay", translate("EDNS Client Subnet Relay"),
+	translate("Only enabled when providing services as a non-local private network dns server"))
+edns_client_subnet_relay.rmempty = false
+edns_client_subnet_relay:depends("edns_label", "1")
+edns_client_subnet_relay:depends("edns_label", "2")
+
+edns_client_subnet_ipv4_addr = s:taboption("adv_set", Value, "edns_client_subnet_ipv4_addr", translate("IPv4 EDNS Client Subnet Address"))
+edns_client_subnet_ipv4_addr.datatype = "cidr4"
+edns_client_subnet_ipv4_addr.placeholder = "202.97.82.0/24"
+edns_client_subnet_ipv4_addr.rmempty = false
+edns_client_subnet_ipv4_addr:depends("edns_label", "1")
+edns_client_subnet_ipv4_addr:depends("edns_label", "2")
+
+edns_client_subnet_ipv6_addr = s:taboption("adv_set", Value, "edns_client_subnet_ipv6_addr", translate("IPv6 EDNS Client Subnet Address"))
+edns_client_subnet_ipv6_addr.datatype = "cidr6"
+edns_client_subnet_ipv6_addr.placeholder = "240e:e0:865:ed0::/56"
+edns_client_subnet_ipv6_addr.rmempty = false
+edns_client_subnet_ipv6_addr:depends("edns_label", "1")
+edns_client_subnet_ipv6_addr:depends("edns_label", "2")
+
+dnssec_request = s:taboption("adv_set", Flag, "dnssec_request", translate("DNSSEC Request"))
+dnssec_request.rmempty = false
+dnssec_request:depends("edns_label", "1")
+dnssec_request:depends("edns_label", "2")
+
+dnssec_force_record = s:taboption("adv_set", Flag, "dnssec_force_record", translate("DNSSEC Force Record"),
+	translate("Enabling will cause all undeployed DNSSEC function variable name resolution failure!"))
+dnssec_force_record.rmempty = false
+dnssec_force_record:depends("edns_label", "1")
+dnssec_force_record:depends("edns_label", "2")
 
 
 --[[ Proxy ]]--
