@@ -19,6 +19,7 @@ s.anonymous = true
 
 --[[ Tab section ]]--
 
+s:tab("local_dns", translate("Local DNS Request"))
 s:tab("parameter", translate("Parameter"))
 s:tab("adv_set", translate("Advanced"))
 s:tab("proxy_set", translate("Proxy"))
@@ -26,6 +27,39 @@ s:tab("dnscurve_set", translate("DNSCurve"))
 
 
 --[[ General Settings ]]--
+
+--[[ Local DNS Request ]]--
+
+local_proto = s:taboption("local_dns", ListValue, "local_proto", translate("Local Protocol"))
+local_proto:value("IPv4 + UDP")
+local_proto:value("IPv4 + Force TCP")
+local_proto:value("IPv4 + TCP + UDP")
+local_proto:value("IPv6 + UDP")
+local_proto:value("IPv6 + Force TCP")
+local_proto:value("IPv6 + TCP + UDP")
+local_proto:value("IPv4 + IPv6 + UDP")
+local_proto:value("IPv4 + IPv6 + Force TCP")
+local_proto:value("IPv4 + IPv6 + TCP + UDP")
+
+local_filter_mode = s:taboption("local_dns", ListValue, "local_filter_mode", translate("Filter Mode"))
+local_filter_mode:value("hostlist", translate("Local Hosts"))
+local_filter_mode:value("routing", translate("Local Routing"))
+
+local_force_req = s:taboption("local_dns", Flag, "local_force_req", translate("Local Force Request"))
+local_force_req.rmempty = true
+local_force_req:depends("local_filter_mode", "hostlist")
+
+local_ipv4_addr = s:taboption("local_dns", Value, "local_ipv4_addr", translate("IPv4 Local Main DNS Address"))
+local_ipv4_addr.placeholder = "114.114.115.115:53"
+
+local_ipv4_addr_alt = s:taboption("local_dns", Value, "local_ipv4_addr_alt", translate("IPv4 Local Alternate DNS Address"))
+local_ipv4_addr_alt.placeholder = "223.6.6.6:53"
+
+local_ipv6_addr = s:taboption("local_dns", Value, "local_ipv6_addr", translate("IPv6 Local Main DNS Address"))
+local_ipv6_addr.placeholder = "[240C::6644]:53"
+
+local_ipv6_addr_alt = s:taboption("local_dns", Value, "local_ipv6_addr_alt", translate("IPv6 Local Alternate DNS Address"))
+local_ipv6_addr_alt.placeholder = "[240C::6666]:53"
 
 
 --[[ Parameter ]]--
