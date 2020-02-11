@@ -20,7 +20,7 @@ s.anonymous = true
 --[[ Tab section ]]--
 
 s:tab("general", translate("General Settings"))
-s:tab("local_dns", translate("Local DNS Request"))
+s:tab("ll_dns", translate("Local DNS Request"))
 s:tab("parameter", translate("Parameter"))
 s:tab("adv_set", translate("Advanced"))
 s:tab("proxy_set", translate("Proxy"))
@@ -87,36 +87,36 @@ global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2
 
 --[[ Local DNS Request ]]--
 
-local_proto = s:taboption("local_dns", ListValue, "local_proto", translate("Local Protocol"))
-local_proto:value("IPv4 + UDP")
-local_proto:value("IPv4 + Force TCP")
-local_proto:value("IPv4 + TCP + UDP")
-local_proto:value("IPv6 + UDP")
-local_proto:value("IPv6 + Force TCP")
-local_proto:value("IPv6 + TCP + UDP")
-local_proto:value("IPv4 + IPv6 + UDP")
-local_proto:value("IPv4 + IPv6 + Force TCP")
-local_proto:value("IPv4 + IPv6 + TCP + UDP")
+ll_proto = s:taboption("ll_dns", ListValue, "ll_proto", translate("Local Protocol"))
+ll_proto:value("IPv4 + UDP")
+ll_proto:value("IPv4 + Force TCP")
+ll_proto:value("IPv4 + TCP + UDP")
+ll_proto:value("IPv6 + UDP")
+ll_proto:value("IPv6 + Force TCP")
+ll_proto:value("IPv6 + TCP + UDP")
+ll_proto:value("IPv4 + IPv6 + UDP")
+ll_proto:value("IPv4 + IPv6 + Force TCP")
+ll_proto:value("IPv4 + IPv6 + TCP + UDP")
 
-local_filter_mode = s:taboption("local_dns", ListValue, "local_filter_mode", translate("Filter Mode"))
-local_filter_mode:value("hostlist", translate("Local Hosts"))
-local_filter_mode:value("routing", translate("Local Routing"))
+ll_filter_mode = s:taboption("ll_dns", ListValue, "ll_filter_mode", translate("Filter Mode"))
+ll_filter_mode:value("hostlist", translate("Local Hosts"))
+ll_filter_mode:value("routing", translate("Local Routing"))
 
-local_force_req = s:taboption("local_dns", Flag, "local_force_req", translate("Local Force Request"))
-local_force_req.rmempty = true
-local_force_req:depends("local_filter_mode", "hostlist")
+ll_force_req = s:taboption("ll_dns", Flag, "ll_force_req", translate("Local Force Request"))
+ll_force_req.rmempty = true
+ll_force_req:depends("ll_filter_mode", "hostlist")
 
-local_ipv4_addr = s:taboption("local_dns", Value, "local_ipv4_addr", translate("IPv4 Local Main DNS Address"))
-local_ipv4_addr.placeholder = "114.114.115.115:53"
+ll_ipv4_addr = s:taboption("ll_dns", Value, "ll_ipv4_addr", translate("IPv4 Local Main DNS Address"))
+ll_ipv4_addr.placeholder = "114.114.115.115:53"
 
-local_ipv4_addr_alt = s:taboption("local_dns", Value, "local_ipv4_addr_alt", translate("IPv4 Local Alternate DNS Address"))
-local_ipv4_addr_alt.placeholder = "223.6.6.6:53"
+ll_ipv4_addr_alt = s:taboption("ll_dns", Value, "ll_ipv4_addr_alt", translate("IPv4 Local Alternate DNS Address"))
+ll_ipv4_addr_alt.placeholder = "223.6.6.6:53"
 
-local_ipv6_addr = s:taboption("local_dns", Value, "local_ipv6_addr", translate("IPv6 Local Main DNS Address"))
-local_ipv6_addr.placeholder = "[240C::6644]:53"
+ll_ipv6_addr = s:taboption("ll_dns", Value, "ll_ipv6_addr", translate("IPv6 Local Main DNS Address"))
+ll_ipv6_addr.placeholder = "[240C::6644]:53"
 
-local_ipv6_addr_alt = s:taboption("local_dns", Value, "local_ipv6_addr_alt", translate("IPv6 Local Alternate DNS Address"))
-local_ipv6_addr_alt.placeholder = "[240C::6666]:53"
+ll_ipv6_addr_alt = s:taboption("ll_dns", Value, "ll_ipv6_addr_alt", translate("IPv6 Local Alternate DNS Address"))
+ll_ipv6_addr_alt.placeholder = "[240C::6666]:53"
 
 
 --[[ Parameter ]]--
@@ -131,23 +131,23 @@ mult_req_time:value("0", translate("0 - Disable - Once"))
 mult_req_time:value("2", translate("2 - Double"))
 mult_req_time:value("3", translate("3 - Triple"))
 
-cache_type = s:taboption("parameter", ListValue, "cache_type", translate("DNS Cache Type"))
-cache_type:value("", translate("Use Default"))
-cache_type:value("0", translate("0 - Disable"))
-cache_type:value("Timer", translate("Timer"))
-cache_type:value("Queue", translate("Queue"))
-cache_type:value("Timer + Queue", translate("Timer + Queue"))
+cc_type = s:taboption("parameter", ListValue, "cc_type", translate("DNS Cache Type"))
+cc_type:value("", translate("Use Default"))
+cc_type:value("0", translate("0 - Disable"))
+cc_type:value("Timer", translate("Timer"))
+cc_type:value("Queue", translate("Queue"))
+cc_type:value("Timer + Queue", translate("Timer + Queue"))
 
-cache_parameter = s:taboption("parameter", Value, "cache_parameter", translate("DNS Cache Parameter"))
-cache_parameter.datatype = "ufloat"
-cache_parameter.placeholder = "4096"
+cc_parameter = s:taboption("parameter", Value, "cc_parameter", translate("DNS Cache Parameter"))
+cc_parameter.datatype = "ufloat"
+cc_parameter.placeholder = "4096"
 
-cache_default_ttl = s:taboption("parameter", Value, "cache_default_ttl", translate("DNS Cache Default TTL"),
+cc_default_ttl = s:taboption("parameter", Value, "cc_default_ttl", translate("DNS Cache Default TTL"),
 	translate("In seconds"))
-cache_default_ttl.datatype = "ufloat"
-cache_default_ttl.placeholder = "900"
-cache_default_ttl.rmempty = false
-cache_default_ttl:depends({["cache_type"] = "Timer", ["!reverse"] = true })
+cc_default_ttl.datatype = "ufloat"
+cc_default_ttl.placeholder = "900"
+cc_default_ttl.rmempty = false
+cc_default_ttl:depends({["cc_type"] = "Timer", ["!reverse"] = true })
 
 --------
 
@@ -211,19 +211,19 @@ domain_test:value("900")
 
 --------
 
-alternate_times = s:taboption("parameter", Value, "alternate_times", translate("Alternate Server Failure Thresholds"))
-alternate_times.datatype = "min(1)"
-alternate_times.placeholder = "10"
+alt_times = s:taboption("parameter", Value, "alt_times", translate("Alternate Server Failure Thresholds"))
+alt_times.datatype = "min(1)"
+alt_times.placeholder = "10"
 
-alternate_times_range = s:taboption("parameter", Value, "alternate_times_range", translate("Alternate Server Failed Thresholds Calculation Period"),
+alt_times_range = s:taboption("parameter", Value, "alt_times_range", translate("Alternate Server Failed Thresholds Calculation Period"),
 	translate("In seconds, with a minimum of 5"))
-alternate_times_range.datatype = "min(5)"
-alternate_times_range.placeholder = "60"
+alt_times_range.datatype = "min(5)"
+alt_times_range.placeholder = "60"
 
-alternate_reset_time = s:taboption("parameter", Value, "alternate_reset_time", translate("Alternate Server Reset Time"),
+alt_reset_time = s:taboption("parameter", Value, "alt_reset_time", translate("Alternate Server Reset Time"),
 	translate("In seconds, with a minimum of 5"))
-alternate_reset_time.datatype = "min(5)"
-alternate_reset_time.placeholder = "300"
+alt_reset_time.datatype = "min(5)"
+alt_reset_time.placeholder = "300"
 
 
 --[[ Advanced ]]--
@@ -318,10 +318,10 @@ edns_client_subnet_ipv6_addr.rmempty = false
 edns_client_subnet_ipv6_addr:depends("edns_label", "1")
 edns_client_subnet_ipv6_addr:depends("edns_label", "2")
 
-dnssec_request = s:taboption("adv_set", Flag, "dnssec_request", translate("DNSSEC Request"))
-dnssec_request.rmempty = false
-dnssec_request:depends("edns_label", "1")
-dnssec_request:depends("edns_label", "2")
+dnssec_req = s:taboption("adv_set", Flag, "dnssec_req", translate("DNSSEC Request"))
+dnssec_req.rmempty = false
+dnssec_req:depends("edns_label", "1")
+dnssec_req:depends("edns_label", "2")
 
 dnssec_force_record = s:taboption("adv_set", Flag, "dnssec_force_record", translate("DNSSEC Force Record"),
 	translate("Enabling will cause all undeployed DNSSEC function variable name resolution failure!"))
@@ -378,10 +378,10 @@ proxy_socks_ipv6_addr.placeholder = "[::1]:1080"
 proxy_socks_ipv6_addr.rmempty = false
 proxy_socks_ipv6_addr:depends("proxy_socks","1")
 
-proxy_socks_target_serv = s:taboption("proxy_set", Value, "proxy_socks_target_serv", translate("Target DNS Server"))
-proxy_socks_target_serv.placeholder = "8.8.4.4:53"
-proxy_socks_target_serv.rmempty = false
-proxy_socks_target_serv:depends("proxy_socks","1")
+proxy_socks_tg_serv = s:taboption("proxy_set", Value, "proxy_socks_tg_serv", translate("Target DNS Server"))
+proxy_socks_tg_serv.placeholder = "8.8.4.4:53"
+proxy_socks_tg_serv.rmempty = false
+proxy_socks_tg_serv:depends("proxy_socks","1")
 
 proxy_socks_auth = s:taboption("proxy_set", Flag, "proxy_socks_auth", translate("SOCKS Authorization"))
 proxy_socks_auth.rmempty = false
@@ -424,10 +424,10 @@ proxy_http_ipv6_addr.placeholder = "[::1]:1080"
 proxy_http_ipv6_addr.rmempty = false
 proxy_http_ipv6_addr:depends("proxy_http","1")
 
-proxy_http_target_serv = s:taboption("proxy_set", Value, "proxy_http_target_serv", translate("Target DNS Server"))
-proxy_http_target_serv.placeholder = "8.8.4.4:53"
-proxy_http_target_serv.rmempty = false
-proxy_http_target_serv:depends("proxy_http","1")
+proxy_http_tg_serv = s:taboption("proxy_set", Value, "proxy_http_tg_serv", translate("Target DNS Server"))
+proxy_http_tg_serv.placeholder = "8.8.4.4:53"
+proxy_http_tg_serv.rmempty = false
+proxy_http_tg_serv:depends("proxy_http","1")
 
 proxy_http_ver = s:taboption("proxy_set", ListValue, "proxy_http_ver", translate("HTTP CONNECT Version"))
 proxy_http_ver:value("0", translate("0 - Auto choice"))
@@ -511,114 +511,114 @@ dnscurve_key_recheck_time.placeholder = "1800"
 dnscurve_key_recheck_time.rmempty = false
 dnscurve_key_recheck_time:depends("dnscurve","1")
 
-dnscurve_server_input = s:taboption("dnscurve_set", ListValue, "dnscurve_server_input", translate("Server Input"))
-dnscurve_server_input:value("auto", translate("Database"))
-dnscurve_server_input:value("manual", translate("Addresses"))
---dnscurve_server_input.default = "database"
-dnscurve_server_input.rmempty = false
-dnscurve_server_input:depends("dnscurve", "1")
+dnscurve_serv_input = s:taboption("dnscurve_set", ListValue, "dnscurve_serv_input", translate("Server Input"))
+dnscurve_serv_input:value("auto", translate("Database"))
+dnscurve_serv_input:value("manual", translate("Addresses"))
+--dnscurve_serv_input.default = "database"
+dnscurve_serv_input.rmempty = false
+dnscurve_serv_input:depends("dnscurve", "1")
 
 --== Database ==---
 
-dnscurve_server_database_ipv4 = s:taboption("dnscurve_set", Value, "dnscurve_server_database_ipv4", translate("IPv4 Main DNS"),
+dnscurve_serv_db_ipv4 = s:taboption("dnscurve_set", Value, "dnscurve_serv_db_ipv4", translate("IPv4 Main DNS"),
 	translatef("The 'Name' field of the corresponding server in the "
 		.. "<a href=\"%s\" target=\"_blank\">"
 		.. "DNSCurve database</a>", "https://github.com/dyne/dnscrypt-proxy/blob/master/dnscrypt-resolvers.csv"))
-dnscurve_server_database_ipv4:value("cisco")
---dnscurve_server_database_ipv4.default = "cisco"
-dnscurve_server_database_ipv4.rmempty = false
-dnscurve_server_database_ipv4:depends("dnscurve_server_input","auto")
+dnscurve_serv_db_ipv4:value("cisco")
+--dnscurve_serv_db_ipv4.default = "cisco"
+dnscurve_serv_db_ipv4.rmempty = false
+dnscurve_serv_db_ipv4:depends("dnscurve_serv_input","auto")
 
-dnscurve_server_database_ipv4_alt = s:taboption("dnscurve_set", Value, "dnscurve_server_database_ipv4_alt", translate("IPv4 Alternate DNS"))
-dnscurve_server_database_ipv4_alt:value("d0wn-sg-ns1")
-dnscurve_server_database_ipv4_alt.rmempty = false
-dnscurve_server_database_ipv4_alt:depends("dnscurve_server_input","auto")
+dnscurve_serv_db_ipv4_alt = s:taboption("dnscurve_set", Value, "dnscurve_serv_db_ipv4_alt", translate("IPv4 Alternate DNS"))
+dnscurve_serv_db_ipv4_alt:value("d0wn-sg-ns1")
+dnscurve_serv_db_ipv4_alt.rmempty = false
+dnscurve_serv_db_ipv4_alt:depends("dnscurve_serv_input","auto")
 
-dnscurve_server_database_ipv6 = s:taboption("dnscurve_set", Value, "dnscurve_server_database_ipv6", translate("IPv6 Main DNS"))
-dnscurve_server_database_ipv6:value("cisco-ipv6")
---dnscurve_server_database_ipv6.default = "cisco-ipv6"
-dnscurve_server_database_ipv6.rmempty = false
-dnscurve_server_database_ipv6:depends("dnscurve_server_input","auto")
+dnscurve_serv_db_ipv6 = s:taboption("dnscurve_set", Value, "dnscurve_serv_db_ipv6", translate("IPv6 Main DNS"))
+dnscurve_serv_db_ipv6:value("cisco-ipv6")
+--dnscurve_serv_db_ipv6.default = "cisco-ipv6"
+dnscurve_serv_db_ipv6.rmempty = false
+dnscurve_serv_db_ipv6:depends("dnscurve_serv_input","auto")
 
-dnscurve_server_database_ipv6_alt = s:taboption("dnscurve_set", Value, "dnscurve_server_database_ipv6_alt", translate("IPv6 Alternate DNS"))
-dnscurve_server_database_ipv6_alt:value("d0wn-sg-ns1-ipv6")
-dnscurve_server_database_ipv6_alt.rmempty = false
-dnscurve_server_database_ipv6_alt:depends("dnscurve_server_input","auto")
+dnscurve_serv_db_ipv6_alt = s:taboption("dnscurve_set", Value, "dnscurve_serv_db_ipv6_alt", translate("IPv6 Alternate DNS"))
+dnscurve_serv_db_ipv6_alt:value("d0wn-sg-ns1-ipv6")
+dnscurve_serv_db_ipv6_alt.rmempty = false
+dnscurve_serv_db_ipv6_alt:depends("dnscurve_serv_input","auto")
 
 --== Addresses ==--
 
 ---- IPv4 Main ----
-dnscurve_server_addr_ipv4 = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4", translate("IPv4 Main DNS Address"),
+dnscurve_serv_addr_ipv4 = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4", translate("IPv4 Main DNS Address"),
 	translatef("More support for DNSCurve (DNSCrypt) servers please move "
 		.. "<a href=\"%s\" target=\"_blank\">"
 		.. "here</a>", "https://github.com/dyne/dnscrypt-proxy/blob/master/dnscrypt-resolvers.csv"))
-dnscurve_server_addr_ipv4:value("208.67.220.220:443")
---dnscurve_server_addr_ipv4.default = "208.67.220.220:443"
-dnscurve_server_addr_ipv4.rmempty = false
-dnscurve_server_addr_ipv4:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4:value("208.67.220.220:443")
+--dnscurve_serv_addr_ipv4.default = "208.67.220.220:443"
+dnscurve_serv_addr_ipv4.rmempty = false
+dnscurve_serv_addr_ipv4:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv4_prov = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4_prov", translate("IPv4 Main Provider Name"))
-dnscurve_server_addr_ipv4_prov:value("2.dnscrypt-cert.opendns.com")
---dnscurve_server_addr_ipv4_prov.default = "2.dnscrypt-cert.opendns.com"
-dnscurve_server_addr_ipv4_prov.rmempty = false
-dnscurve_server_addr_ipv4_prov:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4_prov = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4_prov", translate("IPv4 Main Provider Name"))
+dnscurve_serv_addr_ipv4_prov:value("2.dnscrypt-cert.opendns.com")
+--dnscurve_serv_addr_ipv4_prov.default = "2.dnscrypt-cert.opendns.com"
+dnscurve_serv_addr_ipv4_prov.rmempty = false
+dnscurve_serv_addr_ipv4_prov:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv4_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4_pubkey", translate("IPv4 Main Provider Public Key"))
-dnscurve_server_addr_ipv4_pubkey:value("B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79")
---dnscurve_server_addr_ipv4_pubkey.default = "B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79"
-dnscurve_server_addr_ipv4_pubkey.rmempty = false
-dnscurve_server_addr_ipv4_pubkey:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4_pubkey", translate("IPv4 Main Provider Public Key"))
+dnscurve_serv_addr_ipv4_pubkey:value("B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79")
+--dnscurve_serv_addr_ipv4_pubkey.default = "B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79"
+dnscurve_serv_addr_ipv4_pubkey.rmempty = false
+dnscurve_serv_addr_ipv4_pubkey:depends("dnscurve_serv_input","manual")
 
 ---- IPv4 Alternate ----
-dnscurve_server_addr_ipv4_alt = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4_alt", translate("IPv4 Alternate DNS Address"))
-dnscurve_server_addr_ipv4_alt:value("128.199.248.105:443")
-dnscurve_server_addr_ipv4_alt.rmempty = false
-dnscurve_server_addr_ipv4_alt:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4_alt = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4_alt", translate("IPv4 Alternate DNS Address"))
+dnscurve_serv_addr_ipv4_alt:value("128.199.248.105:443")
+dnscurve_serv_addr_ipv4_alt.rmempty = false
+dnscurve_serv_addr_ipv4_alt:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv4_alt_prov = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4_alt_prov", translate("IPv4 Alternate Provider Name"))
-dnscurve_server_addr_ipv4_alt_prov:value("2.dnscrypt-cert.sg.d0wn.biz")
-dnscurve_server_addr_ipv4_alt_prov.rmempty = false
-dnscurve_server_addr_ipv4_alt_prov:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4_alt_prov = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4_alt_prov", translate("IPv4 Alternate Provider Name"))
+dnscurve_serv_addr_ipv4_alt_prov:value("2.dnscrypt-cert.sg.d0wn.biz")
+dnscurve_serv_addr_ipv4_alt_prov.rmempty = false
+dnscurve_serv_addr_ipv4_alt_prov:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv4_alt_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv4_alt_pubkey", translate("IPv4 Alternate Provider Public Key"))
-dnscurve_server_addr_ipv4_alt_pubkey:value("D82B:2B76:1DA0:8470:B55B:820C:FAAB:9F32:D632:E9E0:5616:2CE7:7D21:E970:98FF:4A34")
-dnscurve_server_addr_ipv4_alt_pubkey.rmempty = false
-dnscurve_server_addr_ipv4_alt_pubkey:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv4_alt_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv4_alt_pubkey", translate("IPv4 Alternate Provider Public Key"))
+dnscurve_serv_addr_ipv4_alt_pubkey:value("D82B:2B76:1DA0:8470:B55B:820C:FAAB:9F32:D632:E9E0:5616:2CE7:7D21:E970:98FF:4A34")
+dnscurve_serv_addr_ipv4_alt_pubkey.rmempty = false
+dnscurve_serv_addr_ipv4_alt_pubkey:depends("dnscurve_serv_input","manual")
 
 ---- IPv6 Main ----
-dnscurve_server_addr_ipv6 = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6", translate("IPv6 Main DNS Address"))
-dnscurve_server_addr_ipv6:value("[2620:0:CCC::2]:443")
---dnscurve_server_addr_ipv6.default = "[2620:0:CCC::2]:443"
-dnscurve_server_addr_ipv6.rmempty = false
-dnscurve_server_addr_ipv6:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6 = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6", translate("IPv6 Main DNS Address"))
+dnscurve_serv_addr_ipv6:value("[2620:0:CCC::2]:443")
+--dnscurve_serv_addr_ipv6.default = "[2620:0:CCC::2]:443"
+dnscurve_serv_addr_ipv6.rmempty = false
+dnscurve_serv_addr_ipv6:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv6_prov = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6_prov", translate("IPv6 Main Provider Name"))
-dnscurve_server_addr_ipv6_prov:value("2.dnscrypt-cert.opendns.com")
---dnscurve_server_addr_ipv6_prov.default = "2.dnscrypt-cert.opendns.com"
-dnscurve_server_addr_ipv6_prov.rmempty = false
-dnscurve_server_addr_ipv6_prov:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6_prov = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6_prov", translate("IPv6 Main Provider Name"))
+dnscurve_serv_addr_ipv6_prov:value("2.dnscrypt-cert.opendns.com")
+--dnscurve_serv_addr_ipv6_prov.default = "2.dnscrypt-cert.opendns.com"
+dnscurve_serv_addr_ipv6_prov.rmempty = false
+dnscurve_serv_addr_ipv6_prov:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv6_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6_pubkey", translate("IPv6 Main Provider Public Key"))
-dnscurve_server_addr_ipv6_pubkey:value("B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79")
---dnscurve_server_addr_ipv6_pubkey.default = "B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79"
-dnscurve_server_addr_ipv6_pubkey.rmempty = false
-dnscurve_server_addr_ipv6_pubkey:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6_pubkey", translate("IPv6 Main Provider Public Key"))
+dnscurve_serv_addr_ipv6_pubkey:value("B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79")
+--dnscurve_serv_addr_ipv6_pubkey.default = "B735:1140:206F:225D:3E2B:D822:D7FD:691E:A1C3:3CC8:D666:8D0C:BE04:BFAB:CA43:FB79"
+dnscurve_serv_addr_ipv6_pubkey.rmempty = false
+dnscurve_serv_addr_ipv6_pubkey:depends("dnscurve_serv_input","manual")
 
 ---- IPv6 Alternate ----
-dnscurve_server_addr_ipv6_alt = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6_alt", translate("IPv6 Alternate DNS Address"))
-dnscurve_server_addr_ipv6_alt:value("[2400:6180:0:d0::38:d001]:443")
-dnscurve_server_addr_ipv6_alt.rmempty = false
-dnscurve_server_addr_ipv6_alt:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6_alt = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6_alt", translate("IPv6 Alternate DNS Address"))
+dnscurve_serv_addr_ipv6_alt:value("[2400:6180:0:d0::38:d001]:443")
+dnscurve_serv_addr_ipv6_alt.rmempty = false
+dnscurve_serv_addr_ipv6_alt:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv6_alt_prov = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6_alt_prov", translate("IPv6 Alternate Provider Name"))
-dnscurve_server_addr_ipv6_alt_prov:value("2.dnscrypt-cert.sg.d0wn.biz")
-dnscurve_server_addr_ipv6_alt_prov.rmempty = false
-dnscurve_server_addr_ipv6_alt_prov:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6_alt_prov = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6_alt_prov", translate("IPv6 Alternate Provider Name"))
+dnscurve_serv_addr_ipv6_alt_prov:value("2.dnscrypt-cert.sg.d0wn.biz")
+dnscurve_serv_addr_ipv6_alt_prov.rmempty = false
+dnscurve_serv_addr_ipv6_alt_prov:depends("dnscurve_serv_input","manual")
 
-dnscurve_server_addr_ipv6_alt_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_server_addr_ipv6_alt_pubkey", translate("IPv6 Alternate Provider Public Key"))
-dnscurve_server_addr_ipv6_alt_pubkey:value("D82B:2B76:1DA0:8470:B55B:820C:FAAB:9F32:D632:E9E0:5616:2CE7:7D21:E970:98FF:4A34")
-dnscurve_server_addr_ipv6_alt_pubkey.rmempty = false
-dnscurve_server_addr_ipv6_alt_pubkey:depends("dnscurve_server_input","manual")
+dnscurve_serv_addr_ipv6_alt_pubkey = s:taboption("dnscurve_set", Value, "dnscurve_serv_addr_ipv6_alt_pubkey", translate("IPv6 Alternate Provider Public Key"))
+dnscurve_serv_addr_ipv6_alt_pubkey:value("D82B:2B76:1DA0:8470:B55B:820C:FAAB:9F32:D632:E9E0:5616:2CE7:7D21:E970:98FF:4A34")
+dnscurve_serv_addr_ipv6_alt_pubkey.rmempty = false
+dnscurve_serv_addr_ipv6_alt_pubkey:depends("dnscurve_serv_input","manual")
 
 
 return m
