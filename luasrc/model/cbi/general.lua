@@ -19,6 +19,7 @@ s.anonymous = true
 
 --[[ Tab section ]]--
 
+s:tab("general", translate("General Settings"))
 s:tab("local_dns", translate("Local DNS Request"))
 s:tab("parameter", translate("Parameter"))
 s:tab("adv_set", translate("Advanced"))
@@ -27,6 +28,62 @@ s:tab("dnscurve_set", translate("DNSCurve"))
 
 
 --[[ General Settings ]]--
+
+listen_proto = s:taboption("general", ListValue, "listen_proto", translate("Listen Protocol"))
+listen_proto:value("IPv4 + UDP")
+listen_proto:value("IPv4 + TCP")
+listen_proto:value("IPv4 + TCP + UDP")
+listen_proto:value("IPv6 + UDP")
+listen_proto:value("IPv6 + TCP")
+listen_proto:value("IPv6 + TCP + UDP")
+listen_proto:value("IPv4 + IPv6 + UDP")
+listen_proto:value("IPv4 + IPv6 + TCP")
+listen_proto:value("IPv4 + IPv6 + TCP + UDP")
+
+listen_port = s:taboption("general", Value, "listen_port", translate("Listen Port"))
+listen_port.placeholder = "1053(|2053)"
+
+operation_mode = s:taboption("general", ListValue, "operation_mode", translate("Operation Mode"))
+operation_mode:value("Server", translate("Server mode"))
+operation_mode:value("Private", translate("Private network mode"))
+operation_mode:value("Proxy", translate("Proxy mode"))
+operation_mode:value("Custom", translate("Custom mode"))
+
+ipv4_listen_addr = s:taboption("general", Value, "ipv4_listen_addr", translate("IPv4 Listen Address"))
+ipv4_listen_addr.placeholder = "192.168.1.1:53|192.168.10.1:53"
+ipv4_listen_addr.rmempty = true
+ipv4_listen_addr:depends("operation_mode", "Custom")
+
+ipv6_listen_addr = s:taboption("general", Value, "ipv6_listen_addr", translate("IPv6 Listen Address"))
+ipv6_listen_addr.placeholder = "[fd1e:b741:ea46::e28]:53|[240e:e0:865:ed0:1c6e:e5ff:fed0:631e]:53"
+ipv6_listen_addr.rmempty = true
+ipv6_listen_addr:depends("operation_mode", "Custom")
+
+--== DNS Request ==--
+
+global_proto = s:taboption("general", ListValue, "global_proto", translate("Outgoing Protocol"))
+global_proto:value("IPv4 + UDP")
+global_proto:value("IPv4 + Force TCP")
+global_proto:value("IPv4 + TCP + UDP")
+global_proto:value("IPv6 + UDP")
+global_proto:value("IPv6 + Force TCP")
+global_proto:value("IPv6 + TCP + UDP")
+global_proto:value("IPv4 + IPv6 + UDP")
+global_proto:value("IPv4 + IPv6 + Force TCP")
+global_proto:value("IPv4 + IPv6 + TCP + UDP")
+
+global_ipv4_addr = s:taboption("general", Value, "global_ipv4_addr", translate("IPv4 Main DNS Address"))
+global_ipv4_addr.placeholder = "8.8.4.4:53"
+
+global_ipv4_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv4 Alternate DNS Address"))
+global_ipv4_addr_alt.placeholder = "1.0.0.1:53|149.112.112.112:53|208.67.220.220:5353"
+
+global_ipv6_addr = s:taboption("general", Value, "global_ipv6_addr", translate("IPv6 Main DNS Address"))
+global_ipv6_addr.placeholder = "[2001:4860:4860::8844]:53"
+
+global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv6 Alternate DNS Address"))
+global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2620:0:CCD::2]:5353"
+
 
 --[[ Local DNS Request ]]--
 
