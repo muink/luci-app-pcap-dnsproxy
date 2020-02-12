@@ -9,7 +9,7 @@ function index()
 	end
 
 	entry({"admin", "network", "pcap-dnsproxy"}, firstchild(), _("Pcap_DNSProxy Server"), 30).dependent = false
-	entry({"admin", "network", "pcap-dnsproxy", "overview"}, template("pcap-dnsproxy/helloworld"), _("Overview"), 1).leaf = true
+	--entry({"admin", "network", "pcap-dnsproxy", "overview"}, template("pcap-dnsproxy/helloworld"), _("Overview"), 1).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "general"}, cbi("pcap-dnsproxy/general"), _("General Settings"), 3).leaf = true
 
 	entry({"admin", "network", "pcap-dnsproxy", "advanced"}, firstchild(), _("Advanced"), 4)
@@ -24,7 +24,29 @@ function index()
 	--entry({"admin", "network", "pcap-dnsproxy", "log", "logread"}, call("read_log"), _("Logfile"), 1).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "log"}, form("pcap-dnsproxy/logfile"), _("Logfile"), 6).leaf = true
 
+	entry({"admin", "network", "pcap-dnsproxy", "action"}, call("pcap_dnsproxy_action")).leaf = true
 	--entry({"admin", "network", "pcap-dnsproxy", "status"}, call("action_status")).leaf = true
+end
+
+
+function pcap_dnsproxy_action(name)
+	local packageName = "pcap-dnsproxy"
+	if name == "start" then
+		luci.sys.init.start(packageName)
+	elseif name == "action" then
+		luci.util.exec("/etc/init.d/" .. packageName .. " reload >/dev/null 2>&1")
+		luci.util.exec("/etc/init.d/dnsmasq restart >/dev/null 2>&1")
+	elseif name == "stop" then
+		luci.sys.init.stop(packageName)
+	elseif name == "enable" then
+		--luci.sys.init.enable(packageName)
+		luci.util.exec("uci set " .. packageName .. ".@pcap-dnsproxy[-1].enabled=1; uci commit " .. packageName)
+	elseif name == "disable" then
+		--luci.sys.init.disable(packageName)
+		luci.util.exec("uci set " .. packageName .. ".@pcap-dnsproxy[-1].enabled=0; uci commit " .. packageName)
+	end
+	luci.http.prepare_content("text/plain")
+	luci.http.write("0")
 end
 
 --[[

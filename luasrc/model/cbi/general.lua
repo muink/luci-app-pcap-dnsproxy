@@ -3,14 +3,43 @@
 -- Copyright 2020 muink <https://github.com/muink>
 -- Licensed to the public under the Apache License 2.0
 
+local uci	= require "luci.model.uci".cursor()
 local fs	= require("nixio.fs")
+local sys	= require("luci.sys")
 local util	= require("luci.util")
-local conf = "pcap-dnsproxy"
+local packageName = "pcap-dnsproxy"
+local conf = packageName
 local config = "/etc/config/" .. conf
+
+local tmpfsVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'")))
+if not tmpfsVersion or tmpfsVersion == "" then
+	tmpfsStatusCode = -1
+	tmpfsVersion = ""
+	tmpfsStatus = packageName .. " " .. translate("is not installed or not found")
+else  
+	tmpfsVersion = " [" .. packageName .. " " .. tmpfsVersion .. "]"
+end
+local tmpfsStatus = translate("Stopped")
+if sys.call("netstat -lpntu | grep Pcap_DNSProxy") == 0 then
+	tmpfsStatus = translate("Running")
+end
+
 
 m = Map(conf, "")
 
-s = m:section(TypedSection, "uci_cfg", nil,
+
+h = m:section(TypedSection, "pcap-dnsproxy", translate("Service Status") .. tmpfsVersion)
+h.anonymous = true
+
+ss = h:option(DummyValue, "_dummy", translate("Service Status"))
+ss.template = packageName .. "/status"
+ss.value = tmpfsStatus
+
+buttons = h:option(DummyValue, "_dummy")
+buttons.template = packageName .. "/buttons"
+
+
+s = m:section(TypedSection, "uci_cfg", "Pcap_DNSProxy settings",
 	translatef("For further information "
 		.. "<a href=\"%s\" target=\"_blank\">"
 		.. "check the online documentation</a>", "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"))
