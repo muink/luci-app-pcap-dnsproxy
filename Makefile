@@ -16,6 +16,11 @@ LUCI_DEPENDS:=+luci-compat +pcap-dnsproxy +bash
 
 LUCI_DESCRIPTION:=LuCI for Pcap_DNSProxy. Pcap_DNSProxy, A DNS Server to avoid contaminated result.
 
+define Package/$(LUCI_NAME)/conffiles
+/etc/config/pcap-dnsproxy
+/etc/pcap-dnsproxy/user/
+endef
+
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
