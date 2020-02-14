@@ -38,6 +38,14 @@ ss.value = tmpfsStatus
 buttons = h:option(DummyValue, "_dummy")
 buttons.template = packageName .. "/buttons"
 
+app_sys = h:option(Button, "_button", translate("Apply to System"))
+app_sys.inputtitle = translate("Apply to System")
+app_sys.inputstyle = "apply"
+function app_sys.write (self, section)
+	luci.sys.call ( "/etc/init.d/pcap_dnsproxy.sh atosys")
+	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh atosys")
+end
+
 
 s = m:section(TypedSection, "uci_cfg", "Pcap_DNSProxy settings",
 	translatef("For further information "
@@ -316,7 +324,7 @@ edns_label:value("0", translate("0 - Disable"))
 edns_label:value("1", translate("1 - All request to enable"))
 edns_label:value("2", translate("2 - Enable request below list"))
 edns_label.rmempty = true
-edns_label:depends("compression_pointer_mutation", "")
+--edns_label:depends("compression_pointer_mutation", "")
 edns_label:depends("compression_pointer_mutation", "0")
 
 edns_list = s:taboption("adv_set", Value, "edns_list", translate("EDNS Label List"),
