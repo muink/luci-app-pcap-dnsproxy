@@ -16,9 +16,9 @@ function index()
 	entry({"admin", "network", "pcap-dnsproxy", "advanced", "configuration"}, form("pcap-dnsproxy/configuration"), _("Edit Configuration"), 1).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "advanced", "hosts"}, form("pcap-dnsproxy/hosts"), _("Edit Hosts"), 4).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "advanced", "ipfilter"}, form("pcap-dnsproxy/ipfilter"), _("Edit IPFilter"), 5).leaf = true
-	entry({"admin", "network", "pcap-dnsproxy", "advanced", "dnscrypt_database"}, template("pcap-dnsproxy/helloworld"), _("Update DNSCrypt database"), 6).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "advanced", "routing"}, template("pcap-dnsproxy/helloworld"), _("Update Routing"), 10).leaf = true
 	entry({"admin", "network", "pcap-dnsproxy", "advanced", "whitelist"}, template("pcap-dnsproxy/helloworld"), _("Update WhiteList"), 11).leaf = true
+	entry({"admin", "network", "pcap-dnsproxy", "advanced", "dnscrypt_database"}, template("pcap-dnsproxy/helloworld"), _("Update DNSCrypt database"), 15).leaf = true
 
 	entry({"admin", "network", "pcap-dnsproxy", "log"}, firstchild(), _("Logfile"), 6)
 	--entry({"admin", "network", "pcap-dnsproxy", "log", "logread"}, call("read_log"), _("Logfile"), 1).leaf = true
