@@ -4,7 +4,7 @@
 -%>
 
 <%-
-	local packageName = "pcap-dnsproxy"
+	local packageName = "pcap_dnsproxy"
 	local tmpfsStatus = "Stopped"
 	local enabledFlag = luci.model.uci.cursor():get(packageName, "@pcap-dnsproxy[-1]", "enabled")
 	if luci.sys.call("netstat -lpntu | grep Pcap_DNSProxy >/dev/null") == 0 then

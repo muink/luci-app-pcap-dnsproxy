@@ -1,0 +1,9 @@
+[Listen]
+Operation Mode = Private
+
+[Values]
+ICMP Test = 0
+Domain Test = 0
+
+[Switches]
+Domain Case Conversion = 0

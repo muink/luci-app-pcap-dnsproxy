@@ -1,0 +1,40 @@
+#!/bin/sh
+
+pkgname="pcap-dnsproxy"
+uciname="pcap_dnsproxy"
+pkgdir="/etc/$pkgname"
+lucidir="/etc/$uciname"
+## usrpath="${lucidir}/user"
+cfglist="Config Hosts IPFilter"
+listlist="Routing.txt WhiteList.txt"
+
+
+## uci config file
+touch /etc/config/$uciname
+if [ ."$(uci -q get ${uciname}.@${pkgname}[-1])" != ."${pkgname}" ]; then
+	uci -q batch <<-EOF >/dev/null
+		add $uci ${pkgname}
+		set ${uciname}.@${pkgname}[-1].enabled='1'
+		commit $luciname
+	EOF
+fi
+if [ ."$(uci -q get ${uciname}.@uci_cfg[-1])" != ."uci_cfg" ]; then
+	uci -q batch <<-EOF >/dev/null
+		add $uciname uci_cfg
+		commit $uciname
+	EOF
+fi
+
+## master luci-app-pcap-dnsproxy config folder
+## mkdir $usrpath 2>/dev/null
+for _name in $cfglist; do
+	ln -sf $pkgdir/${_name}.conf $lucidir/${_name}.raw 2>/dev/null
+done
+for _name in $listlist; do
+	touch $lucidir/${_name}; cp -f $pkgdir/${_name} $lucidir/${_name} 2>/dev/null
+done
+
+## and other settings
+
+rm -rf /tmp/luci-indexcache /tmp/luci-modulecache/
+return 0

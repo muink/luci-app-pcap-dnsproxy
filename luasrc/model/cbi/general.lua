@@ -8,7 +8,7 @@ local fs	= require("nixio.fs")
 local sys	= require("luci.sys")
 local util	= require("luci.util")
 local packageName = "pcap-dnsproxy"
-local conf = packageName
+local conf = "pcap_dnsproxy"
 local config = "/etc/config/" .. conf
 
 local tmpfsVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'")))

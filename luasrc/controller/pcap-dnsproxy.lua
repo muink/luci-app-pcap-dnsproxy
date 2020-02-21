@@ -4,7 +4,7 @@
 module("luci.controller.pcap-dnsproxy", package.seeall)
 
 function index()
-	if not nixio.fs.access("/etc/config/pcap-dnsproxy") then
+	if not nixio.fs.access("/etc/config/pcap_dnsproxy") then
 		return
 	end
 
@@ -30,7 +30,7 @@ end
 
 
 function pcap_dnsproxy_action(name)
-	local packageName = "pcap-dnsproxy"
+	local packageName = "pcap_dnsproxy"
 	if name == "start" then
 		luci.sys.init.start(packageName)
 	elseif name == "action" then
