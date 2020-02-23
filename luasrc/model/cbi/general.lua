@@ -110,7 +110,7 @@ global_ipv4_addr_alt.placeholder = "1.0.0.1:53|149.112.112.112:53|208.67.220.220
 global_ipv6_addr = s:taboption("general", Value, "global_ipv6_addr", translate("IPv6 Main DNS Address"))
 global_ipv6_addr.placeholder = "[2001:4860:4860::8844]:53"
 
-global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv6 Alternate DNS Address"))
+global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv6_addr_alt", translate("IPv6 Alternate DNS Address"))
 global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2620:0:CCD::2]:5353"
 
 
