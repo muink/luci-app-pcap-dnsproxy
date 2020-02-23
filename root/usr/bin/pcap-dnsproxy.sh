@@ -153,3 +153,44 @@ if [ "$ll_force_req" != "" ]; then command="$command s@^\(Local Force Request\) 
 
 }
 
+addresses_set() {
+	local section="$1"
+	# Addresses
+	local variable_list="\
+	 ipv4_listen_addr\
+	 edns_client_subnet_ipv4_addr\
+	 global_ipv4_addr\
+	 global_ipv4_addr_alt\
+	 ll_ipv4_addr\
+	 ll_ipv4_addr_alt\
+	 ipv6_listen_addr\
+	 edns_client_subnet_ipv6_addr\
+	 global_ipv6_addr\
+	 global_ipv6_addr_alt\
+	 ll_ipv6_addr\
+	 ll_ipv6_addr_alt\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# Addresses
+local command
+if [ "$ipv4_listen_addr" != "" ];             then command="$command s@^\(IPv4 Listen Address\) =.*\$@\1 = ${ipv4_listen_addr}@;" ; fi
+if [ "$edns_client_subnet_ipv4_addr" != "" ]; then command="$command s@^\(IPv4 EDNS Client Subnet Address\) =.*\$@\1 = ${edns_client_subnet_ipv4_addr}@;" ; fi
+if [ "$global_ipv4_addr" != "" ];             then command="$command s@^\(IPv4 Main DNS Address\) =.*\$@\1 = ${global_ipv4_addr}@;" ; fi
+if [ "$global_ipv4_addr_alt" != "" ];         then command="$command s@^\(IPv4 Alternate DNS Address\) =.*\$@\1 = ${global_ipv4_addr_alt}@;" ; fi
+if [ "$ll_ipv4_addr" != "" ];                 then command="$command s@^\(IPv4 Local Main DNS Address\) =.*\$@\1 = ${ll_ipv4_addr}@;" ; fi
+if [ "$ll_ipv4_addr_alt" != "" ];             then command="$command s@^\(IPv4 Local Alternate DNS Address\) =.*\$@\1 = ${ll_ipv4_addr_alt}@;" ; fi
+
+if [ "$ipv6_listen_addr" != "" ];             then command="$command s@^\(IPv6 Listen Address\) =.*\$@\1 = ${ipv6_listen_addr}@;" ; fi
+if [ "$edns_client_subnet_ipv6_addr" != "" ]; then command="$command s@^\(IPv6 EDNS Client Subnet Address\) =.*\$@\1 = ${edns_client_subnet_ipv6_addr}@;" ; fi
+if [ "$global_ipv6_addr" != "" ];             then command="$command s@^\(IPv6 Main DNS Address\) =.*\$@\1 = ${global_ipv6_addr}@;" ; fi
+if [ "$global_ipv6_addr_alt" != "" ];         then command="$command s@^\(IPv6 Alternate DNS Address\) =.*\$@\1 = ${global_ipv6_addr_alt}@;" ; fi
+if [ "$ll_ipv6_addr" != "" ];                 then command="$command s@^\(IPv6 Local Main DNS Address\) =.*\$@\1 = ${ll_ipv6_addr}@;" ; fi
+if [ "$ll_ipv6_addr_alt" != "" ];             then command="$command s@^\(IPv6 Local Alternate DNS Address\) =.*\$@\1 = ${ll_ipv6_addr_alt}@;" ; fi
+
+	sed -i "/^\[Addresses\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
