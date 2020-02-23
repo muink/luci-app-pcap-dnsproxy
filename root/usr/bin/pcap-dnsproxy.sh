@@ -314,3 +314,71 @@ if [ "$server_domain" != "" ]; then command="$command s@^\(Local Machine Server 
 
 }
 
+proxy_set() {
+	local section="$1"
+	# Proxy
+	local variable_list="\
+	 proxy_socks\
+	 proxy_socks_ver\
+	 proxy_socks_proto\
+	 proxy_socks_nohandshake\
+	 proxy_socks_ol\
+	 proxy_socks_ipv4_addr\
+	 proxy_socks_ipv6_addr\
+	 proxy_socks_tg_serv\
+	 proxy_socks_auth\
+	 proxy_socks_user\
+	 proxy_socks_pw\
+	 proxy_http\
+	 proxy_http_proto\
+	 proxy_http_ol\
+	 proxy_http_ipv4_addr\
+	 proxy_http_ipv6_addr\
+	 proxy_http_tg_serv\
+	 proxy_http_ver\
+	 proxy_http_auth\
+	 proxy_http_user\
+	 proxy_http_pw\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+	local _httpauth
+	if [ "$proxy_http_auth" == "1" ]; then _httpauth="${proxy_http_user}:${proxy_http_pw}"; fi
+	if [ "$proxy_http_auth" == "0" ]; then _httpauth=; fi
+
+
+# Proxy
+local command
+if [ "$proxy_socks" != "" ];             then command="$command s@^\(SOCKS Proxy\) =.*\$@\1 = ${proxy_socks}@;" ; fi
+if [ "$proxy_socks_ver" != "" ];         then command="$command s@^\(SOCKS Version\) =.*\$@\1 = ${proxy_socks_ver}@;" ; fi
+if [ "$proxy_socks_proto" != "" ];       then command="$command s@^\(SOCKS Protocol\) =.*\$@\1 = ${proxy_socks_proto}@;" ; fi
+if [ "$proxy_socks_nohandshake" != "" ]; then command="$command s@^\(SOCKS UDP No Handshake\) =.*\$@\1 = ${proxy_socks_nohandshake}@;" ; fi
+if [ "$proxy_socks_ol" != "" ];          then command="$command s@^\(SOCKS Proxy Only\) =.*\$@\1 = ${proxy_socks_ol}@;" ; fi
+if [ "$proxy_socks_ipv4_addr" != "" ];   then command="$command s@^\(SOCKS IPv4 Address\) =.*\$@\1 = ${proxy_socks_ipv4_addr}@;" ; fi
+if [ "$proxy_socks_ipv6_addr" != "" ];   then command="$command s@^\(SOCKS IPv6 Address\) =.*\$@\1 = ${proxy_socks_ipv6_addr}@;" ; fi
+if [ "$proxy_socks_tg_serv" != "" ];     then command="$command s@^\(SOCKS Target Server\) =.*\$@\1 = ${proxy_socks_tg_serv}@;" ; fi
+if [ "$proxy_socks_user" != "" ];        then command="$command s@^\(SOCKS Username\) =.*\$@\1 = ${proxy_socks_user}@;" ; fi
+if [ "$proxy_socks_pw" != "" ];          then command="$command s@^\(SOCKS Password\) =.*\$@\1 = ${proxy_socks_pw}@;" ; fi
+if [ "$proxy_http" != "" ];              then command="$command s@^\(HTTP CONNECT Proxy\) =.*\$@\1 = ${proxy_http}@;" ; fi
+if [ "$proxy_http_proto" != "" ];        then command="$command s@^\(HTTP CONNECT Protocol\) =.*\$@\1 = ${proxy_http_proto}@;" ; fi
+if [ "$proxy_http_ol" != "" ];           then command="$command s@^\(HTTP CONNECT Proxy Only\) =.*\$@\1 = ${proxy_http_ol}@;" ; fi
+if [ "$proxy_http_ipv4_addr" != "" ];    then command="$command s@^\(HTTP CONNECT IPv4 Address\) =.*\$@\1 = ${proxy_http_ipv4_addr}@;" ; fi
+if [ "$proxy_http_ipv6_addr" != "" ];    then command="$command s@^\(HTTP CONNECT IPv6 Address\) =.*\$@\1 = ${proxy_http_ipv6_addr}@;" ; fi
+if [ "$proxy_http_tg_serv" != "" ];      then command="$command s@^\(HTTP CONNECT Target Server\) =.*\$@\1 = ${proxy_http_tg_serv}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Handshake\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Version\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Validation\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Server Name Indication\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS ALPN\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$proxy_http_ver" != "" ];          then command="$command s@^\(HTTP CONNECT Version\) =.*\$@\1 = ${proxy_http_ver}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$_httpauth" != "" ];               then command="$command s@^\(HTTP CONNECT Proxy Authorization\) =.*\$@\1 = ${_httpauth}@;" ; fi
+
+	sed -i "/^\[Proxy\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
