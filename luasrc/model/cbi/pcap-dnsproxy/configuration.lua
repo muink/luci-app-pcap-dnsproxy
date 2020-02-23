@@ -5,10 +5,11 @@
 local m, s, o
 
 local fs	= require("nixio.fs")
+local sys	= require("luci.sys")
 local util	= require("luci.util")
 local input    = "/etc/pcap-dnsproxy/Config.conf-opkg"
-local usrinput = "/etc/pcap-dnsproxy/user/Config.conf"
-local usrcfg   = "/etc/pcap-dnsproxy/user/Config"
+local output = "/etc/pcap-dnsproxy/Config.conf"
+local userin   = "/etc/pcap-dnsproxy/user/Config"
 
 m = SimpleForm("pcap-dnsproxy", nil,
 	translate("This form allows you to modify the content of the main pcap-dnsproxy configuration file")
@@ -20,33 +21,33 @@ m:append(Template("pcap-dnsproxy/css"))
 m.submit = translate("Save")
 m.reset = false
 
-s = m:section(SimpleSection, nil, translatef("User config file: <code>%s</code>", usrcfg))
+s = m:section(SimpleSection, nil, translatef("User config file: <code>%s</code>", userin))
 
-o = s:option(TextValue, "data")
+o = s:option(TextValue, "user")
 o.rows = 20
 
 function o.cfgvalue()
-	local v = fs.readfile(usrcfg) or translate("File does not exist.") .. translate(" Please check your configuration or reinstall %s.", "luci-app-pcap-dnsproxy")
+	local v = fs.readfile(userin) or translate("File does not exist.") .. translatef(" Please check your configuration or reinstall %s.", "luci-app-pcap-dnsproxy")
 	return util.trim(v) ~= "" and v or translate("Empty file.")
 end
 
-function o.write(self, section, data)
-	return fs.writefile(usrcfg, "\n" .. util.trim(data:gsub("\r\n", "\n")) .. "\n")
-	--生成混合文件usrinput
+function o.write(self, section, user)
+	fs.writefile(userin, "\n" .. util.trim(user:gsub("\r\n", "\n")) .. "\n")
+	sys.call ( "/usr/bin/pcap-dnsproxy.sh userconf_full")
 end
 
 function o.remove(self, section, value)
-	return fs.writefile(usrcfg, "")
+	return fs.writefile(userin, "")
 end
 
-s = m:section(SimpleSection, nil, translatef("Original config file: <code>%s</code>", input))
+s = m:section(SimpleSection, nil, translatef("System config file: <code>%s</code>", output))
 
-o = s:option(TextValue, "original")
+o = s:option(TextValue, "system")
 o.rows = 20
 o.readonly = true
 
 function o.cfgvalue()
-	local v = fs.readfile(input) or translate("File does not exist.") .. translate(" Please check your configuration or reinstall %s.", "pcap-dnsproxy")
+	local v = fs.readfile(output) or translate("File does not exist.") .. translatef(" Please check your configuration or reinstall %s.", "pcap-dnsproxy")
 	return util.trim(v) ~= "" and v or translate("Empty file.")
 end
 

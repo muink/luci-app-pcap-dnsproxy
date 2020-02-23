@@ -5,10 +5,11 @@
 local m, s, o
 
 local fs    = require("nixio.fs")
+local sys	= require("luci.sys")
 local util  = require("luci.util")
 local input    = "/etc/pcap-dnsproxy/IPFilter.conf-opkg"
-local usrinput = "/etc/pcap-dnsproxy/user/IPFilter.conf"
-local usrcfg   = "/etc/pcap-dnsproxy/user/IPFilter"
+local output = "/etc/pcap-dnsproxy/IPFilter.conf"
+local userin   = "/etc/pcap-dnsproxy/user/IPFilter"
 
 m = SimpleForm("pcap-dnsproxy", nil,
 	translate("This form allows you to modify the content of the pcap-dnsproxy IPFilter config file")
@@ -22,14 +23,14 @@ m.reset = false
 
 --usrcfg
 
-s = m:section(SimpleSection, nil, translatef("Original config file: <code>%s</code>", input))
+s = m:section(SimpleSection, nil, translatef("System config file: <code>%s</code>", output))
 
-o = s:option(TextValue, "original")
+o = s:option(TextValue, "system")
 o.rows = 20
 o.readonly = true
 
 function o.cfgvalue()
-	local v = fs.readfile(input) or translate("File does not exist.") .. translate(" Please check your configuration or reinstall %s.", "pcap-dnsproxy")
+	local v = fs.readfile(output) or translate("File does not exist.") .. translatef(" Please check your configuration or reinstall %s.", "pcap-dnsproxy")
 	return util.trim(v) ~= "" and v or translate("Empty file.")
 end
 
