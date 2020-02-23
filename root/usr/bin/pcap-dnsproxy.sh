@@ -382,3 +382,113 @@ if [ "$_httpauth" != "" ];               then command="$command s@^\(HTTP CONNEC
 
 }
 
+dnscurve_set() {
+	local section="$1"
+	# DNSCurve
+	local variable_list="\
+	 dnscurve\
+	 dnscurve_proto\
+	 dnscurve_reliable_timeout\
+	 dnscurve_unreliable_timeout\
+	 dnscurve_encrypted\
+	 dnscurve_one_off_client_key\
+	 dnscurve_key_recheck_time\
+	 dnscurve_serv_input\
+	 dnscurve_serv_db_ipv4\
+	 dnscurve_serv_db_ipv4_alt\
+	 dnscurve_serv_db_ipv6\
+	 dnscurve_serv_db_ipv6_alt\
+	 dnscurve_serv_addr_ipv4\
+	 dnscurve_serv_addr_ipv4_alt\
+	 dnscurve_serv_addr_ipv6\
+	 dnscurve_serv_addr_ipv6_alt\
+	 dnscurve_serv_addr_ipv4_prov\
+	 dnscurve_serv_addr_ipv4_alt_prov\
+	 dnscurve_serv_addr_ipv6_prov\
+	 dnscurve_serv_addr_ipv6_alt_prov\
+	 dnscurve_serv_addr_ipv4_pubkey\
+	 dnscurve_serv_addr_ipv4_alt_pubkey\
+	 dnscurve_serv_addr_ipv6_pubkey\
+	 dnscurve_serv_addr_ipv6_alt_pubkey\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+	if [ "$dnscurve_serv_input" == "manual" ]; then
+		unset dnscurve_serv_db_ipv4
+		unset dnscurve_serv_db_ipv4_alt
+		unset dnscurve_serv_db_ipv6
+		unset dnscurve_serv_db_ipv6_alt
+	fi
+
+
+# DNSCurve
+local command
+if [ "$dnscurve" != "" ];                    then command="$command s@^\(DNSCurve\) =.*\$@\1 = ${dnscurve}@;" ; fi
+if [ "$dnscurve_proto" != "" ];              then command="$command s@^\(DNSCurve Protocol\) =.*\$@\1 = ${dnscurve_proto}@;" ; fi
+# if [ "$NONE" != "" ];                        then command="$command s@^\(DNSCurve Payload Size\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$dnscurve_reliable_timeout" != "" ];   then command="$command s@^\(DNSCurve Reliable Socket Timeout\) =.*\$@\1 = ${dnscurve_reliable_timeout}@;" ; fi
+if [ "$dnscurve_unreliable_timeout" != "" ]; then command="$command s@^\(DNSCurve Unreliable Socket Timeout\) =.*\$@\1 = ${dnscurve_unreliable_timeout}@;" ; fi
+if [ "$dnscurve_encrypted" != "" ];          then command="$command s@^\(DNSCurve Encryption\) =.*\$@\1 = ${dnscurve_encrypted}@;" ; fi
+# if [ "$NONE" != "" ];                        then command="$command s@^\(DNSCurve Encryption Only\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$dnscurve_one_off_client_key" != "" ]; then command="$command s@^\(DNSCurve Client Ephemeral Key\) =.*\$@\1 = ${dnscurve_one_off_client_key}@;" ; fi
+if [ "$dnscurve_key_recheck_time" != "" ];   then command="$command s@^\(DNSCurve Key Recheck Time\) =.*\$@\1 = ${dnscurve_key_recheck_time}@;" ; fi
+
+	sed -i "/^\[DNSCurve\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+
+# DNSCurve Database
+unset command
+# if [ "$NONE" != "" ];                      then command="$command s@^\(DNSCurve Database Name\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$dnscurve_serv_db_ipv4" != "" ];     then command="$command s@^\(DNSCurve Database IPv4 Main DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv4}@;" ; fi
+if [ "$dnscurve_serv_db_ipv4_alt" != "" ]; then command="$command s@^\(DNSCurve Database IPv4 Alternate DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv4_alt}@;" ; fi
+if [ "$dnscurve_serv_db_ipv6" != "" ];     then command="$command s@^\(DNSCurve Database IPv6 Main DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6}@;" ; fi
+if [ "$dnscurve_serv_db_ipv6_alt" != "" ]; then command="$command s@^\(DNSCurve Database IPv6 Alternate DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6_alt}@;" ; fi
+
+	sed -i "/^\[DNSCurve Database\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+
+# DNSCurve Addresses
+unset command
+if [ "$dnscurve_serv_addr_ipv4" != "" ];          then command="$command s@^\(DNSCurve IPv4 Main DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv4_alt" != "" ];      then command="$command s@^\(DNSCurve IPv4 Alternate DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6" != "" ];          then command="$command s@^\(DNSCurve IPv6 Main DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6_alt" != "" ];      then command="$command s@^\(DNSCurve IPv6 Alternate DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv4_prov" != "" ];     then command="$command s@^\(DNSCurve IPv4 Main Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_prov}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv4_alt_prov" != "" ]; then command="$command s@^\(DNSCurve IPv4 Alternate Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt_prov}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6_prov" != "" ];     then command="$command s@^\(DNSCurve IPv6 Main Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_prov}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6_alt_prov" != "" ]; then command="$command s@^\(DNSCurve IPv6 Alternate Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt_prov}@;" ; fi
+
+	sed -i "/^\[DNSCurve Addresses\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+
+# DNSCurve Keys
+unset command
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve Client Public Key\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve Client Secret Key\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv4_pubkey" != "" ];     then command="$command s@^\(DNSCurve IPv4 Main DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_pubkey}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv4_alt_pubkey" != "" ]; then command="$command s@^\(DNSCurve IPv4 Alternate DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt_pubkey}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6_pubkey" != "" ];     then command="$command s@^\(DNSCurve IPv6 Main DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_pubkey}@;" ; fi
+if [ "$dnscurve_serv_addr_ipv6_alt_pubkey" != "" ]; then command="$command s@^\(DNSCurve IPv6 Alternate DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt_pubkey}@;" ; fi
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv4 Main DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv4 Alternate DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Main DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Alternate DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
+
+	sed -i "/^\[DNSCurve Keys\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+
+# DNSCurve Magic Number
+unset command
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Main Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Alternate Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Main Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Main DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Main DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
+
+	sed -i "/^\[DNSCurve Magic Number\]$/,$ { $command }" $CONFIGFILE
+
+}
