@@ -246,3 +246,47 @@ if [ "$mult_req_time" != "" ];                    then command="$command s@^\(Mu
 
 }
 
+switches_set() {
+	local section="$1"
+	# Switches
+	local variable_list="\
+	 domain_case_conv\
+	 compression_pointer_mutation\
+	 edns_label\
+	 edns_list\
+	 edns_client_subnet_relay\
+	 dnssec_req\
+	 dnssec_force_record\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+	local _edns
+	if [ "$compression_pointer_mutation" != "0" ]; then _edns=0;
+	else
+		if [ "$edns_label" == "0" ]; then _edns=0;
+		elif [ "$edns_label" == "1" ]; then _edns=1;
+		else _edns="$edns_list";
+		fi
+	fi
+
+
+# Switches
+local command
+if [ "$domain_case_conv" != "" ];             then command="$command s@^\(Domain Case Conversion\) =.*\$@\1 = ${domain_case_conv}@;" ; fi
+if [ "$compression_pointer_mutation" != "" ]; then command="$command s@^\(Compression Pointer Mutation\) =.*\$@\1 = ${compression_pointer_mutation}@;" ; fi
+if [ "$_edns" != "" ];                        then command="$command s@^\(EDNS Label\) =.*\$@\1 = ${_edns}@;" ; fi
+if [ "$edns_client_subnet_relay" != "" ];     then command="$command s@^\(EDNS Client Subnet Relay\) =.*\$@\1 = ${edns_client_subnet_relay}@;" ; fi
+if [ "$dnssec_req" != "" ];                   then command="$command s@^\(DNSSEC Request\) =.*\$@\1 = ${dnssec_req}@;" ; fi
+if [ "$dnssec_force_record" != "" ];          then command="$command s@^\(DNSSEC Force Record\) =.*\$@\1 = ${dnssec_force_record}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(Alternate Multiple Request\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(IPv4 Do Not Fragment\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(TCP Data Filter\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(DNS Data Filter\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(Blacklist Filter\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                         then command="$command s@^\(Resource Record Set TTL Filter\) =.*\$@\1 = ${NONE}@;
+
+	sed -i "/^\[Switches\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
