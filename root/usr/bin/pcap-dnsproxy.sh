@@ -97,3 +97,31 @@ if [ "$operation_mode" != "" ];       then command="$command s@^\(Operation Mode
 
 }
 
+dns_set() {
+	local section="$1"
+	# DNS
+	local variable_list="\
+	 global_proto\
+	 direct_req\
+	 cc_type\
+	 cc_parameter\
+	 cc_default_ttl\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# DNS
+local command
+if [ "$global_proto" != "" ];   then command="$command s@^\(Outgoing Protocol\) =.*\$@\1 = ${global_proto}@;" ; fi
+if [ "$direct_req" != "" ];     then command="$command s@^\(Direct Request\) =.*\$@\1 = ${direct_req}@;" ; fi
+if [ "$cc_type" != "" ];        then command="$command s@^\(Cache Type\) =.*\$@\1 = ${cc_type}@;" ; fi
+if [ "$cc_parameter" != "" ];   then command="$command s@^\(Cache Parameter\) =.*\$@\1 = ${cc_parameter}@;" ; fi
+# if [ "$NONE" != "" ];           then command="$command s@^\(Cache Single IPv4 Address Prefix\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];           then command="$command s@^\(Cache Single IPv6 Address Prefix\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$cc_default_ttl" != "" ]; then command="$command s@^\(Default TTL\) =.*\$@\1 = ${cc_default_ttl}@;" ; fi
+
+	sed -i "/^\[DNS\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
