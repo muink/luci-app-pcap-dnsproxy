@@ -125,3 +125,31 @@ if [ "$cc_default_ttl" != "" ]; then command="$command s@^\(Default TTL\) =.*\$@
 
 }
 
+local_dns_set() {
+	local section="$1"
+	# Local DNS
+	local variable_list="\
+	 ll_proto\
+	 ll_filter_mode\
+	 ll_force_req\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+	local _hosts
+	local _routing
+	if [ "$ll_filter_mode" == "hostlist" ]; then _hosts=1; _routing=0; fi
+	if [ "$ll_filter_mode" == "routing" ];  then _hosts=0; _routing=1; ll_force_req=0; fi
+
+
+# Local DNS
+local command
+if [ "$ll_proto" != "" ];     then command="$command s@^\(Local Protocol\) =.*\$@\1 = ${ll_proto}@;" ; fi
+if [ "$_hosts" != "" ];       then command="$command s@^\(Local Hosts\) =.*\$@\1 = ${_hosts}@;" ; fi
+if [ "$_routing" != "" ];     then command="$command s@^\(Local Routing\) =.*\$@\1 = ${_routing}@;" ; fi
+if [ "$ll_force_req" != "" ]; then command="$command s@^\(Local Force Request\) =.*\$@\1 = ${ll_force_req}@;" ; fi
+
+	sed -i "/^\[Local DNS\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
