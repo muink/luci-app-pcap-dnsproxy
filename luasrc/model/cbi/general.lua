@@ -154,7 +154,7 @@ mult_req_time = s:taboption("parameter", Value, "mult_req_time", translate("Mult
 	translate("Send parallel requests to the same remote server at a time")
 	.. "<br/>"
 	.. translate("Unless the packet loss is very high, not recommended to open"))
-mult_req_time.datatype = "or('0',range(2,32))"
+mult_req_time.datatype = "or(range(0,0),range(2,32))"
 mult_req_time:value("", translate("Use Default"))
 mult_req_time:value("0", translate("0 - Disable - Once"))
 mult_req_time:value("2", translate("2 - Double"))
@@ -187,7 +187,7 @@ reliable_once_socket_timeout = s:taboption("parameter", Value, "reliable_once_so
 --	.. "<br/>"
 --	.. translate("Reliable port refers to TCP protocol")
 	)
-reliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_once_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 reliable_once_socket_timeout.placeholder = "3000"
 
 reliable_serial_socket_timeout = s:taboption("parameter", Value, "reliable_serial_socket_timeout", translate("Reliable Serial Socket Timeout"),
@@ -197,7 +197,7 @@ reliable_serial_socket_timeout = s:taboption("parameter", Value, "reliable_seria
 --	.. "<br/>"
 --	.. translate("Reliable port refers to TCP protocol")
 	)
-reliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_serial_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 reliable_serial_socket_timeout.placeholder = "1500"
 
 unreliable_once_socket_timeout = s:taboption("parameter", Value, "unreliable_once_socket_timeout", translate("Unreliable Once Socket Timeout"),
@@ -207,7 +207,7 @@ unreliable_once_socket_timeout = s:taboption("parameter", Value, "unreliable_onc
 --	.. "<br/>"
 --	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
 	)
-unreliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_once_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 unreliable_once_socket_timeout.placeholder = "2000"
 
 unreliable_serial_socket_timeout = s:taboption("parameter", Value, "unreliable_serial_socket_timeout", translate("Unreliable Serial Socket Timeout"),
@@ -217,14 +217,14 @@ unreliable_serial_socket_timeout = s:taboption("parameter", Value, "unreliable_s
 --	.. "<br/>"
 --	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
 	)
-unreliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_serial_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 unreliable_serial_socket_timeout.placeholder = "1000"
 
 --------
 
 icmp_test = s:taboption("parameter", Value, "icmp_test", translate("ICMP Test"),
 	translate("In seconds"))
-icmp_test.datatype = "or('0',range(5,2147483647))"
+icmp_test.datatype = "or(range(0,0),range(5,2147483647))"
 icmp_test:value("", translate("Use Default"))
 icmp_test:value("0", translate("0 - Disable"))
 icmp_test:value("900")
@@ -232,7 +232,7 @@ icmp_test:value("900")
 
 domain_test = s:taboption("parameter", Value, "domain_test", translate("Domain Test"),
 	translate("In seconds"))
-domain_test.datatype = "or('0',range(5,2147483647))"
+domain_test.datatype = "or(range(0,0),range(5,2147483647))"
 domain_test:value("", translate("Use Default"))
 domain_test:value("0", translate("0 - Disable"))
 domain_test:value("900")
