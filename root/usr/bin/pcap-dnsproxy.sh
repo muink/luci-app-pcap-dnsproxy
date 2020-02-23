@@ -4,6 +4,7 @@
 
 . /lib/functions.sh
 
+UCICFGFILE=pcap-dnsproxy # Package name
 CONFDIR=/etc/pcap-dnsproxy
 RAWCONFIGFILE=$CONFDIR/Config.conf-opkg
 CONFIGFILE=$CONFDIR/Config.conf
@@ -12,8 +13,8 @@ HOSTSFILE=$CONFDIR/Hosts.conf
 RAWIPFILTERFILE=$CONFDIR/IPFilter.conf-opkg
 IPFILTERFILE=$CONFDIR/IPFilter.conf
 
-config_load "pcap-dnsproxy"
-
+_FUNCTION="$1"; shift
+# _PARAMETERS: "$@"
 
 
 
@@ -501,5 +502,32 @@ unset command
 # if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
 
 	sed -i "/^\[DNSCurve Magic Number\]$/,$ { $command }" $config
+
+}
+
+uci2conf() {
+	local section='uci_cfg'
+	config_load $UCICFGFILE
+
+	# Init pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Apply Uci config to pcap-dnsproxy Main Config file
+	# config_foreach base_set $section $CONFIGFILE
+	# config_foreach log_set $section $CONFIGFILE
+	config_foreach listen_set $section $CONFIGFILE
+	config_foreach dns_set $section $CONFIGFILE
+	config_foreach local_dns_set $section $CONFIGFILE
+	config_foreach addresses_set $section $CONFIGFILE
+	config_foreach values_set $section $CONFIGFILE
+	config_foreach switches_set $section $CONFIGFILE
+	config_foreach data_set $section $CONFIGFILE
+	config_foreach proxy_set $section $CONFIGFILE
+	config_foreach dnscurve_set $section $CONFIGFILE
+
+	# Apply User config to pcap-dnsproxy Main Config file
+	
+
+
 
 }
