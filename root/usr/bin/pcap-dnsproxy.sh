@@ -65,3 +65,35 @@ if [ "$log_max_size" != "" ]; then command="$command s@^\(Log Maximum Size\) =.*
 
 }
 
+listen_set() {
+	local section="$1"
+	# Listen
+	local variable_list="\
+	 pcap_capt\
+	 pcap_devices_blklist\
+	 pcap_reading_timeout\
+	 listen_proto\
+	 listen_port\
+	 operation_mode\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# Listen
+local command
+# if [ "$NONE" != "" ];                 then command="$command s@^\(Process Unique\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$pcap_capt" != "" ];            then command="$command s@^\(Pcap Capture\) =.*\$@\1 = ${pcap_capt}@;" ; fi
+if [ "$pcap_devices_blklist" != "" ]; then command="$command s@^\(Pcap Devices Blacklist\) =.*\$@\1 = ${pcap_devices_blklist}@;" ; fi
+if [ "$pcap_reading_timeout" != "" ]; then command="$command s@^\(Pcap Reading Timeout\) =.*\$@\1 = ${pcap_reading_timeout}@;" ; fi
+if [ "$listen_proto" != "" ];         then command="$command s@^\(Listen Protocol\) =.*\$@\1 = ${listen_proto}@;" ; fi
+if [ "$listen_port" != "" ];          then command="$command s@^\(Listen Port\) =.*\$@\1 = ${listen_port}@;" ; fi
+if [ "$operation_mode" != "" ];       then command="$command s@^\(Operation Mode\) =.*\$@\1 = ${operation_mode}@;" ; fi
+# if [ "$NONE" != "" ];                 then command="$command s@^\(IPFilter Type\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                 then command="$command s@^\(IPFilter Level\) [<=>]+ .*\$@\1 ${NONE} ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                 then command="$command s@^\(Accept Type\) =.*\$@\1 = ${NONE}@;" ; fi
+
+	sed -i "/^\[Listen\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
