@@ -290,3 +290,27 @@ if [ "$dnssec_force_record" != "" ];          then command="$command s@^\(DNSSEC
 
 }
 
+data_set() {
+	local section="$1"
+	# Data
+	local variable_list="\
+	 server_domain\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# Data
+local command
+# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP ID\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP Sequence\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP PaddingData\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test Protocol\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test ID\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test Data\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$server_domain" != "" ]; then command="$command s@^\(Local Machine Server Name\) =.*\$@\1 = ${server_domain}@;" ; fi
+
+	sed -i "/^\[Data\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
