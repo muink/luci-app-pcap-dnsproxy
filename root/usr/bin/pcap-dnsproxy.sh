@@ -194,3 +194,55 @@ if [ "$ll_ipv6_addr_alt" != "" ];             then command="$command s@^\(IPv6 L
 
 }
 
+values_set() {
+	local section="$1"
+	# Values
+	local variable_list="\
+	 reliable_once_socket_timeout\
+	 reliable_serial_socket_timeout\
+	 unreliable_once_socket_timeout\
+	 unreliable_serial_socket_timeout\
+	 tcp_fast_op\
+	 receive_waiting\
+	 icmp_test\
+	 domain_test\
+	 alt_times\
+	 alt_times_range\
+	 alt_reset_time\
+	 mult_req_time\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# Values
+local command
+# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Base Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Maximum Number\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Reset Time\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(Queue Limits Reset Time\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(EDNS Payload Size\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Packet TTL\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Main DNS TTL\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Alternate DNS TTL\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Packet Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Main DNS Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Alternate DNS Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
+# if [ "$NONE" != "" ];                             then command="$command s@^\(Hop Limits Fluctuation\) =.*\$@\1 = ${NONE}@;" ; fi
+if [ "$reliable_once_socket_timeout" != "" ];     then command="$command s@^\(Reliable Once Socket Timeout\) =.*\$@\1 = ${reliable_once_socket_timeout}@;" ; fi
+if [ "$reliable_serial_socket_timeout" != "" ];   then command="$command s@^\(Reliable Serial Socket Timeout\) =.*\$@\1 = ${reliable_serial_socket_timeout}@;" ; fi
+if [ "$unreliable_once_socket_timeout" != "" ];   then command="$command s@^\(Unreliable Once Socket Timeout\) =.*\$@\1 = ${unreliable_once_socket_timeout}@;" ; fi
+if [ "$unreliable_serial_socket_timeout" != "" ]; then command="$command s@^\(Unreliable Serial Socket Timeout\) =.*\$@\1 = ${unreliable_serial_socket_timeout}@;" ; fi
+if [ "$tcp_fast_op" != "" ];                      then command="$command s@^\(TCP Fast Open\) =.*\$@\1 = ${tcp_fast_op}@;" ; fi
+if [ "$receive_waiting" != "" ];                  then command="$command s@^\(Receive Waiting\) =.*\$@\1 = ${receive_waiting}@;" ; fi
+if [ "$icmp_test" != "" ];                        then command="$command s@^\(ICMP Test\) =.*\$@\1 = ${icmp_test}@;" ; fi
+if [ "$domain_test" != "" ];                      then command="$command s@^\(Domain Test\) =.*\$@\1 = ${domain_test}@;" ; fi
+if [ "$alt_times" != "" ];                        then command="$command s@^\(Alternate Times\) =.*\$@\1 = ${alt_times}@;" ; fi
+if [ "$alt_times_range" != "" ];                  then command="$command s@^\(Alternate Time Range\) =.*\$@\1 = ${alt_times_range}@;" ; fi
+if [ "$alt_reset_time" != "" ];                   then command="$command s@^\(Alternate Reset Time\) =.*\$@\1 = ${alt_reset_time}@;" ; fi
+if [ "$mult_req_time" != "" ];                    then command="$command s@^\(Multiple Request Times\) =.*\$@\1 = ${mult_req_time}@;" ; fi
+
+	sed -i "/^\[Values\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
