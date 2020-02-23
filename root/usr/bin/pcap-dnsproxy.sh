@@ -45,3 +45,23 @@ if [ "$ipfilter_file_name" != "" ]; then command="$command s@^\(IPFilter File Na
 
 }
 
+log_set() {
+	local section="$1"
+	# Log
+	local variable_list="\
+	 log_level\
+	 log_max_size\
+	"
+	for _var in $variable_list; do local $_var; done
+	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+
+
+# Log
+local command
+if [ "$log_lev" != "" ];      then command="$command s@^\(Print Log Level\) =.*\$@\1 = ${log_lev}@;" ; fi
+if [ "$log_max_size" != "" ]; then command="$command s@^\(Log Maximum Size\) =.*\$@\1 = ${log_max_size}@;" ; fi
+
+	sed -i "/^\[Log\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+
+}
+
