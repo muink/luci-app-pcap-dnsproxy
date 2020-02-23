@@ -19,6 +19,7 @@ config_load "pcap-dnsproxy"
 
 base_set() {
 	local section="$1"
+	local config="$2"
 	# Base
 	local variable_list="\
 	 cfg_ver\
@@ -41,12 +42,13 @@ if [ "$additional_path" != "" ];    then command="$command s@^\(Additional Path\
 if [ "$hosts_cfg_name" != "" ];     then command="$command s@^\(Hosts File Name\) =.*\$@\1 = ${hosts_cfg_name}@;" ; fi
 if [ "$ipfilter_file_name" != "" ]; then command="$command s@^\(IPFilter File Name\) =.*\$@\1 = ${ipfilter_file_name}@;" ; fi
 
-	sed -i "1,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "1,/^\[.*\]$/ { $command }" $config
 
 }
 
 log_set() {
 	local section="$1"
+	local config="$2"
 	# Log
 	local variable_list="\
 	 log_level\
@@ -61,12 +63,13 @@ local command
 if [ "$log_lev" != "" ];      then command="$command s@^\(Print Log Level\) =.*\$@\1 = ${log_lev}@;" ; fi
 if [ "$log_max_size" != "" ]; then command="$command s@^\(Log Maximum Size\) =.*\$@\1 = ${log_max_size}@;" ; fi
 
-	sed -i "/^\[Log\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Log\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 listen_set() {
 	local section="$1"
+	local config="$2"
 	# Listen
 	local variable_list="\
 	 pcap_capt\
@@ -93,12 +96,13 @@ if [ "$operation_mode" != "" ];       then command="$command s@^\(Operation Mode
 # if [ "$NONE" != "" ];                 then command="$command s@^\(IPFilter Level\) [<=>]+ .*\$@\1 ${NONE} ${NONE}@;" ; fi
 # if [ "$NONE" != "" ];                 then command="$command s@^\(Accept Type\) =.*\$@\1 = ${NONE}@;" ; fi
 
-	sed -i "/^\[Listen\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Listen\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 dns_set() {
 	local section="$1"
+	local config="$2"
 	# DNS
 	local variable_list="\
 	 global_proto\
@@ -121,12 +125,13 @@ if [ "$cc_parameter" != "" ];   then command="$command s@^\(Cache Parameter\) =.
 # if [ "$NONE" != "" ];           then command="$command s@^\(Cache Single IPv6 Address Prefix\) =.*\$@\1 = ${NONE}@;" ; fi
 if [ "$cc_default_ttl" != "" ]; then command="$command s@^\(Default TTL\) =.*\$@\1 = ${cc_default_ttl}@;" ; fi
 
-	sed -i "/^\[DNS\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[DNS\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 local_dns_set() {
 	local section="$1"
+	local config="$2"
 	# Local DNS
 	local variable_list="\
 	 ll_proto\
@@ -149,12 +154,13 @@ if [ "$_hosts" != "" ];       then command="$command s@^\(Local Hosts\) =.*\$@\1
 if [ "$_routing" != "" ];     then command="$command s@^\(Local Routing\) =.*\$@\1 = ${_routing}@;" ; fi
 if [ "$ll_force_req" != "" ]; then command="$command s@^\(Local Force Request\) =.*\$@\1 = ${ll_force_req}@;" ; fi
 
-	sed -i "/^\[Local DNS\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Local DNS\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 addresses_set() {
 	local section="$1"
+	local config="$2"
 	# Addresses
 	local variable_list="\
 	 ipv4_listen_addr\
@@ -190,12 +196,13 @@ if [ "$global_ipv6_addr_alt" != "" ];         then command="$command s@^\(IPv6 A
 if [ "$ll_ipv6_addr" != "" ];                 then command="$command s@^\(IPv6 Local Main DNS Address\) =.*\$@\1 = ${ll_ipv6_addr}@;" ; fi
 if [ "$ll_ipv6_addr_alt" != "" ];             then command="$command s@^\(IPv6 Local Alternate DNS Address\) =.*\$@\1 = ${ll_ipv6_addr_alt}@;" ; fi
 
-	sed -i "/^\[Addresses\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Addresses\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 values_set() {
 	local section="$1"
+	local config="$2"
 	# Values
 	local variable_list="\
 	 reliable_once_socket_timeout\
@@ -242,12 +249,13 @@ if [ "$alt_times_range" != "" ];                  then command="$command s@^\(Al
 if [ "$alt_reset_time" != "" ];                   then command="$command s@^\(Alternate Reset Time\) =.*\$@\1 = ${alt_reset_time}@;" ; fi
 if [ "$mult_req_time" != "" ];                    then command="$command s@^\(Multiple Request Times\) =.*\$@\1 = ${mult_req_time}@;" ; fi
 
-	sed -i "/^\[Values\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Values\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 switches_set() {
 	local section="$1"
+	local config="$2"
 	# Switches
 	local variable_list="\
 	 domain_case_conv\
@@ -286,12 +294,13 @@ if [ "$dnssec_force_record" != "" ];          then command="$command s@^\(DNSSEC
 # if [ "$NONE" != "" ];                         then command="$command s@^\(Blacklist Filter\) =.*\$@\1 = ${NONE}@;" ; fi
 # if [ "$NONE" != "" ];                         then command="$command s@^\(Resource Record Set TTL Filter\) =.*\$@\1 = ${NONE}@;
 
-	sed -i "/^\[Switches\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Switches\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 data_set() {
 	local section="$1"
+	local config="$2"
 	# Data
 	local variable_list="\
 	 server_domain\
@@ -310,12 +319,13 @@ local command
 # if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test Data\) =.*\$@\1 = ${NONE}@;" ; fi
 if [ "$server_domain" != "" ]; then command="$command s@^\(Local Machine Server Name\) =.*\$@\1 = ${server_domain}@;" ; fi
 
-	sed -i "/^\[Data\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Data\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 proxy_set() {
 	local section="$1"
+	local config="$2"
 	# Proxy
 	local variable_list="\
 	 proxy_socks\
@@ -378,12 +388,13 @@ if [ "$proxy_http_ver" != "" ];          then command="$command s@^\(HTTP CONNEC
 # if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
 if [ "$_httpauth" != "" ];               then command="$command s@^\(HTTP CONNECT Proxy Authorization\) =.*\$@\1 = ${_httpauth}@;" ; fi
 
-	sed -i "/^\[Proxy\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[Proxy\]$/,/^\[.*\]$/ { $command }" $config
 
 }
 
 dnscurve_set() {
 	local section="$1"
+	local config="$2"
 	# DNSCurve
 	local variable_list="\
 	 dnscurve\
@@ -434,7 +445,7 @@ if [ "$dnscurve_encrypted" != "" ];          then command="$command s@^\(DNSCurv
 if [ "$dnscurve_one_off_client_key" != "" ]; then command="$command s@^\(DNSCurve Client Ephemeral Key\) =.*\$@\1 = ${dnscurve_one_off_client_key}@;" ; fi
 if [ "$dnscurve_key_recheck_time" != "" ];   then command="$command s@^\(DNSCurve Key Recheck Time\) =.*\$@\1 = ${dnscurve_key_recheck_time}@;" ; fi
 
-	sed -i "/^\[DNSCurve\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[DNSCurve\]$/,/^\[.*\]$/ { $command }" $config
 
 
 # DNSCurve Database
@@ -445,7 +456,7 @@ if [ "$dnscurve_serv_db_ipv4_alt" != "" ]; then command="$command s@^\(DNSCurve 
 if [ "$dnscurve_serv_db_ipv6" != "" ];     then command="$command s@^\(DNSCurve Database IPv6 Main DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6}@;" ; fi
 if [ "$dnscurve_serv_db_ipv6_alt" != "" ]; then command="$command s@^\(DNSCurve Database IPv6 Alternate DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6_alt}@;" ; fi
 
-	sed -i "/^\[DNSCurve Database\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[DNSCurve Database\]$/,/^\[.*\]$/ { $command }" $config
 
 
 # DNSCurve Addresses
@@ -459,7 +470,7 @@ if [ "$dnscurve_serv_addr_ipv4_alt_prov" != "" ]; then command="$command s@^\(DN
 if [ "$dnscurve_serv_addr_ipv6_prov" != "" ];     then command="$command s@^\(DNSCurve IPv6 Main Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_prov}@;" ; fi
 if [ "$dnscurve_serv_addr_ipv6_alt_prov" != "" ]; then command="$command s@^\(DNSCurve IPv6 Alternate Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt_prov}@;" ; fi
 
-	sed -i "/^\[DNSCurve Addresses\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[DNSCurve Addresses\]$/,/^\[.*\]$/ { $command }" $config
 
 
 # DNSCurve Keys
@@ -475,7 +486,7 @@ if [ "$dnscurve_serv_addr_ipv6_alt_pubkey" != "" ]; then command="$command s@^\(
 # if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Main DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
 # if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Alternate DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
 
-	sed -i "/^\[DNSCurve Keys\]$/,/^\[.*\]$/ { $command }" $CONFIGFILE
+	sed -i "/^\[DNSCurve Keys\]$/,/^\[.*\]$/ { $command }" $config
 
 
 # DNSCurve Magic Number
@@ -489,6 +500,6 @@ unset command
 # if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Main DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
 # if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
 
-	sed -i "/^\[DNSCurve Magic Number\]$/,$ { $command }" $CONFIGFILE
+	sed -i "/^\[DNSCurve Magic Number\]$/,$ { $command }" $config
 
 }
