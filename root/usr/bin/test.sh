@@ -24,9 +24,37 @@ CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
 # map_tab <mapname> [<variabletype>] [<element>]
 # variabletype:    <uci|raw>
 map_tab() {
+if [ "$1" == "" ]; then echo 'map_tab: The <mapname> requires an argument'; return 1; fi
 local _map="$1"
 local _vtype="$2"
 local _element="$3"
+local __cmd
+
+
+if   [ "$_element" == "NONE" ]; then		# <element> not support
+	echo 'map_tab: The <element> parameter is invalid'; return 1
+elif [ "$_element" == "" ]; then			# <element> empty
+	if   [ "$_vtype" == "" ]; then			# map_tab "$CONF_DNS"						# List	ALL	 element of maptab '$CONF_DNS'; keep'NONE'
+		__cmd=
+	elif [ "$_vtype" == "uci" ]; then		# map_tab "$CONF_DNS" uci					# List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'
+		__cmd="| cut -f1 -d@ | grep -v 'NONE'"
+	elif [ "$_vtype" == "raw" ]; then		# map_tab "$CONF_DNS" raw					# List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'
+		__cmd="| cut -f2 -d@ | grep -v 'NONE'"
+	else									# <variabletype> not support
+		echo 'map_tab: The <variabletype> parameter is invalid'; return 1
+	fi
+else										# <element> not empty
+	if   [ "$_vtype" == "" ]; then			# map_tab "$CONF_DNS" '' "$_element"		# Show relative element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+		__cmd="| sed -n -e \"/^\${_element}@/ {s/\$_element//; s/@//p}\" -e \"/@\${_element}\$/ {s/\$_element//; s/@//p}\""
+	elif [ "$_vtype" == "uci" ]; then		# map_tab "$CONF_DNS" uci "$_element"		# Show 'uci' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+		__cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f1 -d@"
+	elif [ "$_vtype" == "raw" ]; then		# map_tab "$CONF_DNS" raw "$_element"		# Show 'raw' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+		__cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f2 -d@"
+	else									# <variabletype> not support
+		echo 'map_tab: The <variabletype> parameter is invalid'; return 1
+	fi
+fi
+
 
 case "$_map" in
 	'')
@@ -34,52 +62,67 @@ case "$_map" in
 		return 1
 	;;
 	"$CONF_BASE")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_LOG")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_LISTEN")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNS")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_LOCALDNS")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_ADDRESSES")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_VALUES")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_SWITCHES")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DATA")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_PROXY")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNSCURVE")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNSCURVEDB")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNSCURVEADDR")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNSCURVEKEY")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	"$CONF_DNSCURVEMAGCNUM")
-		echo 'You select 1'
+		eval grep \"\$_element\" <<-EOF $__cmd
+		EOF
 	;;
 	*)
-		echo "map_tab: Map '$_map' does not exist"
+		echo "map_tab: The Map '$_map' does not exist"
 		return 1
 	;;
 esac
@@ -92,3 +135,4 @@ esac
 
 
 }
+map_tab "$@"
