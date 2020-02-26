@@ -65,6 +65,12 @@ case "$_map" in
 	;;
 	"$CONF_BASE")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			cfg_ver@Version
+			cfg_refsh_time@File Refresh Time
+			large_buff_size@Large Buffer Size
+			additional_path@Additional Path
+			hosts_cfg_name@Hosts File Name
+			ipfilter_file_name@IPFilter File Name
 		EOF
 	;;
 	"$CONF_LOG")
