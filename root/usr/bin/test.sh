@@ -222,22 +222,62 @@ case "$_map" in
 	;;
 	"$CONF_DNSCURVE")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			dnscurve@DNSCurve
+			dnscurve_proto@DNSCurve Protocol
+			NONE@DNSCurve Payload Size
+			dnscurve_reliable_timeout@DNSCurve Reliable Socket Timeout
+			dnscurve_unreliable_timeout@DNSCurve Unreliable Socket Timeout
+			dnscurve_encrypted@DNSCurve Encryption
+			NONE@DNSCurve Encryption Only
+			dnscurve_one_off_client_key@DNSCurve Client Ephemeral Key
+			dnscurve_key_recheck_time@DNSCurve Key Recheck Time
 		EOF
 	;;
 	"$CONF_DNSCURVEDB")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve Database Name
+			dnscurve_serv_db_ipv4@DNSCurve Database IPv4 Main DNS
+			dnscurve_serv_db_ipv4_alt@DNSCurve Database IPv4 Alternate DNS
+			dnscurve_serv_db_ipv6@DNSCurve Database IPv6 Main DNS
+			dnscurve_serv_db_ipv6_alt@DNSCurve Database IPv6 Alternate DNS
 		EOF
 	;;
 	"$CONF_DNSCURVEADDR")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			dnscurve_serv_addr_ipv4@DNSCurve IPv4 Main DNS Address
+			dnscurve_serv_addr_ipv4_alt@DNSCurve IPv4 Alternate DNS Address
+			dnscurve_serv_addr_ipv6@DNSCurve IPv6 Main DNS Address
+			dnscurve_serv_addr_ipv6_alt@DNSCurve IPv6 Alternate DNS Address
+			dnscurve_serv_addr_ipv4_prov@DNSCurve IPv4 Main Provider Name
+			dnscurve_serv_addr_ipv4_alt_prov@DNSCurve IPv4 Alternate Provider Name
+			dnscurve_serv_addr_ipv6_prov@DNSCurve IPv6 Main Provider Name
+			dnscurve_serv_addr_ipv6_alt_prov@DNSCurve IPv6 Alternate Provider Name
 		EOF
 	;;
 	"$CONF_DNSCURVEKEY")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve Client Public Key
+			NONE@DNSCurve Client Secret Key
+			dnscurve_serv_addr_ipv4_pubkey@DNSCurve IPv4 Main DNS Public Key
+			dnscurve_serv_addr_ipv4_alt_pubkey@DNSCurve IPv4 Alternate DNS Public Key
+			dnscurve_serv_addr_ipv6_pubkey@DNSCurve IPv6 Main DNS Public Key
+			dnscurve_serv_addr_ipv6_alt_pubkey@DNSCurve IPv6 Alternate DNS Public Key
+			NONE@DNSCurve IPv4 Main DNS Fingerprint
+			NONE@DNSCurve IPv4 Alternate DNS Fingerprint
+			NONE@DNSCurve IPv6 Main DNS Fingerprint
+			NONE@DNSCurve IPv6 Alternate DNS Fingerprint
 		EOF
 	;;
 	"$CONF_DNSCURVEMAGCNUM")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve IPv4 Main Receive Magic Number
+			NONE@DNSCurve IPv4 Alternate Receive Magic Number
+			NONE@DNSCurve IPv6 Main Receive Magic Number
+			NONE@DNSCurve IPv6 Alternate Receive Magic Number
+			NONE@DNSCurve IPv4 Main DNS Magic Number
+			NONE@DNSCurve IPv4 Alternate DNS Magic Number
+			NONE@DNSCurve IPv6 Main DNS Magic Number
+			NONE@DNSCurve IPv6 Alternate DNS Magic Number
 		EOF
 	;;
 	*)
