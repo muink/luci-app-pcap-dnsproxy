@@ -95,6 +95,13 @@ case "$_map" in
 	;;
 	"$CONF_DNS")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			global_proto@Outgoing Protocol
+			direct_req@Direct Request
+			cc_type@Cache Type
+			cc_parameter@Cache Parameter
+			NONE@Cache Single IPv4 Address Prefix
+			NONE@Cache Single IPv6 Address Prefix
+			cc_default_ttl@Default TTL
 		EOF
 	;;
 	"$CONF_LOCALDNS")
