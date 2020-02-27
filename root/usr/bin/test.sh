@@ -177,6 +177,13 @@ case "$_map" in
 	;;
 	"$CONF_DATA")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@ICMP ID
+			NONE@ICMP Sequence
+			NONE@ICMP PaddingData
+			NONE@Domain Test Protocol
+			NONE@Domain Test ID
+			NONE@Domain Test Data
+			server_domain@Local Machine Server Name
 		EOF
 	;;
 	"$CONF_PROXY")
