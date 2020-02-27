@@ -115,6 +115,18 @@ case "$_map" in
 	;;
 	"$CONF_ADDRESSES")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			ipv4_listen_addr@IPv4 Listen Address
+			edns_client_subnet_ipv4_addr@IPv4 EDNS Client Subnet Address
+			global_ipv4_addr@IPv4 Main DNS Address
+			global_ipv4_addr_alt@IPv4 Alternate DNS Address
+			ll_ipv4_addr@IPv4 Local Main DNS Address
+			ll_ipv4_addr_alt@IPv4 Local Alternate DNS Address
+			ipv6_listen_addr@IPv6 Listen Address
+			edns_client_subnet_ipv6_addr@IPv6 EDNS Client Subnet Address
+			global_ipv6_addr@IPv6 Main DNS Address
+			global_ipv6_addr_alt@IPv6 Alternate DNS Address
+			ll_ipv6_addr@IPv6 Local Main DNS Address
+			ll_ipv6_addr_alt@IPv6 Local Alternate DNS Address
 		EOF
 	;;
 	"$CONF_VALUES")
