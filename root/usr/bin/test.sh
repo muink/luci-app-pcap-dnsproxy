@@ -131,6 +131,30 @@ case "$_map" in
 	;;
 	"$CONF_VALUES")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@Thread Pool Base Number
+			NONE@Thread Pool Maximum Number
+			NONE@Thread Pool Reset Time
+			NONE@Queue Limits Reset Time
+			NONE@EDNS Payload Size
+			NONE@IPv4 Packet TTL
+			NONE@IPv4 Main DNS TTL
+			NONE@IPv4 Alternate DNS TTL
+			NONE@IPv6 Packet Hop Limits
+			NONE@IPv6 Main DNS Hop Limits
+			NONE@IPv6 Alternate DNS Hop Limits
+			NONE@Hop Limits Fluctuation
+			reliable_once_socket_timeout@Reliable Once Socket Timeout
+			reliable_serial_socket_timeout@Reliable Serial Socket Timeout
+			unreliable_once_socket_timeout@Unreliable Once Socket Timeout
+			unreliable_serial_socket_timeout@Unreliable Serial Socket Timeout
+			tcp_fast_op@TCP Fast Open
+			receive_waiting@Receive Waiting
+			icmp_test@ICMP Test
+			domain_test@Domain Test
+			alt_times@Alternate Times
+			alt_times_range@Alternate Time Range
+			alt_reset_time@Alternate Reset Time
+			mult_req_time@Multiple Request Times
 		EOF
 	;;
 	"$CONF_SWITCHES")
