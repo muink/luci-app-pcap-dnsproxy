@@ -81,6 +81,16 @@ case "$_map" in
 	;;
 	"$CONF_LISTEN")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@Process Unique
+			pcap_capt@Pcap Capture
+			pcap_devices_blklist@Pcap Devices Blacklist
+			pcap_reading_timeout@Pcap Reading Timeout
+			listen_proto@Listen Protocol
+			listen_port@Listen Port
+			operation_mode@Operation Mode
+			NONE@IPFilter Type
+			NONE@IPFilter Level
+			NONE@Accept Type
 		EOF
 	;;
 	"$CONF_DNS")
