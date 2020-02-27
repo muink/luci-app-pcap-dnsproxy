@@ -75,6 +75,8 @@ case "$_map" in
 	;;
 	"$CONF_LOG")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			log_lev@Print Log Level
+			log_max_size@Log Maximum Size
 		EOF
 	;;
 	"$CONF_LISTEN")
