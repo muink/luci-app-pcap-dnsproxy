@@ -24,34 +24,36 @@ CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
 # map_tab <mapname> [<variabletype>] [<element>]
 # variabletype:    <uci|raw>
 map_tab() {
-if [ "$1" == "" ]; then echo 'map_tab: The <mapname> requires an argument'; return 1; fi
+if [ -z "$1" ]; then echo 'map_tab: The <mapname> requires an argument'; return 1; fi
 local _map="$1"
 local _vtype="$2"
 local _element="$3"
 local __cmd
 
 
-if   [ "$_element" == "NONE" ]; then		# <element> not support
-	echo 'map_tab: The <element> parameter is invalid'; return 1
-elif [ "$_element" == "" ]; then			# <element> empty
-	if   [ "$_vtype" == "" ]; then			# map_tab "$CONF_DNS"						# List	ALL	 element of maptab '$CONF_DNS'; keep'NONE'
-		__cmd=
-	elif [ "$_vtype" == "uci" ]; then		# map_tab "$CONF_DNS" uci					# List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'
-		__cmd="| cut -f1 -d@ | grep -v 'NONE'"
-	elif [ "$_vtype" == "raw" ]; then		# map_tab "$CONF_DNS" raw					# List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'
-		__cmd="| cut -f2 -d@ | grep -v 'NONE'"
-	else									# <variabletype> not support
-		echo 'map_tab: The <variabletype> parameter is invalid'; return 1
+# <element> not support
+if   [ "$_element" == "NONE" ]; then echo 'map_tab: The <element> parameter is invalid'; return 1;
+# <element> empty
+elif [ -z "$_element" ]; then
+	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'
+	if   [ -z "$_vtype" ]; then __cmd=;
+	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'
+	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v 'NONE'";
+	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'
+	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v 'NONE'";
+	# <variabletype> not support
+	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
-else										# <element> not empty
-	if   [ "$_vtype" == "" ]; then			# map_tab "$CONF_DNS" '' "$_element"		# Show relative element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
-		__cmd="| sed -n -e \"/^\${_element}@/ {s/\$_element//; s/@//p}\" -e \"/@\${_element}\$/ {s/\$_element//; s/@//p}\""
-	elif [ "$_vtype" == "uci" ]; then		# map_tab "$CONF_DNS" uci "$_element"		# Show 'uci' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
-		__cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f1 -d@"
-	elif [ "$_vtype" == "raw" ]; then		# map_tab "$CONF_DNS" raw "$_element"		# Show 'raw' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
-		__cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f2 -d@"
-	else									# <variabletype> not support
-		echo 'map_tab: The <variabletype> parameter is invalid'; return 1
+# <element> not empty
+else
+	# map_tab "$CONF_DNS" '' "$_element"		-- Show relative element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	if   [ -z "$_vtype" ]; then __cmd="| sed -n -e \"/^\${_element}@/ {s/\$_element//; s/@//p}\" -e \"/@\${_element}\$/ {s/\$_element//; s/@//p}\"";
+	# map_tab "$CONF_DNS" uci "$_element"		-- Show 'uci' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	elif [ "$_vtype" == "uci" ]; then __cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f1 -d@";
+	# map_tab "$CONF_DNS" raw "$_element"		-- Show 'raw' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	elif [ "$_vtype" == "raw" ]; then __cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f2 -d@";
+	# <variabletype> not support
+	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
 fi
 
