@@ -159,6 +159,20 @@ case "$_map" in
 	;;
 	"$CONF_SWITCHES")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			domain_case_conv@Domain Case Conversion
+			compression_pointer_mutation@Compression Pointer Mutation
+			edns_label@__FUNCTION 'if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
+			edns_list@NONE
+			__EDNS@EDNS Label
+			edns_client_subnet_relay@EDNS Client Subnet Relay
+			dnssec_req@DNSSEC Request
+			dnssec_force_record@DNSSEC Force Record
+			NONE@Alternate Multiple Request
+			NONE@IPv4 Do Not Fragment
+			NONE@TCP Data Filter
+			NONE@DNS Data Filter
+			NONE@Blacklist Filter
+			NONE@Resource Record Set TTL Filter
 		EOF
 	;;
 	"$CONF_DATA")
