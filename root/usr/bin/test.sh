@@ -188,6 +188,36 @@ case "$_map" in
 	;;
 	"$CONF_PROXY")
 		eval grep \"\$_element\" <<-EOF $__cmd
+			proxy_socks@SOCKS Proxy
+			proxy_socks_ver@SOCKS Version
+			proxy_socks_proto@SOCKS Protocol
+			proxy_socks_nohandshake@SOCKS UDP No Handshake
+			proxy_socks_ol@SOCKS Proxy Only
+			proxy_socks_ipv4_addr@SOCKS IPv4 Address
+			proxy_socks_ipv6_addr@SOCKS IPv6 Address
+			proxy_socks_tg_serv@SOCKS Target Server
+			proxy_socks_user@SOCKS Username
+			proxy_socks_pw@SOCKS Password
+			proxy_http@HTTP CONNECT Proxy
+			proxy_http_proto@HTTP CONNECT Protocol
+			proxy_http_ol@HTTP CONNECT Proxy Only
+			proxy_http_ipv4_addr@HTTP CONNECT IPv4 Address
+			proxy_http_ipv6_addr@HTTP CONNECT IPv6 Address
+			proxy_http_tg_serv@HTTP CONNECT Target Server
+			NONE@HTTP CONNECT TLS Handshake
+			NONE@HTTP CONNECT TLS Version
+			NONE@HTTP CONNECT TLS Validation
+			NONE@HTTP CONNECT TLS Server Name Indication
+			NONE@HTTP CONNECT TLS ALPN
+			proxy_http_ver@HTTP CONNECT Version
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			proxy_http_auth@__FUNCTION 'if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
+			proxy_http_user@NONE
+			proxy_http_pw@NONE
+			__PROXYHTTPAUTH@HTTP CONNECT Proxy Authorization
 		EOF
 	;;
 	"$CONF_DNSCURVE")
