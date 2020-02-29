@@ -1,23 +1,52 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (C) 2020 muink <https://github.com/muink>
 # This is free software, licensed under the Apache License, Version 2.0
 
 
-CONF_BASE="Base"
-CONF_LOG="Log"
-CONF_LISTEN="Listen"
-CONF_DNS="DNS"
-CONF_LOCALDNS="Local DNS"
-CONF_ADDRESSES="Addresses"
-CONF_VALUES="Values"
-CONF_SWITCHES="Switches"
-CONF_DATA="Data"
-CONF_PROXY="Proxy"
-CONF_DNSCURVE="DNSCurve"
-CONF_DNSCURVEDB="DNSCurve Database"
-CONF_DNSCURVEADDR="DNSCurve Addresses"
-CONF_DNSCURVEKEY="DNSCurve Keys"
-CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
+# map_def [<type>]
+# type:    <nam|map>
+map_def() {
+local __cmd
+
+# map_def					-- List  ALL  element
+if   [ -z "$1" ]; then __cmd=;
+# map_def nam				-- List 'nam' element
+elif [ "$1" == "nam" ]; then __cmd="| cut -f1 -d=";
+# map_def map				-- List 'map' element
+elif [ "$1" == "map" ]; then __cmd="| cut -f2 -d=";
+# <type> not support
+else echo 'map_def: The <type> parameter is invalid'; return 1;
+fi
+
+# Map name list
+eval cat <<-MAPLIST $__cmd
+	CONF_BASE="Base"
+	CONF_LOG="Log"
+	CONF_LISTEN="Listen"
+	CONF_DNS="DNS"
+	CONF_LOCALDNS="Local DNS"
+	CONF_ADDRESSES="Addresses"
+	CONF_VALUES="Values"
+	CONF_SWITCHES="Switches"
+	CONF_DATA="Data"
+	CONF_PROXY="Proxy"
+	CONF_DNSCURVE="DNSCurve"
+	CONF_DNSCURVEDB="DNSCurve Database"
+	CONF_DNSCURVEADDR="DNSCurve Addresses"
+	CONF_DNSCURVEKEY="DNSCurve Keys"
+	CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
+MAPLIST
+}
+# Define Map name list
+CONF_LIST=`map_def nam | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@" --> "$*"
+	eval CONF_LIST=(${CONF_LIST//'/\'})
+CONF_LIST_COUNT=${#CONF_LIST[@]}
+     CONF_LIST_FIRST=${CONF_LIST[0]}
+eval CONF_LIST_LAST=\${CONF_LIST[$((${CONF_LIST_COUNT}-1))]}
+
+# Define Map name and values
+for _var in "`map_def`"; do eval "${_var[@]}"; done
+#for _var in "${CONF_LIST[@]}"; do eval echo $_var=\\\"\$$_var\\\"; done
 
 
 
