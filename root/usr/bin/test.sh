@@ -320,3 +320,84 @@ esac
 
 }
 map_tab "$@"
+
+# uci2conf <section> <mapname> [<conffile>]
+uci2conf() {
+	local section="$1" && shift
+	if [ -z "$1" ]; then echo 'uci2conf: The <mapname> requires an argument'; return 1; fi
+	local map="$1"
+	local config
+	[ -e "$2" ] && config="$2" || config="$CONFIGFILE"
+
+	
+# Defining variables for uci config
+#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
+local uci_list=`map_tab "$map" uci | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval uci_list=(${uci_list//'/\'})
+local uci_count=${#uci_list[@]}
+# Get values of uci config
+for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
+
+
+# Write $config file
+local command
+local araw_list
+local _raw
+local __FUNCTION
+
+for _var in "${uci_list[@]}"; do
+	# <$_var> not empty AND <$$_var> not empty
+	if [ -n "$_var" -a -n "$(eval echo \$$_var)" ]; then
+
+		_raw=`map_tab "$map" raw "$_var"` # ~~Also need process DynamicList like: 'HTTP CONNECT Header Field'~~ Consider not adding, can only added them from user conffile
+
+		# <$_raw> returns not empty
+		if [ -n "$_raw" ]; then
+			# Not Normal uci element
+			if   [ "`echo "$_raw" | grep "^_.\+$"`" ]; then
+				# Function uci element
+				eval "$_raw" # Extract function body
+					#eval "echo '$__FUNCTION'"
+				eval "$__FUNCTION" >/dev/null
+				araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+					eval araw_list=(${araw_list//'/\'})
+                
+				# Write Function conf
+				for _tab in "${araw_list[@]}"; do
+					command="$command s~^\($(echo "$_tab" | cut -f1 -d=)\) \([<=>]\).*\$~\1 \2 $(echo "$_tab" | cut -f2 -d=)~;"
+					#echo "$(echo "$_tab" | cut -f1 -d=) -- $(echo "$_tab" | cut -f2 -d=)" #debug test
+				done
+			# All-in-one uci element
+			elif [ "$_raw" == "NONE" ]; then
+				echo "Usually used to combine multiple uci parameters into one raw parameter" >/dev/null
+			# Normal uci element
+			else
+				# Write Normal conf
+				eval "_var=\"\$$_var\""
+				command="$command s~^\($_raw\) \([<=>]\).*\$~\1 \2 ${_var}~;"
+				#echo "Normal: ${_raw} = ${_var}" #debug test
+			fi
+		# <$_raw> returns empty
+		else
+			echo "uci2conf: The Element '$_var' not have relative element"; return 1
+			echo "This situation basically does not exist" >/dev/null
+		fi
+	
+	# <$_var> returns empty
+	else
+		echo "uci2conf: The Element '$_var' is empty" >/dev/null
+	fi
+done
+		#echo "$command"
+
+	if   [ "$map" == "$(eval echo \$$CONF_LIST_FIRST)" ]; then sed -i "1,/^\[.*\]$/            { $command }" $config;
+	elif [ "$map" == "$(eval echo \$$CONF_LIST_LAST)" ]; then  sed -i "/^\[$map\]$/,$          { $command }" $config;
+	else                                                       sed -i "/^\[$map\]$/,/^\[.*\]$/ { $command }" $config;
+	fi
+
+}
+
+conf2uci() {
+	echo
+}
+
