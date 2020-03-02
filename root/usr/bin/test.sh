@@ -401,3 +401,24 @@ conf2uci() {
 	echo
 }
 
+uci2conf_full() {
+	local TypedSection='uci_cfg'
+	config_load $UCICFGFILE
+
+	# Init pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Apply Uci config to pcap-dnsproxy Main Config file
+	for _conf in "${CONF_LIST[@]}"; do
+		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\""
+	done
+
+	# Apply User config to pcap-dnsproxy Main Config file
+	
+
+}
+
+conf2uci_full() {
+	echo
+}
+
