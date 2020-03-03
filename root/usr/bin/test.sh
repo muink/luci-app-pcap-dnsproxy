@@ -64,12 +64,12 @@ local __cmd
 if   [ "$_element" == "NONE" ]; then echo 'map_tab: The <element> parameter is invalid'; return 1;
 # <element> empty
 elif [ -z "$_element" ]; then
-	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'
+	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'; keep function
 	if   [ -z "$_vtype" ]; then __cmd=;
-	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'
-	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v 'NONE'";
-	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'
-	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v 'NONE'";
+	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'; ignore raw2uci function
+	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
+	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'; ignore uci2raw function
+	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
 	# <variabletype> not support
 	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
@@ -136,7 +136,7 @@ case "$_map" in
 	"$CONF_LOCALDNS")
 		eval grep \"\$_element\" <<-EOF $__cmd
 			ll_proto@Local Protocol
-			ll_filter_mode@__FUNCTION 'if [ "\$ll_filter_mode" == "0" ]; then echo Local Hosts=0; echo Local Routing=0; ll_force_req=0; elif [ "\$ll_filter_mode" == "hostlist" ]; then echo Local Hosts=1; echo Local Routing=0; elif [ "\$ll_filter_mode" == "routing" ]; then echo Local Hosts=0; echo Local Routing=1; ll_force_req=0; fi'
+			ll_filter_mode@__FUNCTION='if [ "\$ll_filter_mode" == "0" ]; then echo Local Hosts=0; echo Local Routing=0; ll_force_req=0; elif [ "\$ll_filter_mode" == "hostlist" ]; then echo Local Hosts=1; echo Local Routing=0; elif [ "\$ll_filter_mode" == "routing" ]; then echo Local Hosts=0; echo Local Routing=1; ll_force_req=0; fi'
 			__LLFILTER@Local Hosts
 			__LLFILTER@Local Routing
 			ll_force_req@Local Force Request
@@ -190,7 +190,7 @@ case "$_map" in
 		eval grep \"\$_element\" <<-EOF $__cmd
 			domain_case_conv@Domain Case Conversion
 			compression_pointer_mutation@Compression Pointer Mutation
-			edns_label@__FUNCTION 'if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
+			edns_label@__FUNCTION='if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
 			edns_list@NONE
 			__EDNS@EDNS Label
 			edns_client_subnet_relay@EDNS Client Subnet Relay
@@ -243,7 +243,7 @@ case "$_map" in
 			NONE@HTTP CONNECT Header Field
 			NONE@HTTP CONNECT Header Field
 			NONE@HTTP CONNECT Header Field
-			proxy_http_auth@__FUNCTION 'if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
+			proxy_http_auth@__FUNCTION='if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
 			proxy_http_user@NONE
 			proxy_http_pw@NONE
 			__PROXYHTTPAUTH@HTTP CONNECT Proxy Authorization
@@ -314,10 +314,6 @@ case "$_map" in
 		return 1
 	;;
 esac
-
-
-
-
 
 
 
