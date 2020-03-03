@@ -2,6 +2,7 @@
 # Copyright (C) 2020 muink <https://github.com/muink>
 # This is free software, licensed under the Apache License, Version 2.0
 
+TYPEDSECTION=main
 
 # map_def [<type>]
 # type:    <nam|map>
@@ -37,18 +38,6 @@ eval cat <<-MAPLIST $__cmd
 	CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
 MAPLIST
 }
-# Define Map name list
-CONF_LIST=`map_def nam | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@" --> "$*"
-	eval CONF_LIST=(${CONF_LIST//'/\'})
-CONF_LIST_COUNT=${#CONF_LIST[@]}
-     CONF_LIST_FIRST=${CONF_LIST[0]}
-eval CONF_LIST_LAST=\${CONF_LIST[$((${CONF_LIST_COUNT}-1))]}
-
-# Define Map name and values
-for _var in "`map_def`"; do eval "${_var[@]}"; done
-#for _var in "${CONF_LIST[@]}"; do eval echo $_var=\\\"\$$_var\\\"; done
-
-
 
 # map_tab <mapname> [<variabletype>] [<element>]
 # variabletype:    <uci|raw>
@@ -319,7 +308,6 @@ esac
 
 
 }
-map_tab "$@"
 
 # uci2conf <section> <mapname> [<conffile>]
 uci2conf() {
@@ -402,7 +390,7 @@ conf2uci() {
 }
 
 uci2conf_full() {
-	local TypedSection='uci_cfg'
+	local TypedSection="$TYPEDSECTION"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
@@ -421,4 +409,27 @@ uci2conf_full() {
 conf2uci_full() {
 	echo
 }
+
+
+# ================ Main ================ #
+
+# Define Map name list
+CONF_LIST=`map_def nam | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval CONF_LIST=(${CONF_LIST//'/\'})
+CONF_LIST_COUNT=${#CONF_LIST[@]}
+     CONF_LIST_FIRST=${CONF_LIST[0]}
+eval CONF_LIST_LAST=\${CONF_LIST[$((${CONF_LIST_COUNT}-1))]}
+
+# Define Map name and values
+for _var in "`map_def`"; do eval "${_var[@]}"; done
+	#for _var in "${CONF_LIST[@]}"; do eval echo $_var=\\\"\$$_var\\\"; done
+
+
+
+
+
+#Y:map_def     for _conf in "${CONF_LIST[@]}"; do eval "map_tab \"\$$_conf\""; done
+#Y:map_tab     map_tab "$@"
+#config_get bbt
+#Y:uci2conf    uci2conf 'cfg34fb357e' "$CONF_LOCALDNS" './test.conf'
 
