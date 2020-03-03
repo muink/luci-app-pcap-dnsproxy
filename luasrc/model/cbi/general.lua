@@ -103,15 +103,19 @@ global_proto:value("IPv4 + IPv6 + TCP + UDP")
 
 global_ipv4_addr = s:taboption("general", Value, "global_ipv4_addr", translate("IPv4 Main DNS Address"))
 global_ipv4_addr.placeholder = "8.8.4.4:53"
+global_ipv4_addr.rmempty = false
 
 global_ipv4_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv4 Alternate DNS Address"))
 global_ipv4_addr_alt.placeholder = "1.0.0.1:53|149.112.112.112:53|208.67.220.220:5353"
+global_ipv4_addr_alt.rmempty = false
 
 global_ipv6_addr = s:taboption("general", Value, "global_ipv6_addr", translate("IPv6 Main DNS Address"))
 global_ipv6_addr.placeholder = "[2001:4860:4860::8844]:53"
+global_ipv6_addr.rmempty = false
 
-global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv6 Alternate DNS Address"))
+global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv6_addr_alt", translate("IPv6 Alternate DNS Address"))
 global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2620:0:CCD::2]:5353"
+global_ipv6_addr_alt.rmempty = false
 
 
 --[[ Local DNS Request ]]--
@@ -126,10 +130,15 @@ ll_proto:value("IPv6 + TCP + UDP")
 ll_proto:value("IPv4 + IPv6 + UDP")
 ll_proto:value("IPv4 + IPv6 + Force TCP")
 ll_proto:value("IPv4 + IPv6 + TCP + UDP")
+ll_proto.rmempty = false
+ll_proto:depends("ll_filter_mode", "hostlist")
+ll_proto:depends("ll_filter_mode", "routing")
 
 ll_filter_mode = s:taboption("ll_dns", ListValue, "ll_filter_mode", translate("Filter Mode"))
+ll_filter_mode:value("0", translate("Disable"))
 ll_filter_mode:value("hostlist", translate("Local Hosts"))
 ll_filter_mode:value("routing", translate("Local Routing"))
+ll_filter_mode.rmempty = false
 
 ll_force_req = s:taboption("ll_dns", Flag, "ll_force_req", translate("Local Force Request"))
 ll_force_req.rmempty = true
@@ -137,15 +146,27 @@ ll_force_req:depends("ll_filter_mode", "hostlist")
 
 ll_ipv4_addr = s:taboption("ll_dns", Value, "ll_ipv4_addr", translate("IPv4 Local Main DNS Address"))
 ll_ipv4_addr.placeholder = "114.114.115.115:53"
+ll_ipv4_addr.rmempty = false
+ll_ipv4_addr:depends("ll_filter_mode", "hostlist")
+ll_ipv4_addr:depends("ll_filter_mode", "routing")
 
 ll_ipv4_addr_alt = s:taboption("ll_dns", Value, "ll_ipv4_addr_alt", translate("IPv4 Local Alternate DNS Address"))
 ll_ipv4_addr_alt.placeholder = "223.6.6.6:53"
+ll_ipv4_addr_alt.rmempty = false
+ll_ipv4_addr_alt:depends("ll_filter_mode", "hostlist")
+ll_ipv4_addr_alt:depends("ll_filter_mode", "routing")
 
 ll_ipv6_addr = s:taboption("ll_dns", Value, "ll_ipv6_addr", translate("IPv6 Local Main DNS Address"))
 ll_ipv6_addr.placeholder = "[240C::6644]:53"
+ll_ipv6_addr.rmempty = false
+ll_ipv6_addr:depends("ll_filter_mode", "hostlist")
+ll_ipv6_addr:depends("ll_filter_mode", "routing")
 
 ll_ipv6_addr_alt = s:taboption("ll_dns", Value, "ll_ipv6_addr_alt", translate("IPv6 Local Alternate DNS Address"))
 ll_ipv6_addr_alt.placeholder = "[240C::6666]:53"
+ll_ipv6_addr_alt.rmempty = false
+ll_ipv6_addr_alt:depends("ll_filter_mode", "hostlist")
+ll_ipv6_addr_alt:depends("ll_filter_mode", "routing")
 
 
 --[[ Parameter ]]--
@@ -154,15 +175,14 @@ mult_req_time = s:taboption("parameter", Value, "mult_req_time", translate("Mult
 	translate("Send parallel requests to the same remote server at a time")
 	.. "<br/>"
 	.. translate("Unless the packet loss is very high, not recommended to open"))
-mult_req_time.datatype = "or('0',range(2,32))"
+mult_req_time.datatype = "or(range(0,0),range(2,32))"
 mult_req_time:value("", translate("Use Default"))
 mult_req_time:value("0", translate("0 - Disable - Once"))
 mult_req_time:value("2", translate("2 - Double"))
 mult_req_time:value("3", translate("3 - Triple"))
 
 cc_type = s:taboption("parameter", ListValue, "cc_type", translate("DNS Cache Type"))
-cc_type:value("", translate("Use Default"))
-cc_type:value("0", translate("0 - Disable"))
+cc_type:value("0", translate("Disable"))
 cc_type:value("Timer", translate("Timer"))
 cc_type:value("Queue", translate("Queue"))
 cc_type:value("Timer + Queue", translate("Timer + Queue"))
@@ -170,6 +190,7 @@ cc_type:value("Timer + Queue", translate("Timer + Queue"))
 cc_parameter = s:taboption("parameter", Value, "cc_parameter", translate("DNS Cache Parameter"))
 cc_parameter.datatype = "ufloat"
 cc_parameter.placeholder = "4096"
+cc_parameter.rmempty = false
 
 cc_default_ttl = s:taboption("parameter", Value, "cc_default_ttl", translate("DNS Cache Default TTL"),
 	translate("In seconds"))
@@ -187,7 +208,7 @@ reliable_once_socket_timeout = s:taboption("parameter", Value, "reliable_once_so
 --	.. "<br/>"
 --	.. translate("Reliable port refers to TCP protocol")
 	)
-reliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_once_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 reliable_once_socket_timeout.placeholder = "3000"
 
 reliable_serial_socket_timeout = s:taboption("parameter", Value, "reliable_serial_socket_timeout", translate("Reliable Serial Socket Timeout"),
@@ -197,7 +218,7 @@ reliable_serial_socket_timeout = s:taboption("parameter", Value, "reliable_seria
 --	.. "<br/>"
 --	.. translate("Reliable port refers to TCP protocol")
 	)
-reliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+reliable_serial_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 reliable_serial_socket_timeout.placeholder = "1500"
 
 unreliable_once_socket_timeout = s:taboption("parameter", Value, "unreliable_once_socket_timeout", translate("Unreliable Once Socket Timeout"),
@@ -207,7 +228,7 @@ unreliable_once_socket_timeout = s:taboption("parameter", Value, "unreliable_onc
 --	.. "<br/>"
 --	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
 	)
-unreliable_once_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_once_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 unreliable_once_socket_timeout.placeholder = "2000"
 
 unreliable_serial_socket_timeout = s:taboption("parameter", Value, "unreliable_serial_socket_timeout", translate("Unreliable Serial Socket Timeout"),
@@ -217,14 +238,14 @@ unreliable_serial_socket_timeout = s:taboption("parameter", Value, "unreliable_s
 --	.. "<br/>"
 --	.. translate("Unreliable port refers to UDP/ICMP/ICMPv6 agreement")
 	)
-unreliable_serial_socket_timeout.datatype = "or('0',range(500,2147483647))"
+unreliable_serial_socket_timeout.datatype = "or(range(0,0),range(500,2147483647))"
 unreliable_serial_socket_timeout.placeholder = "1000"
 
 --------
 
 icmp_test = s:taboption("parameter", Value, "icmp_test", translate("ICMP Test"),
 	translate("In seconds"))
-icmp_test.datatype = "or('0',range(5,2147483647))"
+icmp_test.datatype = "or(range(0,0),range(5,2147483647))"
 icmp_test:value("", translate("Use Default"))
 icmp_test:value("0", translate("0 - Disable"))
 icmp_test:value("900")
@@ -232,7 +253,7 @@ icmp_test:value("900")
 
 domain_test = s:taboption("parameter", Value, "domain_test", translate("Domain Test"),
 	translate("In seconds"))
-domain_test.datatype = "or('0',range(5,2147483647))"
+domain_test.datatype = "or(range(0,0),range(5,2147483647))"
 domain_test:value("", translate("Use Default"))
 domain_test:value("0", translate("0 - Disable"))
 domain_test:value("900")
@@ -278,8 +299,7 @@ pcap_reading_timeout:depends("pcap_capt", "1")
 
 direct_req = s:taboption("adv_set", ListValue, "direct_req", translate("Direct Request"),
 	translate("The system needs run in global proxy mode"))
-direct_req:value("", translate("Use Default"))
-direct_req:value("0", translate("0 - Disable"))
+direct_req:value("0", translate("Disable"))
 direct_req:value("IPv4")
 direct_req:value("IPv6")
 direct_req:value("IPv4 + IPv6")
@@ -294,11 +314,11 @@ receive_waiting:value("", translate("Use Default"))
 receive_waiting:value("0", translate("0 - Disable"))
 
 domain_case_conv = s:taboption("adv_set", Flag, "domain_case_conv", translate("Domain Case Conversion"))
+domain_case_conv.rmempty = false
 --domain_case_conv.default = "1"
 
 compression_pointer_mutation = s:taboption("adv_set", ListValue, "compression_pointer_mutation", translate("Compression Pointer Mutation"))
-compression_pointer_mutation:value("", translate("Use Default"))
-compression_pointer_mutation:value("0", translate("0 - Disable"))
+compression_pointer_mutation:value("0", translate("Disable"))
 compression_pointer_mutation:value("1")
 compression_pointer_mutation:value("2")
 compression_pointer_mutation:value("3")
@@ -311,10 +331,9 @@ compression_pointer_mutation:depends("edns_label", "")
 compression_pointer_mutation:depends("edns_label", "0")
 
 edns_label = s:taboption("adv_set", ListValue, "edns_label", translate("EDNS Label"))
-edns_label:value("", translate("Use Default"))
-edns_label:value("0", translate("0 - Disable"))
-edns_label:value("1", translate("1 - All request to enable"))
-edns_label:value("2", translate("2 - Enable request below list"))
+edns_label:value("0", translate("Disable"))
+edns_label:value("1", translate("All request to enable"))
+edns_label:value("2", translate("Enable request below list"))
 edns_label.rmempty = true
 edns_label:depends("compression_pointer_mutation", "")
 edns_label:depends("compression_pointer_mutation", "0")
