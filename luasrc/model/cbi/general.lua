@@ -38,8 +38,15 @@ ss.value = tmpfsStatus
 buttons = h:option(DummyValue, "_dummy")
 buttons.template = packageName .. "/buttons"
 
+app_sys = h:option(Button, "_button", translate("Apply to System"))
+app_sys.inputtitle = translate("Apply to System")
+app_sys.inputstyle = "apply"
+function app_sys.write (self, section)
+	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
+end
 
-s = m:section(TypedSection, "uci_cfg", "Pcap_DNSProxy settings",
+
+s = m:section(TypedSection, "main", "Pcap_DNSProxy settings",
 	translatef("For further information "
 		.. "<a href=\"%s\" target=\"_blank\">"
 		.. "check the online documentation</a>", "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"))

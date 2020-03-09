@@ -12,7 +12,7 @@ PKG_VERSION:=0.4.9.13-70a40bb
 PKG_RELEASE:=1
 
 LUCI_TITLE:=LuCI for pcap-dnsproxy
-LUCI_DEPENDS:=+pcap-dnsproxy
+LUCI_DEPENDS:=+luci-compat +pcap-dnsproxy +bash
 
 LUCI_DESCRIPTION:=LuCI for Pcap_DNSProxy. Pcap_DNSProxy, A DNS Server to avoid contaminated result.
 
