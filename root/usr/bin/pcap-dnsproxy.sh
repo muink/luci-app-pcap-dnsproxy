@@ -1,11 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (C) 2020 muink <https://github.com/muink>
 # This is free software, licensed under the Apache License, Version 2.0
 
 . /lib/functions.sh
 
 UCICFGFILE=pcap-dnsproxy # Package name
+TYPEDSECTION=main
 CONFDIR=/etc/pcap-dnsproxy
+
 RAWCONFIGFILE=$CONFDIR/Config.conf-opkg
 CONFIGFILE=$CONFDIR/Config.conf
 RAWHOSTSFILE=$CONFDIR/Hosts.conf-opkg
@@ -18,516 +20,432 @@ _FUNCTION="$1"; shift
 
 
 
-base_set() {
-	local section="$1"
-	local config="$2"
-	# Base
-	local variable_list="\
-	 cfg_ver\
-	 cfg_refsh_time\
-	 large_buff_size\
-	 additional_path\
-	 hosts_cfg_name\
-	 ipfilter_file_name\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+# map_def [<type>]
+# type:    <nam|map>
+map_def() {
+local __cmd
 
+# map_def					-- List  ALL  element
+if   [ -z "$1" ]; then __cmd=;
+# map_def nam				-- List 'nam' element
+elif [ "$1" == "nam" ]; then __cmd="| cut -f1 -d=";
+# map_def map				-- List 'map' element
+elif [ "$1" == "map" ]; then __cmd="| cut -f2 -d=";
+# <type> not support
+else echo 'map_def: The <type> parameter is invalid'; return 1;
+fi
 
-# Base
-local command
-if [ "$cfg_ver" != "" ];            then command="$command s@^\(Version\) =.*\$@\1 = ${cfg_ver}@;" ; fi
-if [ "$cfg_refsh_time" != "" ];     then command="$command s@^\(File Refresh Time\) =.*\$@\1 = ${cfg_refsh_time}@;" ; fi
-if [ "$large_buff_size" != "" ];    then command="$command s@^\(Large Buffer Size\) =.*\$@\1 = ${large_buff_size}@;" ; fi
-if [ "$additional_path" != "" ];    then command="$command s@^\(Additional Path\) =.*\$@\1 = ${additional_path}@;" ; fi
-if [ "$hosts_cfg_name" != "" ];     then command="$command s@^\(Hosts File Name\) =.*\$@\1 = ${hosts_cfg_name}@;" ; fi
-if [ "$ipfilter_file_name" != "" ]; then command="$command s@^\(IPFilter File Name\) =.*\$@\1 = ${ipfilter_file_name}@;" ; fi
-
-	sed -i "1,/^\[.*\]$/ { $command }" $config
-
+# Map name list
+eval cat <<-MAPLIST $__cmd
+	CONF_BASE="Base"
+	CONF_LOG="Log"
+	CONF_LISTEN="Listen"
+	CONF_DNS="DNS"
+	CONF_LOCALDNS="Local DNS"
+	CONF_ADDRESSES="Addresses"
+	CONF_VALUES="Values"
+	CONF_SWITCHES="Switches"
+	CONF_DATA="Data"
+	CONF_PROXY="Proxy"
+	CONF_DNSCURVE="DNSCurve"
+	CONF_DNSCURVEDB="DNSCurve Database"
+	CONF_DNSCURVEADDR="DNSCurve Addresses"
+	CONF_DNSCURVEKEY="DNSCurve Keys"
+	CONF_DNSCURVEMAGCNUM="DNSCurve Magic Number"
+MAPLIST
 }
 
-log_set() {
-	local section="$1"
-	local config="$2"
-	# Log
-	local variable_list="\
-	 log_level\
-	 log_max_size\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
+# map_tab <mapname> [<variabletype>] [<element>]
+# variabletype:    <uci|raw>
+map_tab() {
+if [ -z "$1" ]; then echo 'map_tab: The <mapname> requires an argument'; return 1; fi
+local _map="$1"
+local _vtype="$2"
+local _element="$3"
+local __cmd
 
 
-# Log
-local command
-if [ "$log_lev" != "" ];      then command="$command s@^\(Print Log Level\) =.*\$@\1 = ${log_lev}@;" ; fi
-if [ "$log_max_size" != "" ]; then command="$command s@^\(Log Maximum Size\) =.*\$@\1 = ${log_max_size}@;" ; fi
-
-	sed -i "/^\[Log\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-listen_set() {
-	local section="$1"
-	local config="$2"
-	# Listen
-	local variable_list="\
-	 pcap_capt\
-	 pcap_devices_blklist\
-	 pcap_reading_timeout\
-	 listen_proto\
-	 listen_port\
-	 operation_mode\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-
-# Listen
-local command
-# if [ "$NONE" != "" ];                 then command="$command s@^\(Process Unique\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$pcap_capt" != "" ];            then command="$command s@^\(Pcap Capture\) =.*\$@\1 = ${pcap_capt}@;" ; fi
-if [ "$pcap_devices_blklist" != "" ]; then command="$command s@^\(Pcap Devices Blacklist\) =.*\$@\1 = ${pcap_devices_blklist}@;" ; fi
-if [ "$pcap_reading_timeout" != "" ]; then command="$command s@^\(Pcap Reading Timeout\) =.*\$@\1 = ${pcap_reading_timeout}@;" ; fi
-if [ "$listen_proto" != "" ];         then command="$command s@^\(Listen Protocol\) =.*\$@\1 = ${listen_proto}@;" ; fi
-if [ "$listen_port" != "" ];          then command="$command s@^\(Listen Port\) =.*\$@\1 = ${listen_port}@;" ; fi
-if [ "$operation_mode" != "" ];       then command="$command s@^\(Operation Mode\) =.*\$@\1 = ${operation_mode}@;" ; fi
-# if [ "$NONE" != "" ];                 then command="$command s@^\(IPFilter Type\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                 then command="$command s@^\(IPFilter Level\) [<=>]+ .*\$@\1 ${NONE} ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                 then command="$command s@^\(Accept Type\) =.*\$@\1 = ${NONE}@;" ; fi
-
-	sed -i "/^\[Listen\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-dns_set() {
-	local section="$1"
-	local config="$2"
-	# DNS
-	local variable_list="\
-	 global_proto\
-	 direct_req\
-	 cc_type\
-	 cc_parameter\
-	 cc_default_ttl\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-
-# DNS
-local command
-if [ "$global_proto" != "" ];   then command="$command s@^\(Outgoing Protocol\) =.*\$@\1 = ${global_proto}@;" ; fi
-if [ "$direct_req" != "" ];     then command="$command s@^\(Direct Request\) =.*\$@\1 = ${direct_req}@;" ; fi
-if [ "$cc_type" != "" ];        then command="$command s@^\(Cache Type\) =.*\$@\1 = ${cc_type}@;" ; fi
-if [ "$cc_parameter" != "" ];   then command="$command s@^\(Cache Parameter\) =.*\$@\1 = ${cc_parameter}@;" ; fi
-# if [ "$NONE" != "" ];           then command="$command s@^\(Cache Single IPv4 Address Prefix\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];           then command="$command s@^\(Cache Single IPv6 Address Prefix\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$cc_default_ttl" != "" ]; then command="$command s@^\(Default TTL\) =.*\$@\1 = ${cc_default_ttl}@;" ; fi
-
-	sed -i "/^\[DNS\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-local_dns_set() {
-	local section="$1"
-	local config="$2"
-	# Local DNS
-	local variable_list="\
-	 ll_proto\
-	 ll_filter_mode\
-	 ll_force_req\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-	local _hosts
-	local _routing
-	if [ "$ll_filter_mode" == "hostlist" ]; then _hosts=1; _routing=0; fi
-	if [ "$ll_filter_mode" == "routing" ];  then _hosts=0; _routing=1; ll_force_req=0; fi
-
-
-# Local DNS
-local command
-if [ "$ll_proto" != "" ];     then command="$command s@^\(Local Protocol\) =.*\$@\1 = ${ll_proto}@;" ; fi
-if [ "$_hosts" != "" ];       then command="$command s@^\(Local Hosts\) =.*\$@\1 = ${_hosts}@;" ; fi
-if [ "$_routing" != "" ];     then command="$command s@^\(Local Routing\) =.*\$@\1 = ${_routing}@;" ; fi
-if [ "$ll_force_req" != "" ]; then command="$command s@^\(Local Force Request\) =.*\$@\1 = ${ll_force_req}@;" ; fi
-
-	sed -i "/^\[Local DNS\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-addresses_set() {
-	local section="$1"
-	local config="$2"
-	# Addresses
-	local variable_list="\
-	 ipv4_listen_addr\
-	 edns_client_subnet_ipv4_addr\
-	 global_ipv4_addr\
-	 global_ipv4_addr_alt\
-	 ll_ipv4_addr\
-	 ll_ipv4_addr_alt\
-	 ipv6_listen_addr\
-	 edns_client_subnet_ipv6_addr\
-	 global_ipv6_addr\
-	 global_ipv6_addr_alt\
-	 ll_ipv6_addr\
-	 ll_ipv6_addr_alt\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-
-# Addresses
-local command
-if [ "$ipv4_listen_addr" != "" ];             then command="$command s@^\(IPv4 Listen Address\) =.*\$@\1 = ${ipv4_listen_addr}@;" ; fi
-if [ "$edns_client_subnet_ipv4_addr" != "" ]; then command="$command s@^\(IPv4 EDNS Client Subnet Address\) =.*\$@\1 = ${edns_client_subnet_ipv4_addr}@;" ; fi
-if [ "$global_ipv4_addr" != "" ];             then command="$command s@^\(IPv4 Main DNS Address\) =.*\$@\1 = ${global_ipv4_addr}@;" ; fi
-if [ "$global_ipv4_addr_alt" != "" ];         then command="$command s@^\(IPv4 Alternate DNS Address\) =.*\$@\1 = ${global_ipv4_addr_alt}@;" ; fi
-if [ "$ll_ipv4_addr" != "" ];                 then command="$command s@^\(IPv4 Local Main DNS Address\) =.*\$@\1 = ${ll_ipv4_addr}@;" ; fi
-if [ "$ll_ipv4_addr_alt" != "" ];             then command="$command s@^\(IPv4 Local Alternate DNS Address\) =.*\$@\1 = ${ll_ipv4_addr_alt}@;" ; fi
-
-if [ "$ipv6_listen_addr" != "" ];             then command="$command s@^\(IPv6 Listen Address\) =.*\$@\1 = ${ipv6_listen_addr}@;" ; fi
-if [ "$edns_client_subnet_ipv6_addr" != "" ]; then command="$command s@^\(IPv6 EDNS Client Subnet Address\) =.*\$@\1 = ${edns_client_subnet_ipv6_addr}@;" ; fi
-if [ "$global_ipv6_addr" != "" ];             then command="$command s@^\(IPv6 Main DNS Address\) =.*\$@\1 = ${global_ipv6_addr}@;" ; fi
-if [ "$global_ipv6_addr_alt" != "" ];         then command="$command s@^\(IPv6 Alternate DNS Address\) =.*\$@\1 = ${global_ipv6_addr_alt}@;" ; fi
-if [ "$ll_ipv6_addr" != "" ];                 then command="$command s@^\(IPv6 Local Main DNS Address\) =.*\$@\1 = ${ll_ipv6_addr}@;" ; fi
-if [ "$ll_ipv6_addr_alt" != "" ];             then command="$command s@^\(IPv6 Local Alternate DNS Address\) =.*\$@\1 = ${ll_ipv6_addr_alt}@;" ; fi
-
-	sed -i "/^\[Addresses\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-values_set() {
-	local section="$1"
-	local config="$2"
-	# Values
-	local variable_list="\
-	 reliable_once_socket_timeout\
-	 reliable_serial_socket_timeout\
-	 unreliable_once_socket_timeout\
-	 unreliable_serial_socket_timeout\
-	 tcp_fast_op\
-	 receive_waiting\
-	 icmp_test\
-	 domain_test\
-	 alt_times\
-	 alt_times_range\
-	 alt_reset_time\
-	 mult_req_time\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-
-# Values
-local command
-# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Base Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Maximum Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(Thread Pool Reset Time\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(Queue Limits Reset Time\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(EDNS Payload Size\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Packet TTL\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Main DNS TTL\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv4 Alternate DNS TTL\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Packet Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Main DNS Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(IPv6 Alternate DNS Hop Limits\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                             then command="$command s@^\(Hop Limits Fluctuation\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$reliable_once_socket_timeout" != "" ];     then command="$command s@^\(Reliable Once Socket Timeout\) =.*\$@\1 = ${reliable_once_socket_timeout}@;" ; fi
-if [ "$reliable_serial_socket_timeout" != "" ];   then command="$command s@^\(Reliable Serial Socket Timeout\) =.*\$@\1 = ${reliable_serial_socket_timeout}@;" ; fi
-if [ "$unreliable_once_socket_timeout" != "" ];   then command="$command s@^\(Unreliable Once Socket Timeout\) =.*\$@\1 = ${unreliable_once_socket_timeout}@;" ; fi
-if [ "$unreliable_serial_socket_timeout" != "" ]; then command="$command s@^\(Unreliable Serial Socket Timeout\) =.*\$@\1 = ${unreliable_serial_socket_timeout}@;" ; fi
-if [ "$tcp_fast_op" != "" ];                      then command="$command s@^\(TCP Fast Open\) =.*\$@\1 = ${tcp_fast_op}@;" ; fi
-if [ "$receive_waiting" != "" ];                  then command="$command s@^\(Receive Waiting\) =.*\$@\1 = ${receive_waiting}@;" ; fi
-if [ "$icmp_test" != "" ];                        then command="$command s@^\(ICMP Test\) =.*\$@\1 = ${icmp_test}@;" ; fi
-if [ "$domain_test" != "" ];                      then command="$command s@^\(Domain Test\) =.*\$@\1 = ${domain_test}@;" ; fi
-if [ "$alt_times" != "" ];                        then command="$command s@^\(Alternate Times\) =.*\$@\1 = ${alt_times}@;" ; fi
-if [ "$alt_times_range" != "" ];                  then command="$command s@^\(Alternate Time Range\) =.*\$@\1 = ${alt_times_range}@;" ; fi
-if [ "$alt_reset_time" != "" ];                   then command="$command s@^\(Alternate Reset Time\) =.*\$@\1 = ${alt_reset_time}@;" ; fi
-if [ "$mult_req_time" != "" ];                    then command="$command s@^\(Multiple Request Times\) =.*\$@\1 = ${mult_req_time}@;" ; fi
-
-	sed -i "/^\[Values\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-switches_set() {
-	local section="$1"
-	local config="$2"
-	# Switches
-	local variable_list="\
-	 domain_case_conv\
-	 compression_pointer_mutation\
-	 edns_label\
-	 edns_list\
-	 edns_client_subnet_relay\
-	 dnssec_req\
-	 dnssec_force_record\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-	local _edns
-	if [ "$compression_pointer_mutation" != "0" ]; then _edns=0;
-	else
-		if [ "$edns_label" == "0" ]; then _edns=0;
-		elif [ "$edns_label" == "1" ]; then _edns=1;
-		else _edns="$edns_list";
-		fi
+# <element> not support
+if   [ "$_element" == "NONE" ]; then echo 'map_tab: The <element> parameter is invalid'; return 1;
+# <element> empty
+elif [ -z "$_element" ]; then
+	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'; keep function
+	if   [ -z "$_vtype" ]; then __cmd=;
+	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'; ignore raw2uci function
+	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
+	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'; ignore uci2raw function
+	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
+	# <variabletype> not support
+	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
-
-
-# Switches
-local command
-if [ "$domain_case_conv" != "" ];             then command="$command s@^\(Domain Case Conversion\) =.*\$@\1 = ${domain_case_conv}@;" ; fi
-if [ "$compression_pointer_mutation" != "" ]; then command="$command s@^\(Compression Pointer Mutation\) =.*\$@\1 = ${compression_pointer_mutation}@;" ; fi
-if [ "$_edns" != "" ];                        then command="$command s@^\(EDNS Label\) =.*\$@\1 = ${_edns}@;" ; fi
-if [ "$edns_client_subnet_relay" != "" ];     then command="$command s@^\(EDNS Client Subnet Relay\) =.*\$@\1 = ${edns_client_subnet_relay}@;" ; fi
-if [ "$dnssec_req" != "" ];                   then command="$command s@^\(DNSSEC Request\) =.*\$@\1 = ${dnssec_req}@;" ; fi
-if [ "$dnssec_force_record" != "" ];          then command="$command s@^\(DNSSEC Force Record\) =.*\$@\1 = ${dnssec_force_record}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(Alternate Multiple Request\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(IPv4 Do Not Fragment\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(TCP Data Filter\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(DNS Data Filter\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(Blacklist Filter\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                         then command="$command s@^\(Resource Record Set TTL Filter\) =.*\$@\1 = ${NONE}@;
-
-	sed -i "/^\[Switches\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-data_set() {
-	local section="$1"
-	local config="$2"
-	# Data
-	local variable_list="\
-	 server_domain\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-
-# Data
-local command
-# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP ID\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP Sequence\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];          then command="$command s@^\(ICMP PaddingData\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test Protocol\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test ID\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];          then command="$command s@^\(Domain Test Data\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$server_domain" != "" ]; then command="$command s@^\(Local Machine Server Name\) =.*\$@\1 = ${server_domain}@;" ; fi
-
-	sed -i "/^\[Data\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-proxy_set() {
-	local section="$1"
-	local config="$2"
-	# Proxy
-	local variable_list="\
-	 proxy_socks\
-	 proxy_socks_ver\
-	 proxy_socks_proto\
-	 proxy_socks_nohandshake\
-	 proxy_socks_ol\
-	 proxy_socks_ipv4_addr\
-	 proxy_socks_ipv6_addr\
-	 proxy_socks_tg_serv\
-	 proxy_socks_auth\
-	 proxy_socks_user\
-	 proxy_socks_pw\
-	 proxy_http\
-	 proxy_http_proto\
-	 proxy_http_ol\
-	 proxy_http_ipv4_addr\
-	 proxy_http_ipv6_addr\
-	 proxy_http_tg_serv\
-	 proxy_http_ver\
-	 proxy_http_auth\
-	 proxy_http_user\
-	 proxy_http_pw\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-	local _httpauth
-	if [ "$proxy_http_auth" == "1" ]; then _httpauth="${proxy_http_user}:${proxy_http_pw}"; fi
-	if [ "$proxy_http_auth" == "0" ]; then _httpauth=; fi
-
-
-# Proxy
-local command
-if [ "$proxy_socks" != "" ];             then command="$command s@^\(SOCKS Proxy\) =.*\$@\1 = ${proxy_socks}@;" ; fi
-if [ "$proxy_socks_ver" != "" ];         then command="$command s@^\(SOCKS Version\) =.*\$@\1 = ${proxy_socks_ver}@;" ; fi
-if [ "$proxy_socks_proto" != "" ];       then command="$command s@^\(SOCKS Protocol\) =.*\$@\1 = ${proxy_socks_proto}@;" ; fi
-if [ "$proxy_socks_nohandshake" != "" ]; then command="$command s@^\(SOCKS UDP No Handshake\) =.*\$@\1 = ${proxy_socks_nohandshake}@;" ; fi
-if [ "$proxy_socks_ol" != "" ];          then command="$command s@^\(SOCKS Proxy Only\) =.*\$@\1 = ${proxy_socks_ol}@;" ; fi
-if [ "$proxy_socks_ipv4_addr" != "" ];   then command="$command s@^\(SOCKS IPv4 Address\) =.*\$@\1 = ${proxy_socks_ipv4_addr}@;" ; fi
-if [ "$proxy_socks_ipv6_addr" != "" ];   then command="$command s@^\(SOCKS IPv6 Address\) =.*\$@\1 = ${proxy_socks_ipv6_addr}@;" ; fi
-if [ "$proxy_socks_tg_serv" != "" ];     then command="$command s@^\(SOCKS Target Server\) =.*\$@\1 = ${proxy_socks_tg_serv}@;" ; fi
-if [ "$proxy_socks_user" != "" ];        then command="$command s@^\(SOCKS Username\) =.*\$@\1 = ${proxy_socks_user}@;" ; fi
-if [ "$proxy_socks_pw" != "" ];          then command="$command s@^\(SOCKS Password\) =.*\$@\1 = ${proxy_socks_pw}@;" ; fi
-if [ "$proxy_http" != "" ];              then command="$command s@^\(HTTP CONNECT Proxy\) =.*\$@\1 = ${proxy_http}@;" ; fi
-if [ "$proxy_http_proto" != "" ];        then command="$command s@^\(HTTP CONNECT Protocol\) =.*\$@\1 = ${proxy_http_proto}@;" ; fi
-if [ "$proxy_http_ol" != "" ];           then command="$command s@^\(HTTP CONNECT Proxy Only\) =.*\$@\1 = ${proxy_http_ol}@;" ; fi
-if [ "$proxy_http_ipv4_addr" != "" ];    then command="$command s@^\(HTTP CONNECT IPv4 Address\) =.*\$@\1 = ${proxy_http_ipv4_addr}@;" ; fi
-if [ "$proxy_http_ipv6_addr" != "" ];    then command="$command s@^\(HTTP CONNECT IPv6 Address\) =.*\$@\1 = ${proxy_http_ipv6_addr}@;" ; fi
-if [ "$proxy_http_tg_serv" != "" ];      then command="$command s@^\(HTTP CONNECT Target Server\) =.*\$@\1 = ${proxy_http_tg_serv}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Handshake\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Version\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Validation\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS Server Name Indication\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT TLS ALPN\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$proxy_http_ver" != "" ];          then command="$command s@^\(HTTP CONNECT Version\) =.*\$@\1 = ${proxy_http_ver}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                    then command="$command s@^\(HTTP CONNECT Header Field\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$_httpauth" != "" ];               then command="$command s@^\(HTTP CONNECT Proxy Authorization\) =.*\$@\1 = ${_httpauth}@;" ; fi
-
-	sed -i "/^\[Proxy\]$/,/^\[.*\]$/ { $command }" $config
-
-}
-
-dnscurve_set() {
-	local section="$1"
-	local config="$2"
-	# DNSCurve
-	local variable_list="\
-	 dnscurve\
-	 dnscurve_proto\
-	 dnscurve_reliable_timeout\
-	 dnscurve_unreliable_timeout\
-	 dnscurve_encrypted\
-	 dnscurve_one_off_client_key\
-	 dnscurve_key_recheck_time\
-	 dnscurve_serv_input\
-	 dnscurve_serv_db_ipv4\
-	 dnscurve_serv_db_ipv4_alt\
-	 dnscurve_serv_db_ipv6\
-	 dnscurve_serv_db_ipv6_alt\
-	 dnscurve_serv_addr_ipv4\
-	 dnscurve_serv_addr_ipv4_alt\
-	 dnscurve_serv_addr_ipv6\
-	 dnscurve_serv_addr_ipv6_alt\
-	 dnscurve_serv_addr_ipv4_prov\
-	 dnscurve_serv_addr_ipv4_alt_prov\
-	 dnscurve_serv_addr_ipv6_prov\
-	 dnscurve_serv_addr_ipv6_alt_prov\
-	 dnscurve_serv_addr_ipv4_pubkey\
-	 dnscurve_serv_addr_ipv4_alt_pubkey\
-	 dnscurve_serv_addr_ipv6_pubkey\
-	 dnscurve_serv_addr_ipv6_alt_pubkey\
-	"
-	for _var in $variable_list; do local $_var; done
-	for _var in $variable_list; do config_get $_ver "$section" $_ver; done
-
-	if [ "$dnscurve_serv_input" == "manual" ]; then
-		unset dnscurve_serv_db_ipv4
-		unset dnscurve_serv_db_ipv4_alt
-		unset dnscurve_serv_db_ipv6
-		unset dnscurve_serv_db_ipv6_alt
+# <element> not empty
+else
+	# map_tab "$CONF_DNS" '' "$_element"		-- Show relative element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	if   [ -z "$_vtype" ]; then __cmd="| sed -n -e \"/^\${_element}@/ {s/\$_element//; s/@//p}\" -e \"/@\${_element}\$/ {s/\$_element//; s/@//p}\"";
+	# map_tab "$CONF_DNS" uci "$_element"		-- Show 'uci' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	elif [ "$_vtype" == "uci" ]; then __cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f1 -d@";
+	# map_tab "$CONF_DNS" raw "$_element"		-- Show 'raw' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
+	elif [ "$_vtype" == "raw" ]; then __cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f2 -d@";
+	# <variabletype> not support
+	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
+fi
 
 
-# DNSCurve
-local command
-if [ "$dnscurve" != "" ];                    then command="$command s@^\(DNSCurve\) =.*\$@\1 = ${dnscurve}@;" ; fi
-if [ "$dnscurve_proto" != "" ];              then command="$command s@^\(DNSCurve Protocol\) =.*\$@\1 = ${dnscurve_proto}@;" ; fi
-# if [ "$NONE" != "" ];                        then command="$command s@^\(DNSCurve Payload Size\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$dnscurve_reliable_timeout" != "" ];   then command="$command s@^\(DNSCurve Reliable Socket Timeout\) =.*\$@\1 = ${dnscurve_reliable_timeout}@;" ; fi
-if [ "$dnscurve_unreliable_timeout" != "" ]; then command="$command s@^\(DNSCurve Unreliable Socket Timeout\) =.*\$@\1 = ${dnscurve_unreliable_timeout}@;" ; fi
-if [ "$dnscurve_encrypted" != "" ];          then command="$command s@^\(DNSCurve Encryption\) =.*\$@\1 = ${dnscurve_encrypted}@;" ; fi
-# if [ "$NONE" != "" ];                        then command="$command s@^\(DNSCurve Encryption Only\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$dnscurve_one_off_client_key" != "" ]; then command="$command s@^\(DNSCurve Client Ephemeral Key\) =.*\$@\1 = ${dnscurve_one_off_client_key}@;" ; fi
-if [ "$dnscurve_key_recheck_time" != "" ];   then command="$command s@^\(DNSCurve Key Recheck Time\) =.*\$@\1 = ${dnscurve_key_recheck_time}@;" ; fi
+case "$_map" in
+	'')
+		echo 'map_tab: The <mapname> requires an argument'
+		return 1
+	;;
+	"$CONF_BASE")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			cfg_ver@Version
+			cfg_refsh_time@File Refresh Time
+			large_buff_size@Large Buffer Size
+			additional_path@Additional Path
+			hosts_cfg_name@Hosts File Name
+			ipfilter_file_name@IPFilter File Name
+		EOF
+	;;
+	"$CONF_LOG")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			log_lev@Print Log Level
+			log_max_size@Log Maximum Size
+		EOF
+	;;
+	"$CONF_LISTEN")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@Process Unique
+			pcap_capt@Pcap Capture
+			pcap_devices_blklist@Pcap Devices Blacklist
+			pcap_reading_timeout@Pcap Reading Timeout
+			listen_proto@Listen Protocol
+			listen_port@Listen Port
+			operation_mode@Operation Mode
+			NONE@IPFilter Type
+			NONE@IPFilter Level
+			NONE@Accept Type
+		EOF
+	;;
+	"$CONF_DNS")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			global_proto@Outgoing Protocol
+			direct_req@Direct Request
+			cc_type@Cache Type
+			cc_parameter@Cache Parameter
+			NONE@Cache Single IPv4 Address Prefix
+			NONE@Cache Single IPv6 Address Prefix
+			cc_default_ttl@Default TTL
+		EOF
+	;;
+	"$CONF_LOCALDNS")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			ll_proto@Local Protocol
+			ll_filter_mode@__FUNCTION='if [ "\$ll_filter_mode" == "0" ]; then echo Local Hosts=0; echo Local Routing=0; ll_force_req=0; elif [ "\$ll_filter_mode" == "hostlist" ]; then echo Local Hosts=1; echo Local Routing=0; elif [ "\$ll_filter_mode" == "routing" ]; then echo Local Hosts=0; echo Local Routing=1; ll_force_req=0; fi'
+			__LLFILTER@Local Hosts
+			__LLFILTER@Local Routing
+			ll_force_req@Local Force Request
+		EOF
+	;;
+	"$CONF_ADDRESSES")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			ipv4_listen_addr@IPv4 Listen Address
+			edns_client_subnet_ipv4_addr@IPv4 EDNS Client Subnet Address
+			global_ipv4_addr@IPv4 Main DNS Address
+			global_ipv4_addr_alt@IPv4 Alternate DNS Address
+			ll_ipv4_addr@IPv4 Local Main DNS Address
+			ll_ipv4_addr_alt@IPv4 Local Alternate DNS Address
+			ipv6_listen_addr@IPv6 Listen Address
+			edns_client_subnet_ipv6_addr@IPv6 EDNS Client Subnet Address
+			global_ipv6_addr@IPv6 Main DNS Address
+			global_ipv6_addr_alt@IPv6 Alternate DNS Address
+			ll_ipv6_addr@IPv6 Local Main DNS Address
+			ll_ipv6_addr_alt@IPv6 Local Alternate DNS Address
+		EOF
+	;;
+	"$CONF_VALUES")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@Thread Pool Base Number
+			NONE@Thread Pool Maximum Number
+			NONE@Thread Pool Reset Time
+			NONE@Queue Limits Reset Time
+			NONE@EDNS Payload Size
+			NONE@IPv4 Packet TTL
+			NONE@IPv4 Main DNS TTL
+			NONE@IPv4 Alternate DNS TTL
+			NONE@IPv6 Packet Hop Limits
+			NONE@IPv6 Main DNS Hop Limits
+			NONE@IPv6 Alternate DNS Hop Limits
+			NONE@Hop Limits Fluctuation
+			reliable_once_socket_timeout@Reliable Once Socket Timeout
+			reliable_serial_socket_timeout@Reliable Serial Socket Timeout
+			unreliable_once_socket_timeout@Unreliable Once Socket Timeout
+			unreliable_serial_socket_timeout@Unreliable Serial Socket Timeout
+			tcp_fast_op@TCP Fast Open
+			receive_waiting@Receive Waiting
+			icmp_test@ICMP Test
+			domain_test@Domain Test
+			alt_times@Alternate Times
+			alt_times_range@Alternate Time Range
+			alt_reset_time@Alternate Reset Time
+			mult_req_time@Multiple Request Times
+		EOF
+	;;
+	"$CONF_SWITCHES")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			domain_case_conv@Domain Case Conversion
+			compression_pointer_mutation@Compression Pointer Mutation
+			edns_label@__FUNCTION='if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
+			edns_list@NONE
+			__EDNS@EDNS Label
+			edns_client_subnet_relay@EDNS Client Subnet Relay
+			dnssec_req@DNSSEC Request
+			dnssec_force_record@DNSSEC Force Record
+			NONE@Alternate Multiple Request
+			NONE@IPv4 Do Not Fragment
+			NONE@TCP Data Filter
+			NONE@DNS Data Filter
+			NONE@Blacklist Filter
+			NONE@Resource Record Set TTL Filter
+		EOF
+	;;
+	"$CONF_DATA")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@ICMP ID
+			NONE@ICMP Sequence
+			NONE@ICMP PaddingData
+			NONE@Domain Test Protocol
+			NONE@Domain Test ID
+			NONE@Domain Test Data
+			server_domain@Local Machine Server Name
+		EOF
+	;;
+	"$CONF_PROXY")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			proxy_socks@SOCKS Proxy
+			proxy_socks_ver@SOCKS Version
+			proxy_socks_proto@SOCKS Protocol
+			proxy_socks_nohandshake@SOCKS UDP No Handshake
+			proxy_socks_ol@SOCKS Proxy Only
+			proxy_socks_ipv4_addr@SOCKS IPv4 Address
+			proxy_socks_ipv6_addr@SOCKS IPv6 Address
+			proxy_socks_tg_serv@SOCKS Target Server
+			proxy_socks_user@SOCKS Username
+			proxy_socks_pw@SOCKS Password
+			proxy_http@HTTP CONNECT Proxy
+			proxy_http_proto@HTTP CONNECT Protocol
+			proxy_http_ol@HTTP CONNECT Proxy Only
+			proxy_http_ipv4_addr@HTTP CONNECT IPv4 Address
+			proxy_http_ipv6_addr@HTTP CONNECT IPv6 Address
+			proxy_http_tg_serv@HTTP CONNECT Target Server
+			NONE@HTTP CONNECT TLS Handshake
+			NONE@HTTP CONNECT TLS Version
+			NONE@HTTP CONNECT TLS Validation
+			NONE@HTTP CONNECT TLS Server Name Indication
+			NONE@HTTP CONNECT TLS ALPN
+			proxy_http_ver@HTTP CONNECT Version
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			NONE@HTTP CONNECT Header Field
+			proxy_http_auth@__FUNCTION='if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
+			proxy_http_user@NONE
+			proxy_http_pw@NONE
+			__PROXYHTTPAUTH@HTTP CONNECT Proxy Authorization
+		EOF
+	;;
+	"$CONF_DNSCURVE")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			dnscurve@DNSCurve
+			dnscurve_proto@DNSCurve Protocol
+			NONE@DNSCurve Payload Size
+			dnscurve_reliable_timeout@DNSCurve Reliable Socket Timeout
+			dnscurve_unreliable_timeout@DNSCurve Unreliable Socket Timeout
+			dnscurve_encrypted@DNSCurve Encryption
+			NONE@DNSCurve Encryption Only
+			dnscurve_one_off_client_key@DNSCurve Client Ephemeral Key
+			dnscurve_key_recheck_time@DNSCurve Key Recheck Time
+		EOF
+	;;
+	"$CONF_DNSCURVEDB")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve Database Name
+			dnscurve_serv_db_ipv4@DNSCurve Database IPv4 Main DNS
+			dnscurve_serv_db_ipv4_alt@DNSCurve Database IPv4 Alternate DNS
+			dnscurve_serv_db_ipv6@DNSCurve Database IPv6 Main DNS
+			dnscurve_serv_db_ipv6_alt@DNSCurve Database IPv6 Alternate DNS
+		EOF
+	;;
+	"$CONF_DNSCURVEADDR")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			dnscurve_serv_addr_ipv4@DNSCurve IPv4 Main DNS Address
+			dnscurve_serv_addr_ipv4_alt@DNSCurve IPv4 Alternate DNS Address
+			dnscurve_serv_addr_ipv6@DNSCurve IPv6 Main DNS Address
+			dnscurve_serv_addr_ipv6_alt@DNSCurve IPv6 Alternate DNS Address
+			dnscurve_serv_addr_ipv4_prov@DNSCurve IPv4 Main Provider Name
+			dnscurve_serv_addr_ipv4_alt_prov@DNSCurve IPv4 Alternate Provider Name
+			dnscurve_serv_addr_ipv6_prov@DNSCurve IPv6 Main Provider Name
+			dnscurve_serv_addr_ipv6_alt_prov@DNSCurve IPv6 Alternate Provider Name
+		EOF
+	;;
+	"$CONF_DNSCURVEKEY")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve Client Public Key
+			NONE@DNSCurve Client Secret Key
+			dnscurve_serv_addr_ipv4_pubkey@DNSCurve IPv4 Main DNS Public Key
+			dnscurve_serv_addr_ipv4_alt_pubkey@DNSCurve IPv4 Alternate DNS Public Key
+			dnscurve_serv_addr_ipv6_pubkey@DNSCurve IPv6 Main DNS Public Key
+			dnscurve_serv_addr_ipv6_alt_pubkey@DNSCurve IPv6 Alternate DNS Public Key
+			NONE@DNSCurve IPv4 Main DNS Fingerprint
+			NONE@DNSCurve IPv4 Alternate DNS Fingerprint
+			NONE@DNSCurve IPv6 Main DNS Fingerprint
+			NONE@DNSCurve IPv6 Alternate DNS Fingerprint
+		EOF
+	;;
+	"$CONF_DNSCURVEMAGCNUM")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			NONE@DNSCurve IPv4 Main Receive Magic Number
+			NONE@DNSCurve IPv4 Alternate Receive Magic Number
+			NONE@DNSCurve IPv6 Main Receive Magic Number
+			NONE@DNSCurve IPv6 Alternate Receive Magic Number
+			NONE@DNSCurve IPv4 Main DNS Magic Number
+			NONE@DNSCurve IPv4 Alternate DNS Magic Number
+			NONE@DNSCurve IPv6 Main DNS Magic Number
+			NONE@DNSCurve IPv6 Alternate DNS Magic Number
+		EOF
+	;;
+	*)
+		echo "map_tab: The Map '$_map' does not exist"
+		return 1
+	;;
+esac
 
-	sed -i "/^\[DNSCurve\]$/,/^\[.*\]$/ { $command }" $config
 
 
-# DNSCurve Database
-unset command
-# if [ "$NONE" != "" ];                      then command="$command s@^\(DNSCurve Database Name\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$dnscurve_serv_db_ipv4" != "" ];     then command="$command s@^\(DNSCurve Database IPv4 Main DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv4}@;" ; fi
-if [ "$dnscurve_serv_db_ipv4_alt" != "" ]; then command="$command s@^\(DNSCurve Database IPv4 Alternate DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv4_alt}@;" ; fi
-if [ "$dnscurve_serv_db_ipv6" != "" ];     then command="$command s@^\(DNSCurve Database IPv6 Main DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6}@;" ; fi
-if [ "$dnscurve_serv_db_ipv6_alt" != "" ]; then command="$command s@^\(DNSCurve Database IPv6 Alternate DNS\) =.*\$@\1 = ${dnscurve_serv_db_ipv6_alt}@;" ; fi
-
-	sed -i "/^\[DNSCurve Database\]$/,/^\[.*\]$/ { $command }" $config
-
-
-# DNSCurve Addresses
-unset command
-if [ "$dnscurve_serv_addr_ipv4" != "" ];          then command="$command s@^\(DNSCurve IPv4 Main DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv4_alt" != "" ];      then command="$command s@^\(DNSCurve IPv4 Alternate DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6" != "" ];          then command="$command s@^\(DNSCurve IPv6 Main DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6_alt" != "" ];      then command="$command s@^\(DNSCurve IPv6 Alternate DNS Address\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv4_prov" != "" ];     then command="$command s@^\(DNSCurve IPv4 Main Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_prov}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv4_alt_prov" != "" ]; then command="$command s@^\(DNSCurve IPv4 Alternate Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt_prov}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6_prov" != "" ];     then command="$command s@^\(DNSCurve IPv6 Main Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_prov}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6_alt_prov" != "" ]; then command="$command s@^\(DNSCurve IPv6 Alternate Provider Name\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt_prov}@;" ; fi
-
-	sed -i "/^\[DNSCurve Addresses\]$/,/^\[.*\]$/ { $command }" $config
-
-
-# DNSCurve Keys
-unset command
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve Client Public Key\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve Client Secret Key\) =.*\$@\1 = ${NONE}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv4_pubkey" != "" ];     then command="$command s@^\(DNSCurve IPv4 Main DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_pubkey}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv4_alt_pubkey" != "" ]; then command="$command s@^\(DNSCurve IPv4 Alternate DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv4_alt_pubkey}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6_pubkey" != "" ];     then command="$command s@^\(DNSCurve IPv6 Main DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_pubkey}@;" ; fi
-if [ "$dnscurve_serv_addr_ipv6_alt_pubkey" != "" ]; then command="$command s@^\(DNSCurve IPv6 Alternate DNS Public Key\) =.*\$@\1 = ${dnscurve_serv_addr_ipv6_alt_pubkey}@;" ; fi
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv4 Main DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv4 Alternate DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Main DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                               then command="$command s@^\(DNSCurve IPv6 Alternate DNS Fingerprint\) =.*\$@\1 = ${NONE}@;" ; fi
-
-	sed -i "/^\[DNSCurve Keys\]$/,/^\[.*\]$/ { $command }" $config
-
-
-# DNSCurve Magic Number
-unset command
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Main Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Alternate Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Main Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate Receive Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Main DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv4 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Main DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-# if [ "$NONE" != "" ];                     then command="$command s@^\(DNSCurve IPv6 Alternate DNS Magic Number\) =.*\$@\1 = ${NONE}@;" ; fi
-
-	sed -i "/^\[DNSCurve Magic Number\]$/,$ { $command }" $config
 
 }
 
+# uci2conf <section> <mapname> [<conffile>]
 uci2conf() {
-	local section='uci_cfg'
+	local section="$1" && shift
+	if [ -z "$1" ]; then echo 'uci2conf: The <mapname> requires an argument'; return 1; fi
+	local map="$1"
+	local config
+	[ -e "$2" ] && config="$2" || config="$CONFIGFILE"
+
+	
+# Defining variables for uci config
+#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
+local uci_list=`map_tab "$map" uci | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval uci_list=(${uci_list//'/\'})
+local uci_count=${#uci_list[@]}
+# Get values of uci config
+for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
+
+
+# Write $config file
+local command
+local araw_list
+local _raw
+local __FUNCTION
+
+for _var in "${uci_list[@]}"; do
+	# <$_var> not empty AND <$$_var> not empty
+	if [ -n "$_var" -a -n "$(eval echo \$$_var)" ]; then
+
+		_raw=`map_tab "$map" raw "$_var"` # ~~Also need process DynamicList like: 'HTTP CONNECT Header Field'~~ Consider not adding, can only added them from user conffile
+
+		# <$_raw> returns not empty
+		if [ -n "$_raw" ]; then
+			# Not Normal uci element
+			if   [ "`echo "$_raw" | grep "^_.\+$"`" ]; then
+				# Function uci element
+				eval "$_raw" # Extract function body
+					#eval "echo '$__FUNCTION'"
+				eval "$__FUNCTION" >/dev/null
+				araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+					eval araw_list=(${araw_list//'/\'})
+                
+				# Write Function conf
+				for _tab in "${araw_list[@]}"; do
+					command="$command s~^\($(echo "$_tab" | cut -f1 -d=)\) \([<=>]\).*\$~\1 \2 $(echo "$_tab" | cut -f2 -d=)~;"
+					#echo "$(echo "$_tab" | cut -f1 -d=) -- $(echo "$_tab" | cut -f2 -d=)" #debug test
+				done
+			# All-in-one uci element
+			elif [ "$_raw" == "NONE" ]; then
+				echo "Usually used to combine multiple uci parameters into one raw parameter" >/dev/null
+			# Normal uci element
+			else
+				# Write Normal conf
+				eval "_var=\"\$$_var\""
+				command="$command s~^\($_raw\) \([<=>]\).*\$~\1 \2 ${_var}~;"
+				#echo "Normal: ${_raw} = ${_var}" #debug test
+			fi
+		# <$_raw> returns empty
+		else
+			echo "uci2conf: The Element '$_var' not have relative element"; return 1
+			echo "This situation basically does not exist" >/dev/null
+		fi
+	
+	# <$_var> returns empty
+	else
+		echo "uci2conf: The Element '$_var' is empty" >/dev/null
+	fi
+done
+		#echo "$command"
+
+	if   [ "$map" == "$(eval echo \$$CONF_LIST_FIRST)" ]; then sed -i "1,/^\[.*\]$/            { $command }" $config;
+	elif [ "$map" == "$(eval echo \$$CONF_LIST_LAST)" ]; then  sed -i "/^\[$map\]$/,$          { $command }" $config;
+	else                                                       sed -i "/^\[$map\]$/,/^\[.*\]$/ { $command }" $config;
+	fi
+
+}
+
+conf2uci() {
+	echo
+}
+
+uci2conf_full() {
+	local TypedSection="$TYPEDSECTION"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
 	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
 
 	# Apply Uci config to pcap-dnsproxy Main Config file
-	# config_foreach base_set $section $CONFIGFILE
-	# config_foreach log_set $section $CONFIGFILE
-	config_foreach listen_set $section $CONFIGFILE
-	config_foreach dns_set $section $CONFIGFILE
-	config_foreach local_dns_set $section $CONFIGFILE
-	config_foreach addresses_set $section $CONFIGFILE
-	config_foreach values_set $section $CONFIGFILE
-	config_foreach switches_set $section $CONFIGFILE
-	config_foreach data_set $section $CONFIGFILE
-	config_foreach proxy_set $section $CONFIGFILE
-	config_foreach dnscurve_set $section $CONFIGFILE
+	for _conf in "${CONF_LIST[@]}"; do
+		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\""
+	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
 	
 
-
-
 }
+
+conf2uci_full() {
+	echo
+}
+
+
+# ================ Main ================ #
+
+# Define Map name list
+CONF_LIST=`map_def nam | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval CONF_LIST=(${CONF_LIST//'/\'})
+CONF_LIST_COUNT=${#CONF_LIST[@]}
+     CONF_LIST_FIRST=${CONF_LIST[0]}
+eval CONF_LIST_LAST=\${CONF_LIST[$((${CONF_LIST_COUNT}-1))]}
+
+# Define Map name and values
+for _var in "`map_def`"; do eval "${_var[@]}"; done
+	#for _var in "${CONF_LIST[@]}"; do eval echo $_var=\\\"\$$_var\\\"; done
+
+
+
+
+
+#Y:map_def     for _conf in "${CONF_LIST[@]}"; do eval "map_tab \"\$$_conf\""; done
+#Y:map_tab     map_tab "$@"
+#config_get bbt
+#Y:uci2conf    uci2conf 'cfg34fb357e' "$CONF_LOCALDNS" './test.conf'
+
