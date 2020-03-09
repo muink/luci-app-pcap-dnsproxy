@@ -45,6 +45,20 @@ function app_sys.write (self, section)
 	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
 end
 
+load_sys = h:option(Button, "_button", translate("Load from System"))
+load_sys.inputtitle = translate("Load from System")
+load_sys.inputstyle = "apply"
+function app_sys.write (self, section)
+	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh conf2uci_full")
+end
+
+reset = h:option(Button, "_button", translate("Reset All settings"))
+reset.inputtitle = translate("Reset All settings")
+reset.inputstyle = "apply"
+function app_sys.write (self, section)
+	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh reset_conf_full")
+end
+
 
 s = m:section(TypedSection, "main", "Pcap_DNSProxy settings",
 	translatef("For further information "

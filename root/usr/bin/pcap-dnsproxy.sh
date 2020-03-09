@@ -427,6 +427,16 @@ conf2uci_full() {
 	echo
 }
 
+reset_conf_full() {
+
+	# Reset pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Reset pcap-dnsproxy Uci Config
+	#emmmmmmmm.....
+
+}
+
 
 # ================ Main ================ #
 
