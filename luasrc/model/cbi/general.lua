@@ -124,6 +124,26 @@ global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv6_addr_alt", tra
 global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2620:0:CCD::2]:5353"
 global_ipv6_addr_alt.rmempty = false
 
+edns_client_subnet_ipv4_addr = s:taboption("general", Value, "edns_client_subnet_ipv4_addr", translate("IPv4 EDNS Client Subnet Address"),
+	translate("EDNS Client Subnet Relay parameter priority is higher than this parameter.")
+	.. "<br/>"
+	.. translate("After enabling, the EDNS subnet address of EDNS Client Subnet Relay will be added preferentially."))
+edns_client_subnet_ipv4_addr.datatype = "cidr4"
+edns_client_subnet_ipv4_addr.placeholder = "202.97.82.0/24"
+edns_client_subnet_ipv4_addr.rmempty = true
+edns_client_subnet_ipv4_addr:depends("edns_label", "1")
+edns_client_subnet_ipv4_addr:depends("edns_label", "2")
+
+edns_client_subnet_ipv6_addr = s:taboption("general", Value, "edns_client_subnet_ipv6_addr", translate("IPv6 EDNS Client Subnet Address"),
+	translate("EDNS Client Subnet Relay parameter priority is higher than this parameter.")
+	.. "<br/>"
+	.. translate("After enabling, the EDNS subnet address of EDNS Client Subnet Relay will be added preferentially."))
+edns_client_subnet_ipv6_addr.datatype = "cidr6"
+edns_client_subnet_ipv6_addr.placeholder = "240e:e0:865:ed0::/56"
+edns_client_subnet_ipv6_addr.rmempty = true
+edns_client_subnet_ipv6_addr:depends("edns_label", "1")
+edns_client_subnet_ipv6_addr:depends("edns_label", "2")
+
 
 --[[ Local DNS Request ]]--
 
@@ -324,8 +344,13 @@ domain_case_conv = s:taboption("adv_set", Flag, "domain_case_conv", translate("D
 domain_case_conv.rmempty = false
 --domain_case_conv.default = "1"
 
+header_processing = s:taboption("adv_set", ListValue, "header_processing", translate("DNS Header Processing"))
+header_processing:value("0", translate("Disable"))
+header_processing:value("cpm", translate("Compression Pointer Mutation"))
+header_processing:value("edns", translate("EDNS Label"))
+header_processing.rmempty = false
+
 compression_pointer_mutation = s:taboption("adv_set", ListValue, "compression_pointer_mutation", translate("Compression Pointer Mutation"))
-compression_pointer_mutation:value("0", translate("Disable"))
 compression_pointer_mutation:value("1")
 compression_pointer_mutation:value("2")
 compression_pointer_mutation:value("3")
@@ -333,17 +358,14 @@ compression_pointer_mutation:value("1 + 2")
 compression_pointer_mutation:value("2 + 3")
 compression_pointer_mutation:value("1 + 3")
 compression_pointer_mutation:value("1 + 2 + 3")
-compression_pointer_mutation.rmempty = false
-compression_pointer_mutation:depends("edns_label", "")
-compression_pointer_mutation:depends("edns_label", "0")
+compression_pointer_mutation.rmempty = true
+compression_pointer_mutation:depends("header_processing", "cpm")
 
 edns_label = s:taboption("adv_set", ListValue, "edns_label", translate("EDNS Label"))
-edns_label:value("0", translate("Disable"))
 edns_label:value("1", translate("All request to enable"))
 edns_label:value("2", translate("Enable request below list"))
 edns_label.rmempty = true
-edns_label:depends("compression_pointer_mutation", "")
-edns_label:depends("compression_pointer_mutation", "0")
+edns_label:depends("header_processing", "edns")
 
 edns_list = s:taboption("adv_set", Value, "edns_list", translate("EDNS Label List"),
 	translate("Include format: Local + SOCKS Proxy + HTTP CONNECT Proxy + Direct Request + DNSCurve + TCP + UDP")
@@ -355,32 +377,18 @@ edns_list:depends("edns_label", "2")
 
 edns_client_subnet_relay = s:taboption("adv_set", Flag, "edns_client_subnet_relay", translate("EDNS Client Subnet Relay"),
 	translate("Only enabled when providing services as a non-local private network dns server"))
-edns_client_subnet_relay.rmempty = false
+edns_client_subnet_relay.rmempty = true
 edns_client_subnet_relay:depends("edns_label", "1")
 edns_client_subnet_relay:depends("edns_label", "2")
 
-edns_client_subnet_ipv4_addr = s:taboption("adv_set", Value, "edns_client_subnet_ipv4_addr", translate("IPv4 EDNS Client Subnet Address"))
-edns_client_subnet_ipv4_addr.datatype = "cidr4"
-edns_client_subnet_ipv4_addr.placeholder = "202.97.82.0/24"
-edns_client_subnet_ipv4_addr.rmempty = false
-edns_client_subnet_ipv4_addr:depends("edns_label", "1")
-edns_client_subnet_ipv4_addr:depends("edns_label", "2")
-
-edns_client_subnet_ipv6_addr = s:taboption("adv_set", Value, "edns_client_subnet_ipv6_addr", translate("IPv6 EDNS Client Subnet Address"))
-edns_client_subnet_ipv6_addr.datatype = "cidr6"
-edns_client_subnet_ipv6_addr.placeholder = "240e:e0:865:ed0::/56"
-edns_client_subnet_ipv6_addr.rmempty = false
-edns_client_subnet_ipv6_addr:depends("edns_label", "1")
-edns_client_subnet_ipv6_addr:depends("edns_label", "2")
-
 dnssec_req = s:taboption("adv_set", Flag, "dnssec_req", translate("DNSSEC Request"))
-dnssec_req.rmempty = false
+dnssec_req.rmempty = true
 dnssec_req:depends("edns_label", "1")
 dnssec_req:depends("edns_label", "2")
 
 dnssec_force_record = s:taboption("adv_set", Flag, "dnssec_force_record", translate("DNSSEC Force Record"),
 	translate("Enabling will cause all undeployed DNSSEC function variable name resolution failure!"))
-dnssec_force_record.rmempty = false
+dnssec_force_record.rmempty = true
 dnssec_force_record:depends("edns_label", "1")
 dnssec_force_record:depends("edns_label", "2")
 
