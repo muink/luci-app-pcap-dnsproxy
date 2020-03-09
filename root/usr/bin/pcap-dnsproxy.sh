@@ -194,6 +194,7 @@ case "$_map" in
 	"$CONF_SWITCHES")
 		eval grep \"\$_element\" <<-EOF $__cmd
 			domain_case_conv@Domain Case Conversion
+			header_processing@__FUNCTION='if [ "\$header_processing" == "0" ]; then compression_pointer_mutation=0; edns_label=0; elif [ "\$header_processing" == "cpm" ]; then edns_label=0; elif [ "\$header_processing" == "edns" ]; then compression_pointer_mutation=0; fi'
 			compression_pointer_mutation@Compression Pointer Mutation
 			edns_label@__FUNCTION='if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
 			edns_list@NONE
@@ -358,7 +359,7 @@ for _var in "${uci_list[@]}"; do
 		# <$_raw> returns not empty
 		if [ -n "$_raw" ]; then
 			# Not Normal uci element
-			if   [ "`echo "$_raw" | grep "^_.\+$"`" ]; then
+			if   [ "`echo "$_raw" | grep "^__.\+$"`" ]; then
 				# Function uci element
 				eval "$_raw" # Extract function body
 					#eval "echo '$__FUNCTION'"
