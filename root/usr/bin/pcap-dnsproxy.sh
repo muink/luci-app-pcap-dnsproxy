@@ -403,8 +403,72 @@ done
 
 }
 
+# conf2uci <section> <mapname> <conffile> <pkgname>
 conf2uci() {
-	echo
+	local initvar=(section map config pkgnm)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+	
+# Defining variables for conffile
+#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
+local raw_list=`map_tab "$map" raw | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval raw_list=(${raw_list//'/\'})
+local raw_count=${#raw_list[@]}
+#for _ll in "${raw_list[@]}"; do echo "$_ll"; done
+
+
+# Write uci settings $section
+local command
+local araw_list
+local _uci
+local _value
+local __FUNCTION
+
+for _var in "${raw_list[@]}"; do
+
+	_uci=`map_tab "$map" uci "$_var"`
+
+	# <$_var> not empty AND relative uci element not empty
+	if [ -n "$_var" -a -n "$_uci" ]; then
+
+		_value="$(sed -n "/^\[${map}\]$/,/^\[.*\]$/ { s~^${_var} [<=>] *\(.*\)$~\1~ p }" $config)"
+
+		# Not Normal raw element
+		if   [ "`echo "$_uci" | grep "^__.\+$"`" ]; then
+			# Function raw element
+			eval "$_uci" # Extract function body
+				#eval "echo '$__FUNCTION'"
+			eval "$__FUNCTION" >/dev/null
+			araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+				eval araw_list=(${araw_list//'/\'})
+            
+			# Write Function conf
+			for _tab in "${araw_list[@]}"; do
+				uci_set "$pkgnm" "$section" "$(echo "$_tab" | cut -f1 -d=)" "$(echo "$_tab" | cut -f2 -d=)"
+				#echo "Function: $(echo "$_tab" | cut -f1 -d=) = $(echo "$_tab" | cut -f2 -d=)" #debug test
+			done
+		# Undefined raw element
+		elif [ "$_uci" == "NONE" ]; then
+			echo "The relative uci element value of \"$_raw\" is undefined" >/dev/null
+		# Normal raw element
+		else
+			# Write Normal uci
+			uci_set "$pkgnm" "$section" "$_uci" "$_value"
+			#echo "Normal: ${_uci} = ${_value}" #debug test
+		fi
+
+	# <$_var> OR <$_uci> returns empty
+	else
+		echo "conf2uci: The Element \"$_var\" not exist or not have relative element"; return 1
+		echo "This situation basically does not exist" >/dev/null
+	fi
+done
+
+	uci_commit
+
 }
 
 uci2conf_full() {
