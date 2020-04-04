@@ -326,13 +326,13 @@ esac
 
 }
 
-# uci2conf <section> <mapname> [<conffile>]
+# uci2conf <section> <mapname> <conffile>
 uci2conf() {
-	local section="$1" && shift
-	if [ -z "$1" ]; then echo 'uci2conf: The <mapname> requires an argument'; return 1; fi
-	local map="$1"
-	local config
-	[ -e "$2" ] && config="$2" || config="$CONFIGFILE"
+	local initvar=(section map config)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
 
 	
 # Defining variables for uci config
@@ -342,6 +342,7 @@ local uci_list=`map_tab "$map" uci | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` 
 local uci_count=${#uci_list[@]}
 # Get values of uci config
 for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
+#eval "config_set \"\$section\" \"\$_var\" \"\$$_var\"" # Only set to environment variables
 
 
 # Write $config file
@@ -408,6 +409,7 @@ conf2uci() {
 
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
+	local ConfigFile="$CONFIGFILE"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
@@ -415,7 +417,7 @@ uci2conf_full() {
 
 	# Apply Uci config to pcap-dnsproxy Main Config file
 	for _conf in "${CONF_LIST[@]}"; do
-		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\""
+		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\""
 	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
