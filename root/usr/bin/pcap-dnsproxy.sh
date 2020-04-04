@@ -426,7 +426,19 @@ uci2conf_full() {
 }
 
 conf2uci_full() {
-	echo
+	local PackageName="$UCICFGFILE"
+	local TypedSection="@$TYPEDSECTION[-1]"
+	local ConfigFile="$CONFIGFILE"
+
+	# Clear ${PackageName}.${TypedSection}
+	uci_remove "$PackageName" "$TypedSection"
+	uci_add    "$PackageName" "$TYPEDSECTION"
+
+	# Apply pcap-dnsproxy Main Config file to Uci config
+	for _conf in "${CONF_LIST[@]}"; do
+		eval "conf2uci \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\" \"\$PackageName\""
+	done
+
 }
 
 reset_conf_full() {
@@ -435,7 +447,7 @@ reset_conf_full() {
 	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
 
 	# Reset pcap-dnsproxy Uci Config
-	#emmmmmmmm.....
+	conf2uci_full
 
 }
 
