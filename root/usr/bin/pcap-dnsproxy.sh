@@ -250,7 +250,7 @@ case "$_map" in
 			proxy_http_auth@__FUNCTION='if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
 			proxy_http_user@NONE
 			proxy_http_pw@NONE
-			__PROXYHTTPAUTH@HTTP CONNECT Proxy Authorization
+			__FUNCTION='if [ -n "\$(echo \$_value|sed -n "/^.*:.*\$/ p")" ]; then echo proxy_http_auth=1; echo proxy_http_user=\${_value%%:*}; echo proxy_http_pw=\${_value##*:}; else echo proxy_http_auth=0; fi'@HTTP CONNECT Proxy Authorization
 		EOF
 	;;
 	"$CONF_DNSCURVE")
