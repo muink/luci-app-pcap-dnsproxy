@@ -314,13 +314,10 @@ case "$_map" in
 		EOF
 	;;
 	*)
-		echo "map_tab: The Map '$_map' does not exist"
+		echo "map_tab: The Map \"$_map\" does not exist"
 		return 1
 	;;
 esac
-
-
-
 
 }
 
@@ -369,7 +366,7 @@ for _var in "${uci_list[@]}"; do
 				# Write Function conf
 				for _tab in "${araw_list[@]}"; do
 					command="$command s~^\($(echo "$_tab" | cut -f1 -d=)\) \([<=>]\).*\$~\1 \2 $(echo "$_tab" | cut -f2 -d=)~;"
-					#echo "$(echo "$_tab" | cut -f1 -d=) -- $(echo "$_tab" | cut -f2 -d=)" #debug test
+					#echo "Function: $(echo "$_tab" | cut -f1 -d=) = $(echo "$_tab" | cut -f2 -d=)" #debug test
 				done
 			# All-in-one uci element
 			elif [ "$_raw" == "NONE" ]; then
@@ -383,13 +380,13 @@ for _var in "${uci_list[@]}"; do
 			fi
 		# <$_raw> returns empty
 		else
-			echo "uci2conf: The Element '$_var' not have relative element"; return 1
+			echo "uci2conf: The Element \"$_var\" not have relative element"; return 1
 			echo "This situation basically does not exist" >/dev/null
 		fi
 	
 	# <$_var> returns empty
 	else
-		echo "uci2conf: The Element '$_var' is empty" >/dev/null
+		echo "uci2conf: The Element \"$_var\" is empty" >/dev/null
 	fi
 done
 		#echo "$command"
@@ -439,7 +436,6 @@ for _var in "${raw_list[@]}"; do
 			# Function raw element
 			eval "$_uci" # Extract function body
 				#eval "echo '$__FUNCTION'"
-			eval "$__FUNCTION" >/dev/null
 			araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
 				eval araw_list=(${araw_list//'/\'})
             
@@ -531,8 +527,5 @@ for _var in "`map_def`"; do eval "${_var[@]}"; done
 
 
 
-#Y:map_def     for _conf in "${CONF_LIST[@]}"; do eval "map_tab \"\$$_conf\""; done
-#Y:map_tab     map_tab "$@"
-#config_get bbt
-#Y:uci2conf    uci2conf 'cfg34fb357e' "$CONF_LOCALDNS" './test.conf'
+$_FUNCTION "$@"
 
