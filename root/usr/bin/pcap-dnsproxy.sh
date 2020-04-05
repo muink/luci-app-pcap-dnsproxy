@@ -195,10 +195,11 @@ case "$_map" in
 		eval grep \"\$_element\" <<-EOF $__cmd
 			domain_case_conv@Domain Case Conversion
 			header_processing@__FUNCTION='if [ "\$header_processing" == "0" ]; then compression_pointer_mutation=0; edns_label=0; elif [ "\$header_processing" == "cpm" ]; then edns_label=0; elif [ "\$header_processing" == "edns" ]; then compression_pointer_mutation=0; fi'
-			compression_pointer_mutation@Compression Pointer Mutation
+			compression_pointer_mutation@__FUNCTION='echo Compression Pointer Mutation=\$compression_pointer_mutation'
+			__FUNCTION='if [ -z "\$_value" -o "\$_value" == "0" ]; then echo header_processing=0; else echo header_processing=cpm; echo compression_pointer_mutation=\$_value; fi'@Compression Pointer Mutation
 			edns_label@__FUNCTION='if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
 			edns_list@NONE
-			__EDNS@EDNS Label
+			__FUNCTION='if [ -z "\$_value" -o "\$_value" == "0" ]; then echo edns_label=0; elif [ "\$_value" == "1" ]; then echo header_processing=edns; echo edns_label=1; else echo header_processing=edns; echo edns_label=2; echo edns_list=\$_value; fi'@EDNS Label
 			edns_client_subnet_relay@EDNS Client Subnet Relay
 			dnssec_req@DNSSEC Request
 			dnssec_force_record@DNSSEC Force Record
