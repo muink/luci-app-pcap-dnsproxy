@@ -142,8 +142,8 @@ case "$_map" in
 		eval grep \"\$_element\" <<-EOF $__cmd
 			ll_proto@Local Protocol
 			ll_filter_mode@__FUNCTION='if [ "\$ll_filter_mode" == "0" ]; then echo Local Hosts=0; echo Local Routing=0; ll_force_req=0; elif [ "\$ll_filter_mode" == "hostlist" ]; then echo Local Hosts=1; echo Local Routing=0; elif [ "\$ll_filter_mode" == "routing" ]; then echo Local Hosts=0; echo Local Routing=1; ll_force_req=0; fi'
-			__LLFILTER@Local Hosts
-			__LLFILTER@Local Routing
+			__FUNCTION='if [ "\$_value" == "1" ]; then echo ll_filter_mode=hostlist; else echo ll_filter_mode=0; fi'@Local Hosts
+			__FUNCTION='if [ "\$_value" == "1" ]; then echo ll_filter_mode=routing; fi'@Local Routing
 			ll_force_req@Local Force Request
 		EOF
 	;;
@@ -195,10 +195,11 @@ case "$_map" in
 		eval grep \"\$_element\" <<-EOF $__cmd
 			domain_case_conv@Domain Case Conversion
 			header_processing@__FUNCTION='if [ "\$header_processing" == "0" ]; then compression_pointer_mutation=0; edns_label=0; elif [ "\$header_processing" == "cpm" ]; then edns_label=0; elif [ "\$header_processing" == "edns" ]; then compression_pointer_mutation=0; fi'
-			compression_pointer_mutation@Compression Pointer Mutation
+			compression_pointer_mutation@__FUNCTION='echo Compression Pointer Mutation=\$compression_pointer_mutation'
+			__FUNCTION='if [ -z "\$_value" -o "\$_value" == "0" ]; then echo header_processing=0; else echo header_processing=cpm; echo compression_pointer_mutation=\$_value; fi'@Compression Pointer Mutation
 			edns_label@__FUNCTION='if [ "\$edns_label" == "0" ]; then echo EDNS Label=0; elif [ "\$edns_label" == "1" ]; then echo EDNS Label=1; elif [ "\$edns_label" == "2" ]; then echo EDNS Label=\$edns_list; fi'
 			edns_list@NONE
-			__EDNS@EDNS Label
+			__FUNCTION='if [ -z "\$_value" -o "\$_value" == "0" ]; then echo edns_label=0; elif [ "\$_value" == "1" ]; then echo header_processing=edns; echo edns_label=1; else echo header_processing=edns; echo edns_label=2; echo edns_list=\$_value; fi'@EDNS Label
 			edns_client_subnet_relay@EDNS Client Subnet Relay
 			dnssec_req@DNSSEC Request
 			dnssec_force_record@DNSSEC Force Record
@@ -245,14 +246,11 @@ case "$_map" in
 			NONE@HTTP CONNECT TLS Server Name Indication
 			NONE@HTTP CONNECT TLS ALPN
 			proxy_http_ver@HTTP CONNECT Version
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
+			MULTICONF@HTTP CONNECT Header Field
 			proxy_http_auth@__FUNCTION='if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
 			proxy_http_user@NONE
 			proxy_http_pw@NONE
-			__PROXYHTTPAUTH@HTTP CONNECT Proxy Authorization
+			__FUNCTION='if [ -n "\$(echo \$_value|sed -n "/^.*:.*\$/ p")" ]; then echo proxy_http_auth=1; echo proxy_http_user=\${_value%%:*}; echo proxy_http_pw=\${_value##*:}; else echo proxy_http_auth=0; fi'@HTTP CONNECT Proxy Authorization
 		EOF
 	;;
 	"$CONF_DNSCURVE")
@@ -326,13 +324,13 @@ esac
 
 }
 
-# uci2conf <section> <mapname> [<conffile>]
+# uci2conf <section> <mapname> <conffile>
 uci2conf() {
-	local section="$1" && shift
-	if [ -z "$1" ]; then echo 'uci2conf: The <mapname> requires an argument'; return 1; fi
-	local map="$1"
-	local config
-	[ -e "$2" ] && config="$2" || config="$CONFIGFILE"
+	local initvar=(section map config)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
 
 	
 # Defining variables for uci config
@@ -342,6 +340,7 @@ local uci_list=`map_tab "$map" uci | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` 
 local uci_count=${#uci_list[@]}
 # Get values of uci config
 for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
+#eval "config_set \"\$section\" \"\$_var\" \"\$$_var\"" # Only set to environment variables
 
 
 # Write $config file
@@ -402,12 +401,77 @@ done
 
 }
 
+# conf2uci <section> <mapname> <conffile> <pkgname>
 conf2uci() {
-	echo
+	local initvar=(section map config pkgnm)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+	
+# Defining variables for conffile
+#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
+local raw_list=`map_tab "$map" raw | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+	eval raw_list=(${raw_list//'/\'})
+local raw_count=${#raw_list[@]}
+#for _ll in "${raw_list[@]}"; do echo "$_ll"; done
+
+
+# Write uci settings $section
+local command
+local araw_list
+local _uci
+local _value
+local __FUNCTION
+
+for _var in "${raw_list[@]}"; do
+
+	_uci=`map_tab "$map" uci "$_var"`
+
+	# <$_var> not empty AND relative uci element not empty
+	if [ -n "$_var" -a -n "$_uci" ]; then
+
+		_value="$(sed -n "/^\[${map}\]$/,/^\[.*\]$/ { s~^${_var} [<=>] *\(.*\)$~\1~ p }" $config)"
+
+		# Not Normal raw element
+		if   [ "`echo "$_uci" | grep "^__.\+$"`" ]; then
+			# Function raw element
+			eval "$_uci" # Extract function body
+				#eval "echo '$__FUNCTION'"
+			eval "$__FUNCTION" >/dev/null
+			araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+				eval araw_list=(${araw_list//'/\'})
+            
+			# Write Function conf
+			for _tab in "${araw_list[@]}"; do
+				uci_set "$pkgnm" "$section" "$(echo "$_tab" | cut -f1 -d=)" "$(echo "$_tab" | cut -f2 -d=)"
+				#echo "Function: $(echo "$_tab" | cut -f1 -d=) = $(echo "$_tab" | cut -f2 -d=)" #debug test
+			done
+		# Undefined raw element
+		elif [ "$_uci" == "NONE" -o "$_uci" == "MULTICONF" ]; then
+			echo "The relative uci element value of \"$_raw\" is undefined" >/dev/null
+		# Normal raw element
+		else
+			# Write Normal uci
+			uci_set "$pkgnm" "$section" "$_uci" "$_value"
+			#echo "Normal: ${_uci} = ${_value}" #debug test
+		fi
+
+	# <$_var> OR <$_uci> returns empty
+	else
+		echo "conf2uci: The Element \"$_var\" not exist or not have relative element"; return 1
+		echo "This situation basically does not exist" >/dev/null
+	fi
+done
+
+	uci_commit
+
 }
 
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
+	local ConfigFile="$CONFIGFILE"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
@@ -415,7 +479,7 @@ uci2conf_full() {
 
 	# Apply Uci config to pcap-dnsproxy Main Config file
 	for _conf in "${CONF_LIST[@]}"; do
-		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\""
+		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\""
 	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
@@ -424,7 +488,29 @@ uci2conf_full() {
 }
 
 conf2uci_full() {
-	echo
+	local PackageName="$UCICFGFILE"
+	local TypedSection="@$TYPEDSECTION[-1]"
+	local ConfigFile="$CONFIGFILE"
+
+	# Clear ${PackageName}.${TypedSection}
+	uci_remove "$PackageName" "$TypedSection"
+	uci_add    "$PackageName" "$TYPEDSECTION"
+
+	# Apply pcap-dnsproxy Main Config file to Uci config
+	for _conf in "${CONF_LIST[@]}"; do
+		eval "conf2uci \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\" \"\$PackageName\""
+	done
+
+}
+
+reset_conf_full() {
+
+	# Reset pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Reset pcap-dnsproxy Uci Config
+	conf2uci_full
+
 }
 
 
