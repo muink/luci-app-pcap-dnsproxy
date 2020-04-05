@@ -245,10 +245,7 @@ case "$_map" in
 			NONE@HTTP CONNECT TLS Server Name Indication
 			NONE@HTTP CONNECT TLS ALPN
 			proxy_http_ver@HTTP CONNECT Version
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
-			NONE@HTTP CONNECT Header Field
+			MULTICONF@HTTP CONNECT Header Field
 			proxy_http_auth@__FUNCTION='if [ "\$proxy_http_auth" == "0" ]; then echo HTTP CONNECT Proxy Authorization=; elif [ "\$proxy_http_auth" == "1" ]; then echo HTTP CONNECT Proxy Authorization=\$proxy_http_user:\$proxy_http_pw; fi'
 			proxy_http_user@NONE
 			proxy_http_pw@NONE
@@ -451,7 +448,7 @@ for _var in "${raw_list[@]}"; do
 				#echo "Function: $(echo "$_tab" | cut -f1 -d=) = $(echo "$_tab" | cut -f2 -d=)" #debug test
 			done
 		# Undefined raw element
-		elif [ "$_uci" == "NONE" ]; then
+		elif [ "$_uci" == "NONE" -o "$_uci" == "MULTICONF" ]; then
 			echo "The relative uci element value of \"$_raw\" is undefined" >/dev/null
 		# Normal raw element
 		else
