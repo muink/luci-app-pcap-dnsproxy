@@ -142,8 +142,8 @@ case "$_map" in
 		eval grep \"\$_element\" <<-EOF $__cmd
 			ll_proto@Local Protocol
 			ll_filter_mode@__FUNCTION='if [ "\$ll_filter_mode" == "0" ]; then echo Local Hosts=0; echo Local Routing=0; ll_force_req=0; elif [ "\$ll_filter_mode" == "hostlist" ]; then echo Local Hosts=1; echo Local Routing=0; elif [ "\$ll_filter_mode" == "routing" ]; then echo Local Hosts=0; echo Local Routing=1; ll_force_req=0; fi'
-			__LLFILTER@Local Hosts
-			__LLFILTER@Local Routing
+			__FUNCTION='if [ "\$_value" == "1" ]; then echo ll_filter_mode=hostlist; else echo ll_filter_mode=0; fi'@Local Hosts
+			__FUNCTION='if [ "\$_value" == "1" ]; then echo ll_filter_mode=routing; fi'@Local Routing
 			ll_force_req@Local Force Request
 		EOF
 	;;
