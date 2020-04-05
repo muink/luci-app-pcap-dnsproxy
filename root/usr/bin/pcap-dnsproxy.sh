@@ -319,9 +319,6 @@ case "$_map" in
 	;;
 esac
 
-
-
-
 }
 
 # uci2conf <section> <mapname> <conffile>
@@ -439,7 +436,6 @@ for _var in "${raw_list[@]}"; do
 			# Function raw element
 			eval "$_uci" # Extract function body
 				#eval "echo '$__FUNCTION'"
-			eval "$__FUNCTION" >/dev/null
 			araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
 				eval araw_list=(${araw_list//'/\'})
             
@@ -531,8 +527,5 @@ for _var in "`map_def`"; do eval "${_var[@]}"; done
 
 
 
-#Y:map_def     for _conf in "${CONF_LIST[@]}"; do eval "map_tab \"\$$_conf\""; done
-#Y:map_tab     map_tab "$@"
-#config_get bbt
-#Y:uci2conf    uci2conf 'cfg34fb357e' "$CONF_LOCALDNS" './test.conf'
+$_FUNCTION "$@"
 
