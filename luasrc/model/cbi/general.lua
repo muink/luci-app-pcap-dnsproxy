@@ -38,25 +38,27 @@ ss.value = tmpfsStatus
 buttons = h:option(DummyValue, "_dummy")
 buttons.template = packageName .. "/buttons"
 
-app_sys = h:option(Button, "_button", translate("Apply to System"))
+app_sys = h:option(Button, "_button0", translate("Apply to System"))
 app_sys.inputtitle = translate("Apply to System")
 app_sys.inputstyle = "apply"
 function app_sys.write (self, section)
 	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
 end
 
-load_sys = h:option(Button, "_button", translate("Load from System"))
+load_sys = h:option(Button, "_button1", translate("Load from System"),
+	translate("You may need to revert&apply 'UNSAVED CHANGES' once"))
 load_sys.inputtitle = translate("Load from System")
 load_sys.inputstyle = "apply"
-function app_sys.write (self, section)
+function load_sys.write (self, section)
 	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh conf2uci_full")
 end
 
-reset = h:option(Button, "_button", translate("Reset All settings"))
-reset.inputtitle = translate("Reset All settings")
-reset.inputstyle = "apply"
-function app_sys.write (self, section)
-	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh reset_conf_full")
+resetall = h:option(Button, "_button2", translate("Reset All settings"),
+	translate("You may need to revert&apply 'UNSAVED CHANGES' once"))
+resetall.inputtitle = translate("Reset All settings")
+resetall.inputstyle = "apply"
+function resetall.write (self, section)
+	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh reset_full")
 end
 
 
