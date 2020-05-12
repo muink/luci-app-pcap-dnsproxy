@@ -88,9 +88,9 @@ listen_proto:value("IPv4 + TCP + UDP")
 listen_proto:value("IPv6 + UDP")
 listen_proto:value("IPv6 + TCP")
 listen_proto:value("IPv6 + TCP + UDP")
-listen_proto:value("IPv4 + IPv6 + UDP")
-listen_proto:value("IPv4 + IPv6 + TCP")
-listen_proto:value("IPv4 + IPv6 + TCP + UDP")
+listen_proto:value("IPv6 + IPv4 + UDP")
+listen_proto:value("IPv6 + IPv4 + TCP")
+listen_proto:value("IPv6 + IPv4 + TCP + UDP")
 
 listen_port = s:taboption("general", Value, "listen_port", translate("Listen Port"))
 listen_port.placeholder = "1053(|2053)"
