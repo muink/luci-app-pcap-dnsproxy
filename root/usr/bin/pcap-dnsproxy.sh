@@ -10,10 +10,13 @@ CONFDIR=/etc/pcap-dnsproxy
 
 RAWCONFIGFILE=$CONFDIR/Config.conf-opkg
 CONFIGFILE=$CONFDIR/Config.conf
+USERCONFIG=$CONFDIR/user/Config
 RAWHOSTSFILE=$CONFDIR/Hosts.conf-opkg
 HOSTSFILE=$CONFDIR/Hosts.conf
+USERHOSTS=$CONFDIR/user/Hosts
 RAWIPFILTERFILE=$CONFDIR/IPFilter.conf-opkg
 IPFILTERFILE=$CONFDIR/IPFilter.conf
+USERIPFILTER=$CONFDIR/user/IPFilter
 
 _FUNCTION="$1"; shift
 # _PARAMETERS: "$@"
@@ -468,6 +471,7 @@ done
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
+	local UserConfig="$USERCONFIG"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
@@ -479,8 +483,8 @@ uci2conf_full() {
 	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
+	userconf "$UserConfig" "$ConfigFile"
 	
-
 }
 
 conf2uci_full() {
@@ -497,6 +501,18 @@ conf2uci_full() {
 		eval "conf2uci \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\" \"\$PackageName\""
 	done
 
+}
+
+userconf_full() {
+	local ConfigFile="$CONFIGFILE"
+	local UserConfig="$USERCONFIG"
+
+	# Init pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Apply User config to pcap-dnsproxy Main Config file
+	userconf "$UserConfig" "$ConfigFile"
+	
 }
 
 reset_full() {
