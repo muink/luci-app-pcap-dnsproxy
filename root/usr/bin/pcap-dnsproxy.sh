@@ -468,6 +468,36 @@ done
 
 }
 
+# userconf <userconffile> <systemconffile>
+userconf() {
+	local initvar=(userconf sysconf)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "userconf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+
+# Verify head validity
+local map_list=$(echo `map_def map` | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
+local bad_head=$(
+	sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|\1|g p }" "$userconf" |
+	grep -Ev "$map_list" |
+	sed -n "s/^/'/; s/$/'/ p"
+)
+	eval bad_head=(${bad_head//'/\'})
+
+# Note "Bad Head"
+local _badhead
+for _badhead in "${bad_head[@]}"; do
+	sed -i "/^\[$_badhead\][ \t]*$/,/^\[.*\][ \t]*$/ { s|^\(\[$_badhead\]\)|#\1|; s|^\([^\[^#]\)|#\1|g; }" "$userconf"
+done
+
+
+# Apply "userconffile" to "systemconffile"
+
+
+}
+
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
