@@ -493,8 +493,35 @@ for _badhead in "${bad_head[@]}"; do
 done
 
 
-# Apply "userconffile" to "systemconffile"
+# Verify parameter validity
+local valid_head=$(sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|'\1'|g p }" "$userconf")
+	eval valid_head=(${valid_head//'/\'})
 
+local refer
+local bad_param
+local _head
+
+for _head in "${valid_head[@]}"; do
+	refer=$(echo `map_tab "$_head" raw | sed -n "s/^/^/; s/$/%/ p"` | sed "s|%$| [<=>]|; s|% ^| [<=>]\|^|g; s|\^|^[0-9]+:|g") # reference
+	bad_param=$(
+		grep -n "" "$userconf" |
+		sed -n "/^[0-9]\+:\[$_head\][ \t]*$/,/^[0-9]\+:\[.*\][ \t]*$/ { /^[0-9]\+:[^#]\+/ { /^[0-9]\+:\[.*\][ \t]*$/! p }}" |
+		grep -Ev "$refer" |
+		cut -f1 -d:
+	)
+	eval bad_param=(${bad_param})
+
+	# Note "Bad parameter"
+	local _badparam
+	for _badparam in "${bad_param[@]}"; do
+		sed -i "${_badparam}s|^|#|" "$userconf"
+	done
+
+
+	# Apply "userconffile" to "systemconffile"
+
+
+done
 
 }
 
