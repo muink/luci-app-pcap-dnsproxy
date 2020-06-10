@@ -10,10 +10,13 @@ CONFDIR=/etc/pcap-dnsproxy
 
 RAWCONFIGFILE=$CONFDIR/Config.conf-opkg
 CONFIGFILE=$CONFDIR/Config.conf
+USERCONFIG=$CONFDIR/user/Config
 RAWHOSTSFILE=$CONFDIR/Hosts.conf-opkg
 HOSTSFILE=$CONFDIR/Hosts.conf
+USERHOSTS=$CONFDIR/user/Hosts
 RAWIPFILTERFILE=$CONFDIR/IPFilter.conf-opkg
 IPFILTERFILE=$CONFDIR/IPFilter.conf
+USERIPFILTER=$CONFDIR/user/IPFilter
 
 _FUNCTION="$1"; shift
 # _PARAMETERS: "$@"
@@ -465,9 +468,77 @@ done
 
 }
 
+# userconf <userconffile> <systemconffile>
+userconf() {
+	local initvar=(userconf sysconf)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "userconf: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+
+# Verify head validity
+local map_list=$(echo `map_def map` | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
+local bad_head=$(
+	sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|\1|g p }" "$userconf" |
+	grep -Ev "$map_list" |
+	sed -n "s/^/'/; s/$/'/ p"
+)
+	eval bad_head=(${bad_head//'/\'})
+
+# Note "Bad Head"
+local _badhead
+for _badhead in "${bad_head[@]}"; do
+	sed -i "/^\[$_badhead\][ \t]*$/,/^\[.*\][ \t]*$/ { s|^\(\[$_badhead\]\)|#\1|; s|^\([^\[^#]\)|#\1|g; }" "$userconf"
+done
+
+
+# Verify parameter validity
+local valid_head=$(sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|'\1'|g p }" "$userconf")
+	eval valid_head=(${valid_head//'/\'})
+
+local refer
+local bad_param
+local _head
+
+for _head in "${valid_head[@]}"; do
+	refer=$(echo `map_tab "$_head" raw | sed -n "s/^/^/; s/$/%/ p"` | sed "s|%$| [<=>]|; s|% ^| [<=>]\|^|g; s|\^|^[0-9]+:|g") # reference
+	bad_param=$(
+		grep -n "" "$userconf" |
+		sed -n "/^[0-9]\+:\[$_head\][ \t]*$/,/^[0-9]\+:\[.*\][ \t]*$/ { /^[0-9]\+:[^#]\+/ { /^[0-9]\+:\[.*\][ \t]*$/! p }}" |
+		grep -Ev "$refer" |
+		cut -f1 -d:
+	)
+	eval bad_param=(${bad_param})
+
+	# Note "Bad parameter"
+	local _badparam
+	for _badparam in "${bad_param[@]}"; do
+		sed -i "${_badparam}s|^|#|" "$userconf"
+	done
+
+
+	# Apply "userconffile" to "systemconffile"
+	local valid_param
+	local _param
+
+	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
+		eval valid_param=(${valid_param//'/\'})
+	
+	for _param in "${valid_param[@]}"; do
+		sed -i "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^\($_param\) \([<=>]\)[ \t]*.*$~\1 \2 \
+$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s~^$_param [<=>][ \t]*\(.*\)$~\1~ p }}" "$userconf" | head -n1)\
+~ }" "$sysconf"
+	done
+
+done
+
+}
+
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
+	local UserConfig="$USERCONFIG"
 	config_load $UCICFGFILE
 
 	# Init pcap-dnsproxy Main Config file
@@ -479,8 +550,8 @@ uci2conf_full() {
 	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
+	userconf "$UserConfig" "$ConfigFile"
 	
-
 }
 
 conf2uci_full() {
@@ -497,6 +568,18 @@ conf2uci_full() {
 		eval "conf2uci \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\" \"\$PackageName\""
 	done
 
+}
+
+userconf_full() {
+	local ConfigFile="$CONFIGFILE"
+	local UserConfig="$USERCONFIG"
+
+	# Init pcap-dnsproxy Main Config file
+	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+
+	# Apply User config to pcap-dnsproxy Main Config file
+	userconf "$UserConfig" "$ConfigFile"
+	
 }
 
 reset_full() {

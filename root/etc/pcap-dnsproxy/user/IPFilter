@@ -1,0 +1,10 @@
+[Blacklist]
+
+# cloudflare
+- 1.1.1.1 ALL
+
+
+[IPFilter]
+
+
+[Local Routing]
