@@ -432,7 +432,7 @@ for _var in "${raw_list[@]}"; do
 	# <$_var> not empty AND relative uci element not empty
 	if [ -n "$_var" -a -n "$_uci" ]; then
 
-		_value="$(sed -n "/^\[${map}\]$/,/^\[.*\]$/ { s~^${_var} [<=>] *\(.*\)$~\1~ p }" $config)"
+		_value="$(sed -n "/^\[${map}\]$/,/^\[.*\]$/ { s~^${_var} [<=>][ \t]*\(.*\)$~\1~ p }" $config)"
 
 		# Not Normal raw element
 		if   [ "`echo "$_uci" | grep "^__.\+$"`" ]; then
