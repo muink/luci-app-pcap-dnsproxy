@@ -519,7 +519,17 @@ for _head in "${valid_head[@]}"; do
 
 
 	# Apply "userconffile" to "systemconffile"
+	local valid_param
+	local _param
 
+	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
+		eval valid_param=(${valid_param//'/\'})
+	
+	for _param in "${valid_param[@]}"; do
+		sed -i "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^\($_param\) \([<=>]\)[ \t]*.*$~\1 \2 \
+$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s~^$_param [<=>][ \t]*\(.*\)$~\1~ p }}" "$userconf" | head -n1)\
+~ }" "$sysconf"
+	done
 
 done
 
