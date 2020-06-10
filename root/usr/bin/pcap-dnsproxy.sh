@@ -334,8 +334,8 @@ uci2conf() {
 
 	
 # Defining variables for uci config
-#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
-local uci_list=`map_tab "$map" uci | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+#cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
+local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 	eval uci_list=(${uci_list//'/\'})
 local uci_count=${#uci_list[@]}
 # Get values of uci config
@@ -363,7 +363,7 @@ for _var in "${uci_list[@]}"; do
 				eval "$_raw" # Extract function body
 					#eval "echo '$__FUNCTION'"
 				eval "$__FUNCTION" >/dev/null
-				araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+				araw_list=`eval "$__FUNCTION" | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 					eval araw_list=(${araw_list//'/\'})
                 
 				# Write Function conf
@@ -411,8 +411,8 @@ conf2uci() {
 
 	
 # Defining variables for conffile
-#cat <<< `map_tab "$@"` | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"
-local raw_list=`map_tab "$map" raw | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+#cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
+local raw_list=`map_tab "$map" raw | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 	eval raw_list=(${raw_list//'/\'})
 local raw_count=${#raw_list[@]}
 #for _ll in "${raw_list[@]}"; do echo "$_ll"; done
@@ -439,7 +439,7 @@ for _var in "${raw_list[@]}"; do
 			# Function raw element
 			eval "$_uci" # Extract function body
 				#eval "echo '$__FUNCTION'"
-			araw_list=`eval "$__FUNCTION" | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+			araw_list=`eval "$__FUNCTION" | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 				eval araw_list=(${araw_list//'/\'})
             
 			# Write Function conf
@@ -596,7 +596,7 @@ reset_full() {
 # ================ Main ================ #
 
 # Define Map name list
-CONF_LIST=`map_def nam | sed -n "s/^\(.*\)/'\1/; s/\(.*\)$/\1'/ p"` # "$@"
+CONF_LIST=`map_def nam | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 	eval CONF_LIST=(${CONF_LIST//'/\'})
 CONF_LIST_COUNT=${#CONF_LIST[@]}
      CONF_LIST_FIRST=${CONF_LIST[0]}
