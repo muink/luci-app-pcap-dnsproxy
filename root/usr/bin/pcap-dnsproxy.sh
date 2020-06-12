@@ -324,6 +324,45 @@ esac
 
 }
 
+# format_str <string>
+format_str() {
+
+echo $1 | sed -n "1 {
+s|\\\\|\\\\\\\\\\\\|g
+;s|/|\\\/|g
+;s|'|\\\'|g
+;s|(|\\\(|g
+;s|)|\\\)|g
+;s|<|\\\<|g
+;s|>|\\\>|g
+;s|{|\\\{|g
+;s|}|\\\}|g
+;s|\[|\\\[|g
+;s|\]|\\\]|g
+;s|\`|\\\\\`|g
+;s|\~|\\\\\~|g
+;s|\!|\\\\\!|g
+;s|\^|\\\\\^|g
+;s|\&|\\\\\&|g
+;s|\;|\\\\\;|g
+;s|\"|\\\\\"|g
+;s|\||\\\\\||g
+;s|\.|\\\\\.|g
+;s|\*|\\\\\*|g
+;s|\+|\\\\\+|g
+;s|\?|\\\\\?|g
+;s|\\\$|\\\\\$|g
+p }"
+
+# ' --> \'(\\+\')
+# \\(\\+\\) --> \\+\\(\\\\\\+\\)
+# \|(\\+\|) --> \\+\|(\\\\\\+\|)
+# \$(\\+\$) --> \\+\$(\\\\\\+\$)
+# $ --> \$ --> \\\$ --> \\\\\\\$ --> \\\\\\\\\\\\\\\$ --> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$
+# 0      1        3            7                    15                                   31
+# N=2^n-1
+}
+
 # uci2conf <section> <mapname> <conffile>
 uci2conf() {
 	local initvar=(section map config)
@@ -521,14 +560,32 @@ for _head in "${valid_head[@]}"; do
 	# Apply "userconffile" to "systemconffile"
 	local valid_param
 	local _param
+	local _multi
+	local _firstone
 
 	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
 		eval valid_param=(${valid_param//'/\'})
 	
 	for _param in "${valid_param[@]}"; do
-		sed -i "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^\($_param\) \([<=>]\)[ \t]*.*$~\1 \2 \
-$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s~^$_param [<=>][ \t]*\(.*\)$~\1~ p }}" "$userconf" | head -n1)\
-~ }" "$sysconf"
+		_multi=$([ "$(map_tab "$_head" uci "$_param")" == "MULTICONF" ] && echo 1 || echo 0)
+
+		if [ "$_multi" == "1" ]; then
+			_firstone=$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^$_param [<=>][ \t]*.*$/ = }" "$sysconf" | head -n1)
+			# if $_param not exist?
+
+			sed -i "$_firstone,/^\[.*\][ \t]*$/ { /$_param/ d }" "$sysconf"
+			sed -i "$_firstone i $(
+				format_str "$(
+					sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^$_param [<=>][ \t]*.*$/ p }" "$userconf"\
+					| sed -n "s|^|PDNSP_REPLACE_NH|g; s|$|PDNSP_REPLACE_NT|g; p"
+				)"\
+				| sed -n "s|^PDNSP_REPLACE_NH||; s|PDNSP_REPLACE_NT PDNSP_REPLACE_NH|\\\n|g; s|PDNSP_REPLACE_NT$||; p"
+			)" "$sysconf"
+		else
+			sed -i "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^\($_param\) \([<=>]\)[ \t]*.*$~\1 \2 $(
+				sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^$_param [<=>][ \t]*\(.*\)$~\1~ p }" "$userconf" | head -n1
+			)~ }" "$sysconf"
+		fi
 	done
 
 done
