@@ -1,4 +1,5 @@
 # This is an example
+# This config has a higher priority than the UCI config
 
 [Listen]
 Operation Mode = Private
@@ -26,3 +27,10 @@ EDNS Label = TCP + UDP
 
 [Data]
 Local Machine Server Name = pcap-dnsproxy.local
+
+[Proxy]
+HTTP CONNECT Header Field = User-Agent: Mozilla/5.0
+HTTP CONNECT Header Field = Accept: */*
+HTTP CONNECT Header Field = Cache-Control: no-cache
+HTTP CONNECT Header Field = Pragma: no-cache
+HTTP CONNECT Proxy Authorization = user:password

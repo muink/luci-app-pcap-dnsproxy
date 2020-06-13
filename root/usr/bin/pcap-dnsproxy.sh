@@ -74,8 +74,8 @@ if   [ "$_element" == "NONE" ]; then echo 'map_tab: The <element> parameter is i
 elif [ -z "$_element" ]; then
 	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'; keep function
 	if   [ -z "$_vtype" ]; then __cmd=;
-	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'; ignore raw2uci function
-	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
+	# map_tab "$CONF_DNS" uci					-- List 'uci' element of maptab '$CONF_DNS'; ignore uci'NONE'; ignore uci'MULTICONF'; ignore raw2uci function
+	elif [ "$_vtype" == "uci" ]; then __cmd="| cut -f1 -d@ | grep -v '^NONE$' | grep -v '^MULTICONF$' | grep -v '^_.\+'";
 	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'; ignore uci2raw function
 	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
 	# <variabletype> not support
@@ -327,40 +327,26 @@ esac
 # format_str <string>
 format_str() {
 
-echo $1 | sed -n "1 {
-s|\\\\|\\\\\\\\\\\\|g
-;s|/|\\\/|g
-;s|'|\\\'|g
-;s|(|\\\(|g
-;s|)|\\\)|g
-;s|<|\\\<|g
-;s|>|\\\>|g
-;s|{|\\\{|g
-;s|}|\\\}|g
-;s|\[|\\\[|g
-;s|\]|\\\]|g
-;s|\`|\\\\\`|g
-;s|\~|\\\\\~|g
-;s|\!|\\\\\!|g
-;s|\^|\\\\\^|g
-;s|\&|\\\\\&|g
-;s|\;|\\\\\;|g
-;s|\"|\\\\\"|g
-;s|\||\\\\\||g
-;s|\.|\\\\\.|g
-;s|\*|\\\\\*|g
-;s|\+|\\\\\+|g
-;s|\?|\\\\\?|g
-;s|\\\$|\\\\\$|g
-p }"
+echo $1 | sed -n "s|\\\\|\\\\\\\\|g p"
 
-# ' --> \'(\\+\')
-# \\(\\+\\) --> \\+\\(\\\\\\+\\)
-# \|(\\+\|) --> \\+\|(\\\\\\+\|)
-# \$(\\+\$) --> \\+\$(\\\\\\+\$)
+#\n
+#\\\n
+#\\\\\\\n
+#\\\\\\\\\\\\\\\n
+
+#\\
+#\\\\
+#\\\\\\\\
+#\\\\\\\\\\\\\\\\
+
 # $ --> \$ --> \\\$ --> \\\\\\\$ --> \\\\\\\\\\\\\\\$ --> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$
 # 0      1        3            7                    15                                   31
 # N=2^n-1
+
+# \ --> \\ --> \\\\ --> \\\\\\\\ --> \\\\\\\\\\\\\\\\ --> \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+# 0      2        4            8                    16                                   32
+# N=2^n
+
 }
 
 # uci2conf <section> <mapname> <conffile>
@@ -575,11 +561,11 @@ for _head in "${valid_head[@]}"; do
 
 			sed -i "$_firstone,/^\[.*\][ \t]*$/ { /$_param/ d }" "$sysconf"
 			sed -i "$_firstone i $(
-				format_str "$(
+				echo $(
 					sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^$_param [<=>][ \t]*.*$/ p }" "$userconf"\
 					| sed -n "s|^|PDNSP_REPLACE_NH|g; s|$|PDNSP_REPLACE_NT|g; p"
-				)"\
-				| sed -n "s|^PDNSP_REPLACE_NH||; s|PDNSP_REPLACE_NT PDNSP_REPLACE_NH|\\\n|g; s|PDNSP_REPLACE_NT$||; p"
+				)\
+				| sed -n "s|\\\\|\\\\\\\\|g; s|^PDNSP_REPLACE_NH||; s|PDNSP_REPLACE_NT PDNSP_REPLACE_NH|\\\n|g; s|PDNSP_REPLACE_NT$||; p"
 			)" "$sysconf"
 		else
 			sed -i "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { s~^\($_param\) \([<=>]\)[ \t]*.*$~\1 \2 $(
