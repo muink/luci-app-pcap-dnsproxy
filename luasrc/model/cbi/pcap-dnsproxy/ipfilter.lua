@@ -27,11 +27,18 @@ s = m:section(SimpleSection, nil, translatef("System config file: <code>%s</code
 
 o = s:option(TextValue, "system")
 o.rows = 20
-o.readonly = true
 
 function o.cfgvalue()
 	local v = fs.readfile(output) or translate("File does not exist.") .. translatef(" Please check your configuration or reinstall %s.", "pcap-dnsproxy")
 	return util.trim(v) ~= "" and v or translate("Empty file.")
+end
+
+function o.write(self, section, system)
+	fs.writefile(output, "\n" .. util.trim(system:gsub("\r\n", "\n")) .. "\n")
+end
+
+function o.remove(self, section, value)
+	return fs.writefile(output, "")
 end
 
 function s.handle(self, state, data)
