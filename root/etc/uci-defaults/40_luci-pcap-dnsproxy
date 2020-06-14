@@ -24,6 +24,7 @@ for _name in $cfglist; do
 	if [ ! -e "$pkgdir/${_name}.conf-opkg" ]; then
 		touch $pkgdir/${_name}.conf-opkg
 		cp -f $pkgdir/${_name}.conf $pkgdir/${_name}.conf-opkg 2>/dev/null
+		sed -i '1 i ####\n' $pkgdir/${_name}.conf
 		[ "${_name}" == "Config" ] && /usr/bin/pcap-dnsproxy.sh reset_full
 	fi
 done

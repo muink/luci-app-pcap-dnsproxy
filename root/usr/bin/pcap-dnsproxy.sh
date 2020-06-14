@@ -586,6 +586,7 @@ uci2conf_full() {
 
 	# Init pcap-dnsproxy Main Config file
 	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+	sed -i '1 i ####\n' $CONFIGFILE
 
 	# Apply Uci config to pcap-dnsproxy Main Config file
 	for _conf in "${CONF_LIST[@]}"; do
@@ -619,6 +620,7 @@ userconf_full() {
 
 	# Init pcap-dnsproxy Main Config file
 	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+	sed -i '1 i ####\n' $CONFIGFILE
 
 	# Apply User config to pcap-dnsproxy Main Config file
 	userconf "$UserConfig" "$ConfigFile"
@@ -629,6 +631,7 @@ reset_full() {
 
 	# Reset pcap-dnsproxy Main Config file
 	cp -f $RAWCONFIGFILE $CONFIGFILE 2>/dev/null
+	sed -i '1 i ####\n' $CONFIGFILE
 
 	# Reset pcap-dnsproxy Uci Config
 	conf2uci_full
