@@ -17,6 +17,7 @@ USERHOSTS=$CONFDIR/user/Hosts
 RAWIPFILTERFILE=$CONFDIR/IPFilter.conf-opkg
 IPFILTERFILE=$CONFDIR/IPFilter.conf
 USERIPFILTER=$CONFDIR/user/IPFilter
+WHITELIST=$CONFDIR/WhiteList.txt
 
 _FUNCTION="$1"; shift
 # _PARAMETERS: "$@"
@@ -578,6 +579,49 @@ done
 
 }
 
+# update_white <urltype> <url> <outfile>
+# urltype:    <git|zip>
+update_white() {
+	local initvar=(urltype url outfile)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "update_white: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+local workdir="$(mktemp -d)"
+local main='accelerated-domains.china.conf'
+local google='google.china.conf'
+local apple='apple.china.conf'
+
+
+#echo "Downloading latest configurations..."
+if   [ "$urltype" == "git" ]; then
+	git clone --depth=1 "$url" "$workdir" || return 1
+elif [ "$urltype" == "zip" ]; then
+	curl -Lo "$workdir/main.zip" "$url" && unzip -joq "$workdir/main.zip" -d "$workdir" || return 1
+	##########curl -x socks5://user:passwd@myproxy.com:8080
+else
+	echo "update_white: The <urltype> parameter is invalid"; return 1
+fi
+
+#echo "Generating new configurations..."
+# Write latest domain data from dnsmasq-china-list project and write header
+cat << EOF > "$outfile"
+[Local Hosts]
+## China mainland domains
+## Source: $url
+## Last update: `date +%Y-%m-%d`
+
+
+EOF
+sed "s|[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+$||; s|^s|S|" "$workdir/$main" >> "$outfile"
+echo -e "\n" >> "$outfile"
+
+#echo "Cleaning up..."
+rm -r "$workdir"
+
+}
+
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
@@ -635,6 +679,13 @@ reset_full() {
 
 	# Reset pcap-dnsproxy Uci Config
 	conf2uci_full
+
+}
+
+update_white_full() {
+	local white="$WHITELIST"
+
+	update_white "$1" "$2" $white
 
 }
 
