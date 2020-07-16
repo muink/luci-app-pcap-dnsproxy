@@ -33,6 +33,8 @@ if not WhiteTime or WhiteTime == "" then WhiteTime = translate("None"); else Whi
 
 local white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].white_url 2>/dev/null")))
 local alt_white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].alt_white_url 2>/dev/null")))
+local routing_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].routing_url 2>/dev/null")))
+local routing_v6_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].routing_v6_url 2>/dev/null")))
 
 w = m:section(TypedSection, "pcap-dnsproxy", whitelist)
 w.anonymous = true
@@ -81,6 +83,50 @@ function waltup.write (self, section)
 end
 
 --add to scheduled tasks
+
+
+local RoutingTime = tostring(util.trim(sys.exec("cat " .. routingconf .. " | sed -n '5p' | cut -f2 -d: | sed -n '/[0-9]\\+-[0-9]\\+-[0-9]\\+/ p'")))
+if not RoutingTime or RoutingTime == "" then RoutingTime = translate("None"); else RoutingTime = RoutingTime 
+	.. "    " .. "IPv4: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv4/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules") 
+	.. "    " .. "IPv6: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv6/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules");
+end
+
+r = m:section(TypedSection, "pcap-dnsproxy", routinglist)
+r.anonymous = true
+
+rstate = r:option(DummyValue, "_rstate", translate("Last update"))
+rstate.template = packageName .. "/status"
+rstate.value = RoutingTime
+
+rclear = r:option(Button, "_wclear", translate("List Cleanup"))
+rclear.inputtitle = translate("Cleanup")
+rclear.inputstyle = "apply"
+function rclear.write(self, section)
+	fs.writefile(routingconf, "\n")
+end
+
+rurl = r:option(ListValue, "routing_url", translate("IPv4 Data source"))
+rurl:value("https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest", "APNIC")
+rurl:value("https://www.ipdeny.com/ipblocks/data/aggregated/cn-aggregated.zone", "IPdeny")
+rurl:value("https://github.com/17mon/china_ip_list/archive/master.zip", "IPIP")
+rurl:value("https://github.com/metowolf/iplist/archive/master.zip", "CZ88")
+rurl:value("https://github.com/gaoyifan/china-operator-ip/archive/ip-lists.zip", "china-operator-ip")
+rurl.rmempty = false
+
+rv6url = r:option(ListValue, "routing_v6_url", translate("IPv6 Data source"))
+rv6url:value("https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest", "APNIC")
+rv6url:value("https://www.ipdeny.com/ipv6/ipaddresses/aggregated/cn-aggregated.zone", "IPdeny")
+rv6url:value("https://github.com/gaoyifan/china-operator-ip/archive/ip-lists.zip", "china-operator-ip")
+rv6url.rmempty = false
+
+rup = r:option(Button, "_rup", translate("Update ") .. routinglist)
+rup.inputtitle = translate("Update")
+rup.inputstyle = "apply"
+function rup.write (self, section)
+	if routing_url and not (routing_url == "") then
+		sys.call ("/usr/bin/pcap-dnsproxy.sh update_routing_full '" .. routing_url .. "' '" .. routing_v6_url .. "'")
+	end
+end
 
 
 return m
