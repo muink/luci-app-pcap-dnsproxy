@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:513
 msgid "0 - Auto choice"
-msgstr  "0 - 自动选择"
+msgstr  "0 - 自动"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:294
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:302
@@ -32,13 +32,44 @@ msgstr "手动输入"
 msgid "Advanced"
 msgstr "高级"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:147
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:157
+msgid ""
+"After enabling, the EDNS subnet address of EDNS Client Subnet Relay will be "
+"added preferentially."
+msgstr "启用后将优先添加 'EDNS 客户端子网转发' 参数的 EDNS 子网地址"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:59
 msgid "Aliyun"
 msgstr "阿里云"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:485
+msgid "All Non-local requests will only be made via the HTTP CONNECT protocol"
+msgstr "所有非本土请求将只通过 HTTP CONNECT 协议进行"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:420
+msgid "All Non-local requests will only be made via the SOCKS protocol"
+msgstr "所有非本土请求将只通过 SOCKS 协议进行"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:382
+msgid "All request to enable"
+msgstr "为所有请求启用"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:72
 msgid "Alternate Data source"
 msgstr "备选数据源"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:312
+msgid "Alternate Server Failed Thresholds Calculation Period"
+msgstr "备用服务器失败次数阈值计算周期"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:308
+msgid "Alternate Server Failure Thresholds"
+msgstr "备用服务器失败次数阈值"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:317
+msgid "Alternate Server Reset Time"
+msgstr "备用服务器重置切换时间"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:79
 msgid "Alternate Update"
@@ -54,13 +85,70 @@ msgstr "应用到系统"
 msgid "Cleanup"
 msgstr "清空"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:583
+msgid "Client Ephemeral Key"
+msgstr "一次性客户端密钥对模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:366
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:370
+msgid "Compression Pointer Mutation"
+msgstr "随机添加压缩指针"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:103
+msgid "Custom mode"
+msgstr "自定义模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:239
+msgid "DNS Cache Default TTL"
+msgstr "已缓存 DNS 记录默认生存时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:234
+msgid "DNS Cache Parameter"
+msgstr "DNS 缓存参数"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:228
+msgid "DNS Cache Type"
+msgstr "DNS 缓存类型"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:364
+msgid "DNS Header Processing"
+msgstr "DNS 头处理"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:18
 msgid "DNSCrypt DB"
 msgstr "DNSCrypt 地址数据库"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:80
+msgid "DNSCurve"
+msgstr ""
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:549
+msgid "DNSCurve (DNSCrypt)"
+msgstr ""
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:551
+msgid "DNSCurve Protocol"
+msgstr "DNSCurve 协议"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:406
+msgid "DNSSEC Force Record"
+msgstr "强制 DNSSEC 记录验证"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:401
+msgid "DNSSEC Request"
+msgstr "DNSSEC 请求"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:56
 msgid "Data source"
 msgstr "数据源"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:595
+msgid "Database"
+msgstr "地址数据库"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:344
+msgid "Direct Request"
+msgstr "直连模式"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:182
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:229
@@ -69,6 +157,33 @@ msgstr "数据源"
 #: applications/luci-app-pcap-dnsproxy/luasrc/view/pcap-dnsproxy/buttons.htm:60
 msgid "Disable"
 msgstr "禁用"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:360
+msgid "Domain Case Conversion"
+msgstr "随机转换域名请求大小写"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:298
+msgid "Domain Test"
+msgstr "域名解析测试间隔"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:395
+msgid "EDNS Client Subnet Relay"
+msgstr "EDNS 客户端子网转发"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:145
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:155
+msgid ""
+"EDNS Client Subnet Relay parameter priority is higher than this parameter."
+msgstr "'EDNS 客户端子网转发' 参数优先级高于此参数"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:367
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:381
+msgid "EDNS Label"
+msgstr "EDNS 标签支持"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:387
+msgid "EDNS Label List"
+msgstr "EDNS 标签支持列表"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:16
 msgid "Edit Configuration"
@@ -93,6 +208,26 @@ msgstr "文件为空."
 msgid "Enable"
 msgstr "启用"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:383
+msgid "Enable request below list"
+msgstr "为下方列表中的请求启用"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:407
+msgid ""
+"Enabling will cause all undeployed DNSSEC function variable name resolution "
+"failure!"
+msgstr "启用将导致所有未部署 DNSSEC 的域名解析失败"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:579
+msgid "Encryption"
+msgstr "加密"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:390
+msgid ""
+"Exclude format: All - Local - SOCKS Proxy - HTTP CONNECT Proxy - Direct "
+"Request - DNSCurve - TCP - UDP"
+msgstr "排除格式: All - Local - SOCKS Proxy - HTTP CONNECT Proxy - Direct Request - DNSCurve - TCP - UDP"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:57
 msgid "Fast in China but not provide Zip download"
 msgstr "在中国访问快速但不提供Zip下载"
@@ -104,6 +239,10 @@ msgstr "在中国访问快速但不提供Zip下载"
 msgid "File does not exist."
 msgstr "文件不存在."
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:181
+msgid "Filter Mode"
+msgstr "分流模式"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:17
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:67
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:17
@@ -113,6 +252,12 @@ msgid ""
 "For further information <a href=\"%s\" target=\"_blank\">check the online "
 "documentation</a>"
 msgstr "进一步信息<a href=\"%s\" target=\"_blank\">请访问在线文档</a>"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:332
+msgid ""
+"Format: AnyConnect|Host|Hyper|ISATAP|IKE|L2TP|Only|Oracle|PPTP|Pseudo|Teredo|"
+"Tunnel|Virtual|VMNet|VMware|VPN|any|gif|ifb|lo|nflog|nfqueue|stf|tunl|utun"
+msgstr "格式: AnyConnect|Host|Hyper|ISATAP|IKE|L2TP|Only|Oracle|PPTP|Pseudo|Teredo|Tunnel|Virtual|VMNet|VMware|VPN|any|gif|ifb|lo|nflog|nfqueue|stf|tunl|utun"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:12
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:66
@@ -124,6 +269,42 @@ msgstr "常规设置"
 msgid "Gitee"
 msgstr "码云"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:528
+msgid "HTTP CONNECT Authorization"
+msgstr "HTTP CONNECT 连接认证"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:497
+msgid "HTTP CONNECT IPv4 Address"
+msgstr "HTTP CONNECT 服务器 IPv4 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:502
+msgid "HTTP CONNECT IPv6 Address"
+msgstr "HTTP CONNECT 服务器 IPv6 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:537
+msgid "HTTP CONNECT Password"
+msgstr "密码"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:489
+msgid "HTTP CONNECT Protocol"
+msgstr "HTTP CONNECT 协议"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:482
+msgid "HTTP CONNECT Proxy"
+msgstr "HTTP CONNECT 代理"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:484
+msgid "HTTP CONNECT Proxy Only"
+msgstr "只使用 HTTP CONNECT 代理"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:532
+msgid "HTTP CONNECT Username"
+msgstr "用户名"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:512
+msgid "HTTP CONNECT Version"
+msgstr "HTTP CONNECT 协议版本"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/view/pcap-dnsproxy/helloworld.htm:2
 msgid "Hello World"
 msgstr ""
@@ -132,13 +313,163 @@ msgstr ""
 msgid "HuaweiCloud"
 msgstr "华为云"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:290
+msgid "ICMP Test"
+msgstr "ICMP 测试间隔"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:612
+msgid "IPv4 Alternate DNS"
+msgstr "IPv4 备用 DNS"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:132
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:653
+msgid "IPv4 Alternate DNS Address"
+msgstr "IPv4 备用 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:658
+msgid "IPv4 Alternate Provider Name"
+msgstr "IPv4 备用供应商名称"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:663
+msgid "IPv4 Alternate Provider Public Key"
+msgstr "IPv4 备用供应商公钥"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:111
 msgid "IPv4 Data source"
 msgstr "IPv4 数据源"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:144
+msgid "IPv4 EDNS Client Subnet Address"
+msgstr "IPv4 客户端子网地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:105
+msgid "IPv4 Listen Address"
+msgstr "IPv4 监听地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:197
+msgid "IPv4 Local Alternate DNS Address"
+msgstr "IPv4 备用本土 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:191
+msgid "IPv4 Local Main DNS Address"
+msgstr "IPv4 主要本土 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:603
+msgid "IPv4 Main DNS"
+msgstr "IPv4 主 DNS"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:128
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:631
+msgid "IPv4 Main DNS Address"
+msgstr "IPv4 主 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:640
+msgid "IPv4 Main Provider Name"
+msgstr "IPv4 主供应商名称"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:646
+msgid "IPv4 Main Provider Public Key"
+msgstr "IPv4 主供应商公钥"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:352
+msgid ""
+"IPv4 support needs Liunx version newer than 3.7. IPv6 TFO support needs "
+"Liunx version newer than 3.16"
+msgstr "IPv4 协议需要 Linux Kernel 3.7 以及更新版本的支持，IPv6 协议需要 Linux Kernel 3.16 以及更新版本的内核支持"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:623
+msgid "IPv6 Alternate DNS"
+msgstr "IPv6 备用 DNS"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:140
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:688
+msgid "IPv6 Alternate DNS Address"
+msgstr "IPv6 备用 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:693
+msgid "IPv6 Alternate Provider Name"
+msgstr "IPv6 备用供应商名称"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:698
+msgid "IPv6 Alternate Provider Public Key"
+msgstr "IPv6 备用供应商公钥"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:119
 msgid "IPv6 Data source"
 msgstr "IPv6 数据源"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:154
+msgid "IPv6 EDNS Client Subnet Address"
+msgstr "IPv6 客户端子网地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:110
+msgid "IPv6 Listen Address"
+msgstr "IPv6 监听地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:209
+msgid "IPv6 Local Alternate DNS Address"
+msgstr "IPv6 备用本土 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:203
+msgid "IPv6 Local Main DNS Address"
+msgstr "IPv6 主要本土 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:617
+msgid "IPv6 Main DNS"
+msgstr "IPv6 主 DNS"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:136
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:669
+msgid "IPv6 Main DNS Address"
+msgstr "IPv6 主 DNS 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:675
+msgid "IPv6 Main Provider Name"
+msgstr "IPv6 主供应商名称"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:681
+msgid "IPv6 Main Provider Public Key"
+msgstr "IPv6 主供应商公钥"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:329
+msgid "If disabled, it will automatically open the 'Direct Request' feature"
+msgstr "如果禁用，它将自动打开 '直连模式' 功能"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:355
+msgid "In milliseconds, must greater than value of 'Pcap Reading Timeout'"
+msgstr "单位毫秒，必须大于 '抓包模块读取超时时间' 的值"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:338
+msgid "In milliseconds, with a minimum of 10"
+msgstr "单位毫秒，最小为 10"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:249
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:259
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:269
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:279
+msgid "In milliseconds, with a minimum of 500"
+msgstr "单位毫秒，最小为 500"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:240
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:291
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:299
+msgid "In seconds"
+msgstr "单位秒"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:588
+msgid "In seconds, minimum is 10"
+msgstr "单位秒，最小为 10"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:313
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:318
+msgid "In seconds, with a minimum of 5"
+msgstr "单位秒，最小为 5"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:388
+msgid ""
+"Include format: Local + SOCKS Proxy + HTTP CONNECT Proxy + Direct Request + "
+"DNSCurve + TCP + UDP"
+msgstr "包含格式: Local + SOCKS Proxy + HTTP CONNECT Proxy + Direct Request + DNSCurve + TCP + UDP"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:73
 msgid "Just in case if you can't use 'git-http'"
@@ -155,6 +486,14 @@ msgstr "最后更新"
 msgid "List Cleanup"
 msgstr "规则清空"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:96
+msgid "Listen Port"
+msgstr "监听端口"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:85
+msgid "Listen Protocol"
+msgstr "监听协议"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:49
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:51
 msgid "Load from System"
@@ -164,10 +503,40 @@ msgstr "自系统加载"
 msgid "Loading"
 msgstr ""
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:76
+msgid "Local DNS Request"
+msgstr "本土 DNS 解析"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:187
+msgid "Local Force Request"
+msgstr "强制使用本土服务器解析"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:183
+msgid "Local Hosts"
+msgstr ""
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:167
+msgid "Local Protocol"
+msgstr "本土出口协议"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:184
+msgid "Local Routing"
+msgstr ""
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:20
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:22
 msgid "Logfile"
 msgstr "日志文件"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:632
+msgid ""
+"More support for DNSCurve (DNSCrypt) servers please move <a href=\"%s\" "
+"target=\"_blank\">here</a>"
+msgstr "获取更多支持 DNSCurve (DNSCrypt) 的服务器请移步<a href=\"%s\" target=\"_blank\">此处</a>"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:218
+msgid "Multiple requests"
+msgstr "多倍请求"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/logfile.lua:12
 msgid "No pcap-dnsproxy error logs yet!"
@@ -179,9 +548,48 @@ msgstr "尚无 pcap-dnsproxy 错误日志！"
 msgid "None"
 msgstr "无"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:396
+msgid ""
+"Only enabled when providing services as a non-local private network dns "
+"server"
+msgstr "仅在作为公网 DNS 服务器提供服务时启用"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:99
+msgid "Operation Mode"
+msgstr "运行模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:117
+msgid "Outgoing Protocol"
+msgstr "出口协议"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:77
+msgid "Parameter"
+msgstr "参数"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:476
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:538
+msgid "Password"
+msgstr "密码"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:328
+msgid "Pcap Capture"
+msgstr "抓包功能总开关"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:331
+msgid "Pcap Devices Blacklist"
+msgstr "抓包排除网卡列表"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:337
+msgid "Pcap Reading Timeout"
+msgstr "抓包模块读取超时时间"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:11
 msgid "Pcap_DNSProxy Server"
 msgstr "Pcap_DNSProxy"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:325
+msgid "Pcap_DNSProxy Server Name"
+msgstr "Pcap_DNSProxy 服务器主机名称"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:30
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
@@ -197,6 +605,38 @@ msgstr "请在终端会话中直接编辑此文件."
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:25
 msgid "Port:"
 msgstr "端口: "
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:101
+msgid "Private network mode"
+msgstr "私有网络模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:79
+msgid "Proxy"
+msgstr "代理"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:102
+msgid "Proxy mode"
+msgstr "回环模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:231
+msgid "Queue"
+msgstr "队列型"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:354
+msgid "Receive Waiting"
+msgstr "数据包接收等待时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:565
+msgid "Reliable DNSCurve Protocol Port Timeout"
+msgstr "可靠 DNSCurve 协议端口超时时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:248
+msgid "Reliable Once Socket Timeout"
+msgstr "一次性可靠协议端口超时时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:258
+msgid "Reliable Serial Socket Timeout"
+msgstr "串行可靠协议端口超时时间"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/view/pcap-dnsproxy/buttons.htm:50
 msgid "Reload"
@@ -225,11 +665,67 @@ msgstr "规则更新"
 msgid "Running"
 msgstr "运行中"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:466
+msgid "SOCKS Authorization"
+msgstr "SOCKS 连接认证"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:451
+msgid "SOCKS IPv4 Address"
+msgstr "SOCKS 服务器 IPv4 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:456
+msgid "SOCKS IPv6 Address"
+msgstr "SOCKS 服务器 IPv6 地址"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:475
+msgid "SOCKS Password"
+msgstr "密码"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:432
+msgid "SOCKS Protocol"
+msgstr "SOCKS 协议"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:417
+msgid "SOCKS Proxy"
+msgstr "SOCKS 代理"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:419
+msgid "SOCKS Proxy Only"
+msgstr "只使用 SOCKS 代理"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:446
+msgid "SOCKS UDP No Handshake"
+msgstr "SOCKS UDP 不握手模式"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:470
+msgid "SOCKS Username"
+msgstr "用户名"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:424
+msgid "SOCKS Version"
+msgstr "SOCKS 协议版本"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:21
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:21
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:21
 msgid "Save"
 msgstr "保存"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:219
+msgid "Send parallel requests to the same remote server at a time"
+msgstr "一次向同一个远程服务器发送并行域名解析请求"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:587
+msgid "Server Connection Information Check Interval"
+msgstr "服务器连接信息检查间隔"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:594
+msgid "Server Input"
+msgstr "服务器导入"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:100
+msgid "Server mode"
+msgstr "服务器模式"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/view/pcap-dnsproxy/buttons.htm:46
 msgid "Service Control"
@@ -258,6 +754,21 @@ msgstr "已停止"
 msgid "System config file: <code>%s</code>"
 msgstr "系统配置文件: <code>%s</code>"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:351
+msgid "TCP Fast Open"
+msgstr "TCP 快速打开"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:461
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:507
+msgid "Target DNS Server"
+msgstr "目标 DNS 服务器"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:604
+msgid ""
+"The 'Name' field of the corresponding server in the <a href=\"%s\" target="
+"\"_blank\">DNSCurve database</a>"
+msgstr "<a href=\"%s\" target=\"_blank\">DNSCurve 数据库</a>中相应服务器的的 'Name' 字段"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/logfile.lua:20
 msgid "The file size is too large for online editing in LuCI (&ge; 50 KB)."
 msgstr "文件太大 无法在LuCI中进行在线编辑 (&ge; 50 KB)."
@@ -265,6 +776,10 @@ msgstr "文件太大 无法在LuCI中进行在线编辑 (&ge; 50 KB)."
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/logfile.lua:33
 msgid "The following error logs is generated by pcap-dnsproxy."
 msgstr "pcap-dnsproxy 生成以下错误日志."
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:345
+msgid "The system needs run in global proxy mode"
+msgstr "建议当系统使用全局代理功能时启用\n将除本土外的所有请求直接交给系统而不作任何过滤等处理"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:15
 msgid ""
@@ -284,6 +799,30 @@ msgid ""
 "config file"
 msgstr "此页允许您对 pcap-dnsproxy 的 IPFilter 配置文件进行修改"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:230
+msgid "Timer"
+msgstr "计时型"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:232
+msgid "Timer + Queue"
+msgstr "计时型 + 队列型"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:221
+msgid "Unless the packet loss is very high, not recommended to open"
+msgstr "除非丢包非常严重干扰正常使用否则不建议开启"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:572
+msgid "Unreliable DNSCurve Protocol Port Timeout"
+msgstr "不可靠 DNSCurve 协议端口超时时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:268
+msgid "Unreliable Once Socket Timeout"
+msgstr "一次性不可靠协议端口超时时间"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:278
+msgid "Unreliable Serial Socket Timeout"
+msgstr "串行不可靠协议端口超时时间"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:25
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:63
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:80
@@ -294,9 +833,21 @@ msgstr "此页允许您对 pcap-dnsproxy 的 IPFilter 配置文件进行修改"
 msgid "Update"
 msgstr "更新"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:223
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:293
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:301
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:357
+msgid "Use Default"
+msgstr "使用缺省设置"
+
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:24
 msgid "User config file: <code>%s</code>"
 msgstr "用户配置文件: <code>%s</code>"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:471
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:533
+msgid "Username"
+msgstr "用户名"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:16
 msgid "WhiteList"
@@ -305,7 +856,7 @@ msgstr "白名单"
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:50
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:58
 msgid "You may need to revert&apply 'UNSAVED CHANGES' once"
-msgstr "您可能需要 恢复并应用 '未保存的配置' 一次“
+msgstr "您可能需要 恢复并应用 '未保存的配置' 一次"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:23
 msgid "You need install 'git-http' first"
@@ -333,3 +884,11 @@ msgid ""
 "txt#L891"
 msgstr "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt#L891"
 
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:566
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:573
+msgid "in milliseconds, minimum to 500"
+msgstr "单位毫秒，最小为 500"
+
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:19
+msgid "is not installed or not found"
+msgstr "未安装或未找到"
