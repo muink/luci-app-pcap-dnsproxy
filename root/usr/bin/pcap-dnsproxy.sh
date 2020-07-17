@@ -351,6 +351,19 @@ echo $1 | sed -n "s|\\\\|\\\\\\\\|g p"
 
 }
 
+function reservice() {
+	local service="$1"
+	local action="$2"
+	echo "${action^}ing ${service} service..."
+	if hash service 2>/dev/null; then
+		service ${service} ${action}
+	elif hash busybox 2>/dev/null && [[ -d "/etc/init.d" ]]; then
+		/etc/init.d/${service} ${action}
+	else
+		echo "Now please ${action} ${service} since I don't know how to do it."
+	fi
+}
+
 # uci2conf <section> <mapname> <conffile>
 uci2conf() {
 	local initvar=(section map config)
@@ -756,6 +769,11 @@ reset_full() {
 
 	# Reset pcap-dnsproxy Uci Config
 	conf2uci_full
+
+}
+
+restart_service() {
+	reservice 'pcap-dnsproxy' stop && sleep 2 && reservice 'pcap-dnsproxy' start
 
 }
 
