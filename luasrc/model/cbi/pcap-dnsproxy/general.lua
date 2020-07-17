@@ -12,6 +12,7 @@ local conf = packageName
 local config = "/etc/config/" .. conf
 
 local tmpfsVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'")))
+local tmpfsPort = tostring(util.trim(sys.exec("uci get " .. packageName .. ".@main[0].listen_port | sed 's/|/, /g'")))
 if not tmpfsVersion or tmpfsVersion == "" then
 	tmpfsStatusCode = -1
 	tmpfsVersion = ""
@@ -21,7 +22,7 @@ else
 end
 local tmpfsStatus = translate("Stopped")
 if sys.call("netstat -lpntu | grep Pcap_DNSProxy") == 0 then
-	tmpfsStatus = translate("Running")
+	tmpfsStatus = translate("Running") .. " - " .. translate("Port: ") .. tmpfsPort
 end
 
 
@@ -42,7 +43,7 @@ app_sys = h:option(Button, "_button0", translate("Apply to System"))
 app_sys.inputtitle = translate("Apply to System")
 app_sys.inputstyle = "apply"
 function app_sys.write (self, section)
-	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
+	sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
 end
 
 load_sys = h:option(Button, "_button1", translate("Load from System"),
@@ -50,7 +51,7 @@ load_sys = h:option(Button, "_button1", translate("Load from System"),
 load_sys.inputtitle = translate("Load from System")
 load_sys.inputstyle = "apply"
 function load_sys.write (self, section)
-	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh conf2uci_full")
+	sys.call ( "/usr/bin/pcap-dnsproxy.sh conf2uci_full")
 end
 
 resetall = h:option(Button, "_button2", translate("Reset All settings"),
@@ -58,11 +59,11 @@ resetall = h:option(Button, "_button2", translate("Reset All settings"),
 resetall.inputtitle = translate("Reset All settings")
 resetall.inputstyle = "apply"
 function resetall.write (self, section)
-	luci.sys.call ( "/usr/bin/pcap-dnsproxy.sh reset_full")
+	sys.call ( "/usr/bin/pcap-dnsproxy.sh reset_full")
 end
 
 
-s = m:section(TypedSection, "main", "Pcap_DNSProxy settings",
+s = m:section(TypedSection, "main", translate("General Settings"),
 	translatef("For further information "
 		.. "<a href=\"%s\" target=\"_blank\">"
 		.. "check the online documentation</a>", "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"))

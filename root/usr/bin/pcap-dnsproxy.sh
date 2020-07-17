@@ -17,6 +17,8 @@ USERHOSTS=$CONFDIR/user/Hosts
 RAWIPFILTERFILE=$CONFDIR/IPFilter.conf-opkg
 IPFILTERFILE=$CONFDIR/IPFilter.conf
 USERIPFILTER=$CONFDIR/user/IPFilter
+WHITELIST=$CONFDIR/WhiteList.txt
+ROUTINGLIST=$CONFDIR/Routing.txt
 
 _FUNCTION="$1"; shift
 # _PARAMETERS: "$@"
@@ -578,6 +580,126 @@ done
 
 }
 
+# update_white <urltype> <url> <outfile>
+# urltype:    <git|zip>
+update_white() {
+	local initvar=(urltype url outfile)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "update_white: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+local workdir="$(mktemp -d)"
+local main='accelerated-domains.china.conf'
+local google='google.china.conf'
+local apple='apple.china.conf'
+
+
+#echo "Downloading latest configurations..."
+if   [ "$urltype" == "git" ]; then
+	git clone --depth=1 "$url" "$workdir" || return 1
+elif [ "$urltype" == "zip" ]; then
+	curl -Lo "$workdir/main.zip" "$url" && unzip -joq "$workdir/main.zip" -d "$workdir" || return 1
+	##########curl -x socks5://user:passwd@myproxy.com:8080
+else
+	echo "update_white: The <urltype> parameter is invalid"; return 1
+fi
+
+#echo "Generating new configurations..."
+# Write latest domain data from dnsmasq-china-list project and write header
+cat << EOF > "$outfile"
+[Local Hosts]
+## China mainland domains
+## Source: $url
+## Last update: `date +%Y-%m-%d`
+
+
+EOF
+sed "s|[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+$||; s|^s|S|" "$workdir/$main" >> "$outfile"
+echo -e "\n" >> "$outfile"
+
+#echo "Cleaning up..."
+rm -r "$workdir"
+
+}
+
+# update_routing <url> <urlv6> <outfile>
+update_routing() {
+	local initvar=(url urlv6 outfile)
+	for _var in "${initvar[@]}"; do
+		if [ -z "$1" ]; then echo "update_routing: The <$_var> requires an argument"; return 1;
+		else eval "local \$_var=\"\$1\"" && shift; fi
+	done
+
+local workdir="$(mktemp -d)"
+mkdir "$workdir/4"
+mkdir "$workdir/6"
+local ipv4rou="CN"
+local ipv6rou="CN6"
+local apnic='delegated-apnic-latest'
+local ipdeny='cn-aggregated.zone'
+
+local ipip='china_ip_list.txt'
+local cz88='china.txt'
+local coip='china.txt'
+local v4list="$ipip $cz88 $coip"
+
+local coipv6='china6.txt'
+local v6list="$coipv6"
+
+#IPv4
+if   [ "${url##*.}" == "zip" ]; then
+	curl -Lo "$workdir/main.zip" "$url" && unzip -joq "$workdir/main.zip" -d "$workdir/4" || return 1
+	for _f in $v4list; do
+		[ -f "$workdir/4/$_f" ] && cp -f "$workdir/4/$_f" "$workdir/$ipv4rou" && break
+	done
+elif [ "${url##*.}" == "zone" ]; then
+	curl -Lo "$workdir/$ipv4rou" "$url" || return 1
+elif [ "${url##*/}" == "$apnic" ]; then
+	curl -Lo "$workdir/$apnic" "$url" || return 1
+	cat "$workdir/$apnic" | grep ipv4 | grep CN | awk -F\| '{printf("%s/%d\n", $4, 32-log($5)/log(2))}' > "$workdir/$ipv4rou"
+else
+	return 1
+fi
+
+#IPv6
+if   [ "${urlv6##*.}" == "zip" ]; then
+	curl -Lo "$workdir/main.zip" "$urlv6" && unzip -joq "$workdir/main.zip" -d "$workdir/6" || return 1
+	for _f in $v6list; do
+		[ -f "$workdir/6/$_f" ] && cp -f "$workdir/6/$_f" "$workdir/$ipv6rou" && break
+	done
+elif [ "${urlv6##*.}" == "zone" ]; then
+	curl -Lo "$workdir/$ipv6rou" "$urlv6" || return 1
+	sed -Ei 's|^0{1,4}||; s|(:0{1,4})|:|g; s|:{2,}|::|' "$workdir/$ipv6rou"
+elif [ "${urlv6##*/}" == "$apnic" ]; then
+	if [ ! -f "$workdir/$apnic" ]; then curl -Lo "$workdir/$apnic" "$urlv6" || return 1; fi
+	cat "$workdir/$apnic" | grep ipv6 | grep CN | awk -F\| '{printf("%s/%d\n", $4, $5)}' > "$workdir/$ipv6rou"
+else
+	return 1
+fi
+
+#echo "Generating new configurations..."
+# Write latest address data from APNIC and write header.
+cat << EOF > "$outfile"
+[Local Routing]
+## China mainland routing blocks
+## Source: $url
+## Sourcev6: $urlv6
+## Last update: `date +%Y-%m-%d`
+
+
+## IPv4
+EOF
+cat "$workdir/$ipv4rou" >> "$outfile"
+echo -e "\n\n## IPv6" >> "$outfile"
+cat "$workdir/$ipv6rou" >> "$outfile"
+echo -e "\n" >> "$outfile"
+
+#echo "Cleaning up..."
+rm -r "$workdir"
+
+}
+
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
@@ -635,6 +757,20 @@ reset_full() {
 
 	# Reset pcap-dnsproxy Uci Config
 	conf2uci_full
+
+}
+
+update_white_full() {
+	local white="$WHITELIST"
+
+	update_white "$1" "$2" $white
+
+}
+
+update_routing_full() {
+	local routing="$ROUTINGLIST"
+
+	update_routing "$1" "$2" $routing
 
 }
 
