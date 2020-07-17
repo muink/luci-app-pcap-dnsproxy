@@ -1,32 +1,13 @@
 # This is an example
 # This config has a higher priority than the UCI config
 
-[Listen]
-Operation Mode = Private
-
-[DNS]
-Outgoing Protocol = IPv4 + Force TCP
-
 [Local DNS]
 Local Hosts = 1
 Local Routing = 0
 
-[Addresses]
-IPv4 Main DNS Address = 8.8.8.8:53|8.8.4.4:53
-IPv4 Alternate DNS Address = 101.101.101.101:53|101.102.103.104:53
-IPv4 Local Main DNS Address = 223.6.6.6:53
-IPv4 Local Alternate DNS Address = 114.114.114.114:53
-
 [Values]
 ICMP Test = 0
 Domain Test = 0
-
-[Switches]
-Domain Case Conversion = 0
-EDNS Label = TCP + UDP
-
-[Data]
-Local Machine Server Name = pcap-dnsproxy.local
 
 [Proxy]
 HTTP CONNECT Header Field = User-Agent: Mozilla/5.0

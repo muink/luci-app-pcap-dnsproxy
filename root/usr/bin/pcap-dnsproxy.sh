@@ -505,7 +505,7 @@ userconf() {
 
 
 # Verify head validity
-local map_list=$(echo `map_def map` | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
+local map_list=$(map_def map | xargs | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
 local bad_head=$(
 	sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|\1|g p }" "$userconf" |
 	grep -Ev "$map_list" |
@@ -516,7 +516,7 @@ local bad_head=$(
 # Note "Bad Head"
 local _badhead
 for _badhead in "${bad_head[@]}"; do
-	sed -i "/^\[$_badhead\][ \t]*$/,/^\[.*\][ \t]*$/ { s|^\(\[$_badhead\]\)|#\1|; s|^\([^\[^#]\)|#\1|g; }" "$userconf"
+	sed -i "/^\[$_badhead\][ \t]*$/,/^\[.*\][ \t]*$/ { s|^\(\[$_badhead\]\)|#\1|; s|^\([^\[#]\)|#\1|g; }" "$userconf"
 done
 
 
@@ -529,7 +529,7 @@ local bad_param
 local _head
 
 for _head in "${valid_head[@]}"; do
-	refer=$(echo `map_tab "$_head" raw | sed -n "s/^/^/; s/$/%/ p"` | sed "s|%$| [<=>]|; s|% ^| [<=>]\|^|g; s|\^|^[0-9]+:|g") # reference
+	refer=$(map_tab "$_head" raw | sed -n "s/^/^/; s/$/%/ p" | xargs | sed "s|%$| [<=>]|; s|% ^| [<=>]\|^|g; s|\^|^[0-9]+:|g") # reference
 	bad_param=$(
 		grep -n "" "$userconf" |
 		sed -n "/^[0-9]\+:\[$_head\][ \t]*$/,/^[0-9]\+:\[.*\][ \t]*$/ { /^[0-9]\+:[^#]\+/ { /^[0-9]\+:\[.*\][ \t]*$/! p }}" |
@@ -551,7 +551,7 @@ for _head in "${valid_head[@]}"; do
 	local _multi
 	local _firstone
 
-	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
+	valid_param=$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq | xargs)
 		eval valid_param=(${valid_param//'/\'})
 	
 	for _param in "${valid_param[@]}"; do
@@ -563,10 +563,9 @@ for _head in "${valid_head[@]}"; do
 
 			sed -i "$_firstone,/^\[.*\][ \t]*$/ { /$_param/ d }" "$sysconf"
 			sed -i "$_firstone i $(
-				echo $(
 					sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^$_param [<=>][ \t]*.*$/ p }" "$userconf"\
 					| sed -n "s|^|PDNSP_REPLACE_NH|g; s|$|PDNSP_REPLACE_NT|g; p"
-				)\
+				| xargs\
 				| sed -n "s|\\\\|\\\\\\\\|g; s|^PDNSP_REPLACE_NH||; s|PDNSP_REPLACE_NT PDNSP_REPLACE_NH|\\\n|g; s|PDNSP_REPLACE_NT$||; p"
 			)" "$sysconf"
 		else
