@@ -11,6 +11,7 @@ local conf = packageName
 local config = "/etc/config/" .. conf
 local whiteconf = "/etc/pcap-dnsproxy/WhiteList.txt"
 local routingconf = "/etc/pcap-dnsproxy/Routing.txt"
+local dnscryptconf = "/etc/pcap-dnsproxy/dnscrypt-resolvers.csv"
 
 local whitelist    = translate("WhiteList")
 local routinglist  = translate("RoutingList")
@@ -30,6 +31,8 @@ m = Map(conf, "")
 
 local WhiteTime = tostring(util.trim(sys.exec("cat " .. whiteconf .. " | sed -n '4p' | cut -f2 -d: | sed -n '/[0-9]\\+-[0-9]\\+-[0-9]\\+/ p'")))
 if not WhiteTime or WhiteTime == "" then WhiteTime = translate("None"); else WhiteTime = WhiteTime .. "    " .. tostring(util.trim(sys.exec("echo $(( $(grep '[^[:space:]]' '" .. whiteconf .. "' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules"); end
+local DnsCryptDBTime = tostring(util.trim(sys.exec("stat -c '%y' '" .. dnscryptconf .. "' | cut -f1 -d' '")))
+if not DnsCryptDBTime or DnsCryptDBTime == "" then DnsCryptDBTime = translate("None"); end
 
 local white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].white_url 2>/dev/null")))
 local alt_white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].alt_white_url 2>/dev/null")))
@@ -128,5 +131,19 @@ function rup.write (self, section)
 	end
 end
 
+
+d = m:section(TypedSection, "pcap-dnsproxy", dnscryptdb)
+d.anonymous = true
+
+dstate = d:option(DummyValue, "_dstate", translate("Last update"))
+dstate.template = packageName .. "/status"
+dstate.value = DnsCryptDBTime
+
+dup = d:option(Button, "_dup", translate("Update ") .. dnscryptdb)
+dup.inputtitle = translate("Update")
+dup.inputstyle = "apply"
+function dup.write (self, section)
+	sys.call ("curl -Lo '" .. dnscryptconf .. "' 'https://raw.githubusercontent.com/dyne/dnscrypt-proxy/master/dnscrypt-resolvers.csv'")
+end
 
 return m
