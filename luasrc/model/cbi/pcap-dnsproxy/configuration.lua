@@ -16,7 +16,7 @@ m = SimpleForm("pcap-dnsproxy", nil,
 	.. "<br/>"
 	.. translatef("For further information "
 		.. "<a href=\"%s\" target=\"_blank\">"
-		.. "check the online documentation</a>", translate("https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt")))
+		.. "check the online documentation</a>", translate("https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt")))
 m:append(Template("pcap-dnsproxy/css"))
 m.submit = translate("Save")
 m.reset = false

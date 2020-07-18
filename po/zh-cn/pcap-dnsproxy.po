@@ -874,26 +874,26 @@ msgstr "需要先安装 'git-http' 包"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/logfile.lua:36
 msgid ""
-"https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/FAQ.en.txt"
-msgstr "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/FAQ.zh-Hans.txt"
+"https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/FAQ.en.txt"
+msgstr "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/FAQ.zh-Hans.txt"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:19
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:69
 msgid ""
-"https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"
-msgstr "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt"
+"https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"
+msgstr "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:19
 msgid ""
-"https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."
+"https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."
 "txt#L706"
-msgstr "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt#L706"
+msgstr "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt#L706"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:19
 msgid ""
-"https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."
+"https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."
 "txt#L891"
-msgstr "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt#L891"
+msgstr "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.zh-Hans.txt#L891"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:566
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:573
