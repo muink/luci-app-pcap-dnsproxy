@@ -8,11 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_NAME:=luci-app-pcap-dnsproxy
-PKG_VERSION:=0.4.9.13-70a40bb
-PKG_RELEASE:=1
+PKG_VERSION:=0.4.9.13
+PKG_RELEASE:=20200718
 
 LUCI_TITLE:=LuCI for pcap-dnsproxy
 LUCI_DEPENDS:=+luci-compat +pcap-dnsproxy +bash +curl +unzip +coreutils-stat
+EXTRA_DEPENDS:=pcap-dnsproxy (>=0.4.9.12-20ee41d)
 
 LUCI_DESCRIPTION:=LuCI for Pcap_DNSProxy. Pcap_DNSProxy, A DNS Server to avoid contaminated result.
 
