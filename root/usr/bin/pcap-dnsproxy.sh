@@ -518,7 +518,7 @@ userconf() {
 
 
 # Verify head validity
-local map_list=$(map_def map | xargs | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
+local map_list=$(echo `map_def map` | sed -n "s|\" \"|$\|^|g; s|^\"|^|; s|\"$|$| p") # reference
 local bad_head=$(
 	sed -n "/^\[.*\][ \t]*$/ { s|^\[\(.*\)\][ \t]*$|\1|g p }" "$userconf" |
 	grep -Ev "$map_list" |
@@ -564,7 +564,7 @@ for _head in "${valid_head[@]}"; do
 	local _multi
 	local _firstone
 
-	valid_param=$(sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq | xargs)
+	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
 		eval valid_param=(${valid_param//'/\'})
 	
 	for _param in "${valid_param[@]}"; do
