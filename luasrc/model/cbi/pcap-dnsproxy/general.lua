@@ -66,7 +66,7 @@ end
 s = m:section(TypedSection, "main", translate("General Settings"),
 	translatef("For further information "
 		.. "<a href=\"%s\" target=\"_blank\">"
-		.. "check the online documentation</a>", "https://github.com/chengr28/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt"))
+		.. "check the online documentation</a>", translate("https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en.txt")))
 s.anonymous = true
 
 
