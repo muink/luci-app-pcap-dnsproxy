@@ -241,7 +241,7 @@ cc_default_ttl = s:taboption("parameter", Value, "cc_default_ttl", translate("DN
 cc_default_ttl.datatype = "ufloat"
 cc_default_ttl.placeholder = "900"
 cc_default_ttl.rmempty = false
-cc_default_ttl:depends({["cc_type"] = "Timer", ["!reverse"] = true })
+cc_default_ttl:depends("cc_type", "Timer + Queue")
 
 --------
 
@@ -348,8 +348,10 @@ direct_req:value("IPv4")
 direct_req:value("IPv6")
 direct_req:value("IPv4 + IPv6")
 
-tcp_fast_op = s:taboption("adv_set", Flag, "tcp_fast_op", translate("TCP Fast Open"),
+tcp_fast_op = s:taboption("adv_set", Value, "tcp_fast_op", translate("TCP Fast Open"),
 	translate("IPv4 support needs Liunx version newer than 3.7. IPv6 TFO support needs Liunx version newer than 3.16"))
+tcp_fast_op.datatype = "range(0,32)"
+tcp_fast_op:value("0", translate("0 - Disable"))
 
 receive_waiting = s:taboption("adv_set", Value, "receive_waiting", translate("Receive Waiting"),
 	translate("In milliseconds, must greater than value of 'Pcap Reading Timeout'"))
