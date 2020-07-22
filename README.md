@@ -4,12 +4,14 @@ OpenWrt/LEDE LuCI for Pcap-DNSProxy
 说明
 ---
 
-以 pcap-dnsproxy 0.4.9.13-70a40bb 作为基点开发，为了保持配置文件的兼容性，建议也使用这个版本的 pcap-dnsproxy
+此项目是 pcap-dnsproxy 在 OpenWrt/LEDE 上 LuCI 界面  
+pcap-dnsproxy 是一个专注于在标准 DNS 协议下，过滤污染拿到正确解析的工具，相较其他方案（DoT DoH）拥有更快的响应速度，但在不正确的配置下仍容易被污染（使用不可靠协议进行解析）  
+以 pcap-dnsproxy 0.4.9.13-70a40bb 作为基点开发，为了保持配置文件的兼容性，建议也使用这个版本的 pcap-dnsproxy  
 
 依赖
 ---
 
-`luci-compat` `pcap-dnsproxy` `bash` `curl` `unzip` `coreutils-stat`
+`luci-compat` `pcap-dnsproxy >= 0.4.9.12-20ee41d` `bash` `curl` `unzip` `coreutils-stat`
 
 编译
 ---
