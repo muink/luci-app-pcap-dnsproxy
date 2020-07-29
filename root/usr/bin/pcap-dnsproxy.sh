@@ -680,6 +680,8 @@ if   [ "${url##*.}" == "zip" ]; then
 	for _f in $v4list; do
 		[ -f "$workdir/4/$_f" ] && cp -f "$workdir/4/$_f" "$workdir/$ipv4rou" && break
 	done
+elif [ "${url##*.}" == "txt" ]; then
+	curl -Lo "$workdir/$ipv4rou" "$url" || return 1
 elif [ "${url##*.}" == "zone" ]; then
 	curl -Lo "$workdir/$ipv4rou" "$url" || return 1
 elif [ "${url##*/}" == "$apnic" ]; then
