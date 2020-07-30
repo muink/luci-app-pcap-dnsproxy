@@ -364,6 +364,21 @@ function reservice() {
 	fi
 }
 
+# daemon_oper <add|remove>
+daemon_oper() {
+	local serv='/etc/init.d/pcap-dnsproxy start'
+	local target='/etc/crontabs/root'
+	local dln=$(grep -n "$serv" $target 2>/dev/null | cut -f1 -d':')
+
+	if   [ "$1" == "add" ]; then grep "$serv" $target >/dev/null 2>/dev/null || echo "*/5 * * * * $serv" >> $target;
+	elif [ "$1" == "remove" ]; then
+		if [ -n "$dln" ]; then
+			dln=$(echo $dln | sed -E "s|([0-9]+)|\1d;|g")
+			eval "sed -i \"$dln\" $target"
+		fi
+	fi
+}
+
 # uci2conf <section> <mapname> <conffile>
 uci2conf() {
 	local initvar=(section map config)
@@ -665,6 +680,8 @@ if   [ "${url##*.}" == "zip" ]; then
 	for _f in $v4list; do
 		[ -f "$workdir/4/$_f" ] && cp -f "$workdir/4/$_f" "$workdir/$ipv4rou" && break
 	done
+elif [ "${url##*.}" == "txt" ]; then
+	curl -Lo "$workdir/$ipv4rou" "$url" || return 1
 elif [ "${url##*.}" == "zone" ]; then
 	curl -Lo "$workdir/$ipv4rou" "$url" || return 1
 elif [ "${url##*/}" == "$apnic" ]; then

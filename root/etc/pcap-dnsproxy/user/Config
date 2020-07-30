@@ -1,5 +1,6 @@
 # This is an example
 # This config has a higher priority than the UCI config
+# If you don’t know what they do, remove them
 
 [Local DNS]
 Local Hosts = 1

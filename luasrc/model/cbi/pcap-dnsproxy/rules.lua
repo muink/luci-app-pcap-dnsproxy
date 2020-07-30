@@ -112,7 +112,7 @@ rurl = r:option(ListValue, "routing_url", translate("IPv4 Data source"))
 rurl:value("https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest", "APNIC")
 rurl:value("https://www.ipdeny.com/ipblocks/data/aggregated/cn-aggregated.zone", "IPdeny")
 rurl:value("https://github.com/17mon/china_ip_list/archive/master.zip", "IPIP")
-rurl:value("https://github.com/metowolf/iplist/archive/master.zip", "CZ88")
+rurl:value("https://github.com/metowolf/iplist/raw/master/data/special/china.txt", "CZ88")
 rurl:value("https://github.com/gaoyifan/china-operator-ip/archive/ip-lists.zip", "china-operator-ip")
 rurl.rmempty = false
 
