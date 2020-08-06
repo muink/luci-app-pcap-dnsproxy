@@ -59,6 +59,7 @@ pcap-dnsproxy 是一个专注于在标准 DNS 协议下，过滤污染拿到正�
 完成后设置 dnsmasq 转发请求到 pcap-dnsproxy
 
    ```bash
+   uci add_list dhcp.@dnsmasq[0].server='::1#1053'
    uci add_list dhcp.@dnsmasq[0].server='127.0.0.1#1053'
    uci commit dhcp
    /etc/init.d/dnsmasq restart
