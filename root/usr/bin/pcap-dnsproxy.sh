@@ -175,13 +175,13 @@ case "$_map" in
 			NONE@Thread Pool Reset Time
 			NONE@Queue Limits Reset Time
 			NONE@EDNS Payload Size
-			NONE@IPv4 Packet TTL
-			NONE@IPv4 Main DNS TTL
-			NONE@IPv4 Alternate DNS TTL
-			NONE@IPv6 Packet Hop Limits
-			NONE@IPv6 Main DNS Hop Limits
-			NONE@IPv6 Alternate DNS Hop Limits
-			NONE@Hop Limits Fluctuation
+			ipv4_packet_ttl@IPv4 Packet TTL
+			global_ipv4_ttl@IPv4 Main DNS TTL
+			global_ipv4_ttl_alt@IPv4 Alternate DNS TTL
+			ipv6_packet_ttl@IPv6 Packet Hop Limits
+			global_ipv6_ttl@IPv6 Main DNS Hop Limits
+			global_ipv6_ttl_alt@IPv6 Alternate DNS Hop Limits
+			ttl_tolerance@Hop Limits Fluctuation
 			reliable_once_socket_timeout@Reliable Once Socket Timeout
 			reliable_serial_socket_timeout@Reliable Serial Socket Timeout
 			unreliable_once_socket_timeout@Unreliable Once Socket Timeout

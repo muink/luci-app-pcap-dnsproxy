@@ -129,17 +129,29 @@ global_ipv4_addr = s:taboption("general", Value, "global_ipv4_addr", translate("
 global_ipv4_addr.placeholder = "8.8.4.4:53"
 global_ipv4_addr.rmempty = false
 
+global_ipv4_ttl = s:taboption("general", Value, "global_ipv4_ttl", translate("IPv4 Main DNS TTL"))
+global_ipv4_ttl.placeholder = "TTL(8.8.4.4)"
+
 global_ipv4_addr_alt = s:taboption("general", Value, "global_ipv4_addr_alt", translate("IPv4 Alternate DNS Address"))
 global_ipv4_addr_alt.placeholder = "1.0.0.1:53|149.112.112.112:53|208.67.220.220:5353"
 global_ipv4_addr_alt.rmempty = false
+
+global_ipv4_ttl_alt = s:taboption("general", Value, "global_ipv4_ttl_alt", translate("IPv4 Alternate DNS TTL"))
+global_ipv4_ttl_alt.placeholder = "TTL(1.0.0.1)|TTL(149.112.112.112)|TTL(208.67.220.220)"
 
 global_ipv6_addr = s:taboption("general", Value, "global_ipv6_addr", translate("IPv6 Main DNS Address"))
 global_ipv6_addr.placeholder = "[2001:4860:4860::8844]:53"
 global_ipv6_addr.rmempty = false
 
+global_ipv6_ttl = s:taboption("general", Value, "global_ipv6_ttl", translate("IPv6 Main DNS Hop Limits"))
+global_ipv6_ttl.placeholder = "Hop-Limit(2001:4860:4860::8844)"
+
 global_ipv6_addr_alt = s:taboption("general", Value, "global_ipv6_addr_alt", translate("IPv6 Alternate DNS Address"))
 global_ipv6_addr_alt.placeholder = "[2606:4700:4700::1001]:53|[2620:FE::9]:53|[2620:0:CCD::2]:5353"
 global_ipv6_addr_alt.rmempty = false
+
+global_ipv6_ttl_alt = s:taboption("general", Value, "global_ipv6_ttl_alt", translate("IPv6 Alternate DNS Hop Limits"))
+global_ipv6_ttl_alt.placeholder = "Hop-Limit(2606:4700:4700::1001)|Hop-Limit(2620:FE::9)|Hop-Limit(2620:0:CCD::2)"
 
 edns_client_subnet_ipv4_addr = s:taboption("general", Value, "edns_client_subnet_ipv4_addr", translate("IPv4 EDNS Client Subnet Address"),
 	translate("EDNS Client Subnet Relay parameter priority is higher than this parameter.")
@@ -244,6 +256,22 @@ cc_default_ttl.placeholder = "900"
 cc_default_ttl:depends("cc_type", "Timer + Queue")
 
 --------
+
+ipv4_packet_ttl = s:taboption("parameter", Value, "ipv4_packet_ttl", translate("IPv4 Packet TTL"),
+	translate("0 is automatically determined by the operating system, the value of 1 - 255 between"))
+ipv4_packet_ttl.placeholder = "72 - 255"
+ipv4_packet_ttl.rmempty = false
+
+ipv6_packet_ttl = s:taboption("parameter", Value, "ipv6_packet_ttl", translate("IPv6 Packet Hop Limits"),
+	translate("0 is automatically determined by the operating system, the value of 1 - 255 between"))
+ipv6_packet_ttl.placeholder = "72 - 255"
+ipv6_packet_ttl.rmempty = false
+
+ttl_tolerance = s:taboption("parameter", Value, "ttl_tolerance", translate("IPv4 TTL/IPv6 Hop Limits Tolerance"),
+	translate("IPv4 TTL/IPv6 Hop Limits value range of ± data packets can be accepted, to avoid the short-term changes in the network environment caused by the failure of the problem"))
+ttl_tolerance.datatype = "range(0,255)"
+ttl_tolerance.placeholder = "1"
+ttl_tolerance.rmempty = false
 
 reliable_once_socket_timeout = s:taboption("parameter", Value, "reliable_once_socket_timeout", translate("Reliable Once Socket Timeout"),
 	translate("In milliseconds, with a minimum of 500")
