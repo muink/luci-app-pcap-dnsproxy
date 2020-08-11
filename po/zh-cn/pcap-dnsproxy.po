@@ -31,7 +31,7 @@ msgstr "0 - 禁用 - 单次"
 msgid ""
 "0 is automatically determined by the operating system, the value of 1 - 255 "
 "between"
-msgstr ""
+msgstr "0 为由操作系统自动决定，取值为 1 - 255 之间"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:237
 msgid "2 - Double"
@@ -350,7 +350,7 @@ msgstr "IPv4 备用 DNS 地址"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:139
 msgid "IPv4 Alternate DNS TTL"
-msgstr ""
+msgstr "IPv4 备用 DNS TTL 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:684
 msgid "IPv4 Alternate Provider Name"
@@ -391,7 +391,7 @@ msgstr "IPv4 主 DNS 地址"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:132
 msgid "IPv4 Main DNS TTL"
-msgstr ""
+msgstr "IPv4 主 DNS TTL 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:666
 msgid "IPv4 Main Provider Name"
@@ -403,11 +403,11 @@ msgstr "IPv4 主供应商公钥"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:260
 msgid "IPv4 Packet TTL"
-msgstr ""
+msgstr "发出 IPv4 数据包头部 TTL 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:270
 msgid "IPv4 TTL/IPv6 Hop Limits Tolerance"
-msgstr ""
+msgstr "IPv4 TTL/IPv6 Hop Limits 公差范围"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:271
 msgid ""
@@ -415,6 +415,8 @@ msgid ""
 "avoid the short-term changes in the network environment caused by the "
 "failure of the problem"
 msgstr ""
+"IPv4 TTL/IPv6 Hop Limits 的值 ± 数值的范围内的数据包均可被接受，"
+"用于避免网络环境短暂变化造成解析失败的问题"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:380
 msgid ""
@@ -435,7 +437,7 @@ msgstr "IPv6 备用 DNS 地址"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:153
 msgid "IPv6 Alternate DNS Hop Limits"
-msgstr ""
+msgstr "IPv6 备用 DNS Hop Limits 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:719
 msgid "IPv6 Alternate Provider Name"
@@ -476,7 +478,7 @@ msgstr "IPv6 主 DNS 地址"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:146
 msgid "IPv6 Main DNS Hop Limits"
-msgstr ""
+msgstr "IPv6 主 DNS Hop Limits 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:701
 msgid "IPv6 Main Provider Name"
@@ -488,7 +490,7 @@ msgstr "IPv6 主供应商公钥"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:265
 msgid "IPv6 Packet Hop Limits"
-msgstr ""
+msgstr "发出 IPv6 数据包头部 HopLimits 值"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:357
 msgid "If disabled, it will automatically open the 'Direct Request' feature"
