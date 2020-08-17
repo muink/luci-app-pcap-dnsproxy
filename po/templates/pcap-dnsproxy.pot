@@ -654,7 +654,7 @@ msgid "Private network mode"
 msgstr ""
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:79
-msgid "Proxy"
+msgid "DNS Proxy"
 msgstr ""
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:102
