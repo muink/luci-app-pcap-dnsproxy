@@ -796,15 +796,26 @@ restart_service() {
 
 update_white_full() {
 	local white="$WHITELIST"
+	local which="$1"
+	local type
+	if   [ "$which" == "main" ]; then type="git";
+	elif [ "$which" == "alt" ]; then type="zip";
+	fi
+	local main_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].white_url 2>/dev/null)"
+	local alt_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].alt_white_url 2>/dev/null)"
 
-	update_white "$1" "$2" $white
+	eval "local url=\"\$${which}_url\""
+
+	if [ -n "$url" ]; then update_white "$type" "$url" $white; fi
 
 }
 
 update_routing_full() {
 	local routing="$ROUTINGLIST"
+	local v4_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].routing_url 2>/dev/null)"
+	local v6_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].routing_v6_url 2>/dev/null)"
 
-	update_routing "$1" "$2" $routing
+	if [ -n "$v4_url" -a -n "$v6_url" ]; then update_routing "$v4_url" "$v6_url" $routing; fi
 
 }
 

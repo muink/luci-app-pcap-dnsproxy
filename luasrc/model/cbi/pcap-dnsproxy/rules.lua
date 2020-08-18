@@ -35,10 +35,6 @@ if not WhiteTime or WhiteTime == "" then WhiteTime = translate("None"); else Whi
 local DnsCryptDBTime = tostring(util.trim(sys.exec("stat -c '%y' '" .. dnscryptconf .. "' | cut -f1 -d' '")))
 if not DnsCryptDBTime or DnsCryptDBTime == "" then DnsCryptDBTime = translate("None"); end
 
-local white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].white_url 2>/dev/null")))
-local alt_white_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].alt_white_url 2>/dev/null")))
-local routing_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].routing_url 2>/dev/null")))
-local routing_v6_url = tostring(util.trim(sys.exec("uci get pcap-dnsproxy.@" .. conf .. "[-1].routing_v6_url 2>/dev/null")))
 
 
 a = m:section(TypedSection, "rule", nil)
@@ -160,8 +156,9 @@ wup = w:option(Button, "_wup", translate("Update ") .. whitelist)
 wup.inputtitle = GitReqTitle
 wup.inputstyle = "apply"
 function wup.write (self, section)
-	if GitReq and not (GitReq == "") and white_url and not (white_url == "") then
-		sys.call ("/usr/bin/pcap-dnsproxy.sh update_white_full git '" .. white_url .. "'")
+	m.uci:apply()
+	if GitReq and not (GitReq == "") then
+		sys.call ("/usr/bin/pcap-dnsproxy.sh update_white_full main")
 	end
 end
 
@@ -176,9 +173,8 @@ waltup = w:option(Button, "_waltup", translate("Alternate Update ") .. whitelist
 waltup.inputtitle = translate("Update")
 waltup.inputstyle = "apply"
 function waltup.write (self, section)
-	if alt_white_url and not (alt_white_url == "") then
-		sys.call ("/usr/bin/pcap-dnsproxy.sh update_white_full zip '" .. alt_white_url .. "'")
-	end
+	m.uci:apply()
+	sys.call ("/usr/bin/pcap-dnsproxy.sh update_white_full alt")
 end
 
 wsave = w:option(Button, "_wsave", translate("Save & Apply"))
@@ -227,9 +223,8 @@ rup = r:option(Button, "_rup", translate("Update ") .. routinglist)
 rup.inputtitle = translate("Update")
 rup.inputstyle = "apply"
 function rup.write (self, section)
-	if routing_url and not (routing_url == "") then
-		sys.call ("/usr/bin/pcap-dnsproxy.sh update_routing_full '" .. routing_url .. "' '" .. routing_v6_url .. "'")
-	end
+	m.uci:apply()
+	sys.call ("/usr/bin/pcap-dnsproxy.sh update_routing_full")
 end
 
 rsave = r:option(Button, "_rsave", translate("Save & Apply"))
