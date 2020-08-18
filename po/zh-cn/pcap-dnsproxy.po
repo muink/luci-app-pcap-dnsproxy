@@ -766,7 +766,7 @@ msgstr "路由规则"
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:34
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:192
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:193
-msgid " Rules"
+msgid "Rules"
 msgstr "条规则"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/controller/pcap-dnsproxy.lua:13

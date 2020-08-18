@@ -31,7 +31,7 @@ m.pageaction = false
 
 
 local WhiteTime = tostring(util.trim(sys.exec("cat " .. whiteconf .. " | sed -n '4p' | cut -f2 -d: | sed -n '/[0-9]\\+-[0-9]\\+-[0-9]\\+/ p'")))
-if not WhiteTime or WhiteTime == "" then WhiteTime = translate("None"); else WhiteTime = WhiteTime .. "    " .. tostring(util.trim(sys.exec("echo $(( $(grep '[^[:space:]]' '" .. whiteconf .. "' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules"); end
+if not WhiteTime or WhiteTime == "" then WhiteTime = translate("None"); else WhiteTime = WhiteTime .. "    " .. tostring(util.trim(sys.exec("echo $(( $(grep '[^[:space:]]' '" .. whiteconf .. "' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. " " .. translate("Rules"); end
 local DnsCryptDBTime = tostring(util.trim(sys.exec("stat -c '%y' '" .. dnscryptconf .. "' | cut -f1 -d' '")))
 if not DnsCryptDBTime or DnsCryptDBTime == "" then DnsCryptDBTime = translate("None"); end
 
@@ -189,8 +189,8 @@ end
 
 local RoutingTime = tostring(util.trim(sys.exec("cat " .. routingconf .. " | sed -n '5p' | cut -f2 -d: | sed -n '/[0-9]\\+-[0-9]\\+-[0-9]\\+/ p'")))
 if not RoutingTime or RoutingTime == "" then RoutingTime = translate("None"); else RoutingTime = RoutingTime 
-	.. "    " .. "IPv4: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv4/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules") 
-	.. "    " .. "IPv6: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv6/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. translate(" Rules");
+	.. "    " .. "IPv4: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv4/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. " " .. translate("Rules") 
+	.. "    " .. "IPv6: " .. tostring(util.trim(sys.exec("echo $(( $(sed -n '/^## IPv6/,/^## .*/ p' '" .. routingconf .. "' | grep '[^[:space:]]' | grep -Ev '#|^\\\[' | sed -n '$=') + 0 ))"))) .. " " .. translate("Rules");
 end
 
 r = m:section(TypedSection, "rule", routinglist)
