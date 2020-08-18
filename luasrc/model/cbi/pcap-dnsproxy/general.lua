@@ -76,7 +76,7 @@ s:tab("general", translate("General Settings"))
 s:tab("ll_dns", translate("Local DNS Request"))
 s:tab("parameter", translate("Parameter"))
 s:tab("adv_set", translate("Advanced"))
-s:tab("proxy_set", translate("Proxy"))
+s:tab("proxy_set", translate("DNS Proxy"))
 s:tab("dnscurve_set", translate("DNSCurve"))
 
 

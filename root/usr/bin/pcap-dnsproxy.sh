@@ -37,7 +37,7 @@ elif [ "$1" == "nam" ]; then __cmd="| cut -f1 -d=";
 # map_def map				-- List 'map' element
 elif [ "$1" == "map" ]; then __cmd="| cut -f2 -d=";
 # <type> not support
-else echo 'map_def: The <type> parameter is invalid'; return 1;
+else >&2 echo 'map_def: The <type> parameter is invalid'; return 1;
 fi
 
 # Map name list
@@ -63,7 +63,7 @@ MAPLIST
 # map_tab <mapname> [<variabletype>] [<element>]
 # variabletype:    <uci|raw>
 map_tab() {
-if [ -z "$1" ]; then echo 'map_tab: The <mapname> requires an argument'; return 1; fi
+if [ -z "$1" ]; then >&2 echo 'map_tab: The <mapname> requires an argument'; return 1; fi
 local _map="$1"
 local _vtype="$2"
 local _element="$3"
@@ -71,7 +71,7 @@ local __cmd
 
 
 # <element> not support
-if   [ "$_element" == "NONE" ]; then echo 'map_tab: The <element> parameter is invalid'; return 1;
+if   [ "$_element" == "NONE" ]; then >&2 echo 'map_tab: The <element> parameter is invalid'; return 1;
 # <element> empty
 elif [ -z "$_element" ]; then
 	# map_tab "$CONF_DNS"						-- List  ALL  element of maptab '$CONF_DNS'; keep'NONE'; keep function
@@ -81,7 +81,7 @@ elif [ -z "$_element" ]; then
 	# map_tab "$CONF_DNS" raw					-- List 'raw' element of maptab '$CONF_DNS'; ignore raw'NONE'; ignore uci2raw function
 	elif [ "$_vtype" == "raw" ]; then __cmd="| cut -f2 -d@ | grep -v '^NONE$' | grep -v '^_.\+'";
 	# <variabletype> not support
-	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
+	else >&2 echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
 # <element> not empty
 else
@@ -92,14 +92,14 @@ else
 	# map_tab "$CONF_DNS" raw "$_element"		-- Show 'raw' element for value '$_element' of maptab '$CONF_DNS'; keep'NONE'
 	elif [ "$_vtype" == "raw" ]; then __cmd="| sed -n -e \"/^\${_element}@/ p\" -e \"/@\${_element}\$/ p\" | cut -f2 -d@";
 	# <variabletype> not support
-	else echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
+	else >&2 echo 'map_tab: The <variabletype> parameter is invalid'; return 1;
 	fi
 fi
 
 
 case "$_map" in
 	'')
-		echo 'map_tab: The <mapname> requires an argument'
+		>&2 echo 'map_tab: The <mapname> requires an argument'
 		return 1
 	;;
 	"$CONF_BASE")
@@ -319,7 +319,7 @@ case "$_map" in
 		EOF
 	;;
 	*)
-		echo "map_tab: The Map \"$_map\" does not exist"
+		>&2 echo "map_tab: The Map \"$_map\" does not exist"
 		return 1
 	;;
 esac
@@ -383,7 +383,7 @@ daemon_oper() {
 uci2conf() {
 	local initvar=(section map config)
 	for _var in "${initvar[@]}"; do
-		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		if [ -z "$1" ]; then >&2 echo "uci2conf: The <$_var> requires an argument"; return 1;
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
@@ -438,8 +438,8 @@ for _var in "${uci_list[@]}"; do
 			fi
 		# <$_raw> returns empty
 		else
-			echo "uci2conf: The Element \"$_var\" not have relative element"; return 1
-			echo "This situation basically does not exist" >/dev/null
+			>&2 echo "uci2conf: The Element \"$_var\" not have relative element"; return 1
+			>&2 echo "This situation basically does not exist" >/dev/null
 		fi
 	
 	# <$_var> returns empty
@@ -460,7 +460,7 @@ done
 conf2uci() {
 	local initvar=(section map config pkgnm)
 	for _var in "${initvar[@]}"; do
-		if [ -z "$1" ]; then echo "uci2conf: The <$_var> requires an argument"; return 1;
+		if [ -z "$1" ]; then >&2 echo "uci2conf: The <$_var> requires an argument"; return 1;
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
@@ -514,8 +514,8 @@ for _var in "${raw_list[@]}"; do
 
 	# <$_var> OR <$_uci> returns empty
 	else
-		echo "conf2uci: The Element \"$_var\" not exist or not have relative element"; return 1
-		echo "This situation basically does not exist" >/dev/null
+		>&2 echo "conf2uci: The Element \"$_var\" not exist or not have relative element"; return 1
+		>&2 echo "This situation basically does not exist" >/dev/null
 	fi
 done
 
@@ -527,7 +527,7 @@ done
 userconf() {
 	local initvar=(userconf sysconf)
 	for _var in "${initvar[@]}"; do
-		if [ -z "$1" ]; then echo "userconf: The <$_var> requires an argument"; return 1;
+		if [ -z "$1" ]; then >&2 echo "userconf: The <$_var> requires an argument"; return 1;
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
@@ -612,7 +612,7 @@ done
 update_white() {
 	local initvar=(urltype url outfile)
 	for _var in "${initvar[@]}"; do
-		if [ -z "$1" ]; then echo "update_white: The <$_var> requires an argument"; return 1;
+		if [ -z "$1" ]; then >&2 echo "update_white: The <$_var> requires an argument"; return 1;
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
@@ -629,7 +629,7 @@ elif [ "$urltype" == "zip" ]; then
 	curl -Lo "$workdir/main.zip" "$url" && unzip -joq "$workdir/main.zip" -d "$workdir" || return 1
 	##########curl -x socks5://user:passwd@myproxy.com:8080
 else
-	echo "update_white: The <urltype> parameter is invalid"; return 1
+	>&2 echo "update_white: The <urltype> parameter is invalid"; return 1
 fi
 
 #echo "Generating new configurations..."
@@ -654,7 +654,7 @@ rm -r "$workdir"
 update_routing() {
 	local initvar=(url urlv6 outfile)
 	for _var in "${initvar[@]}"; do
-		if [ -z "$1" ]; then echo "update_routing: The <$_var> requires an argument"; return 1;
+		if [ -z "$1" ]; then >&2 echo "update_routing: The <$_var> requires an argument"; return 1;
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
