@@ -55,7 +55,7 @@ pcap-dnsproxy 是一个专注于在标准 DNS 协议下，过滤污染拿到正�
    rm -rf /etc/pcap-dnsproxy/ 2>/dev/null
    ```
 
-之后安装 pcap-dnsproxy luci-app-pcap-dnsproxy luci-i18n-pcap-dnsproxy-zh-cn  
+之后安装 `pcap-dnsproxy` `luci-app-pcap-dnsproxy` `luci-i18n-pcap-dnsproxy-zh-cn`  
 完成后设置 dnsmasq 转发请求到 pcap-dnsproxy
 
    ```bash
@@ -70,6 +70,7 @@ pcap-dnsproxy 是一个专注于在标准 DNS 协议下，过滤污染拿到正�
 
    ```bash
    uci set network.wan.peerdns='0'
+   uci set network.wan6.peerdns='0'
    uci set dhcp.@dnsmasq[0].noresolv='1'
    uci commit dhcp
    uci commit network
