@@ -147,7 +147,7 @@ msgid "DNSSEC Request"
 msgstr ""
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:56
-msgid "Data source"
+msgid "Main Data source"
 msgstr ""
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:621

@@ -149,7 +149,7 @@ function wclear.write(self, section)
 	fs.writefile(whiteconf, "\n")
 end
 
-wurl = w:option(ListValue, "white_url", translate("Data source"),
+wurl = w:option(ListValue, "white_url", translate("Main Data source"),
 	translate("Fast in China but not provide Zip download"))
 wurl:value("https://gitee.com/felixonmars/dnsmasq-china-list.git", "Git: " .. "dnsmasq-china-list" .. " - " .. translate("Gitee"))
 wurl:value("https://code.aliyun.com/felixonmars/dnsmasq-china-list.git", "Git: " .. "dnsmasq-china-list" .. " - " .. translate("Aliyun"))
