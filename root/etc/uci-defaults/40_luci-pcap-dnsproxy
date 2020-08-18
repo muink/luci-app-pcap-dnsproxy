@@ -3,6 +3,7 @@
 pkgname="pcap-dnsproxy"
 type1name="pcap-dnsproxy"
 type2name="main"
+type3name="rule"
 pkgdir="/etc/$pkgname"
 cfglist="Config Hosts IPFilter"
 listlist="Routing.txt WhiteList.txt"
@@ -14,6 +15,12 @@ if [ ."$(uci -q get ${pkgname}.@${type1name}[-1])" != ."${type1name}" ]; then
 	uci -q batch <<-EOF >/dev/null
 		add $pkgname $type1name
 		set ${pkgname}.@${type1name}[-1].enabled='1'
+		commit $pkgname
+	EOF
+fi
+if [ ."$(uci -q get ${pkgname}.@${type3name}[-1])" != ."${type3name}" ]; then
+	uci -q batch <<-EOF >/dev/null
+		add $pkgname $type3name
 		commit $pkgname
 	EOF
 fi

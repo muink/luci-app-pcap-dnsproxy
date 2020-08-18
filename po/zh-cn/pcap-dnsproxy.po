@@ -157,8 +157,8 @@ msgid "DNSSEC Request"
 msgstr "DNSSEC 请求"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/rules.lua:56
-msgid "Data source"
-msgstr "数据源"
+msgid "Main Data source"
+msgstr "主数据源"
 
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:621
 msgid "Database"

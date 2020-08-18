@@ -6,6 +6,7 @@
 
 UCICFGFILE=pcap-dnsproxy # Package name
 TYPEDSECTION=main
+TYPEDSECTION2=rule
 CONFDIR=/etc/pcap-dnsproxy
 
 RAWCONFIGFILE=$CONFDIR/Config.conf-opkg
@@ -101,6 +102,23 @@ case "$_map" in
 	'')
 		>&2 echo 'map_tab: The <mapname> requires an argument'
 		return 1
+	;;
+	"uci_$TYPEDSECTION2")
+		eval grep \"\$_element\" <<-EOF $__cmd
+			aauto@NONE
+			aauto_white@NONE
+			aauto_white_src@NONE
+			aauto_route@NONE
+			aauto_cron@NONE
+			aauto_cycle@NONE
+			aauto_week@NONE
+			aauto_month@NONE
+			aauto_time@NONE
+			white_url@NONE
+			alt_white_url@NONE
+			routing_url@NONE
+			routing_v6_url@NONE
+		EOF
 	;;
 	"$CONF_BASE")
 		eval grep \"\$_element\" <<-EOF $__cmd
@@ -387,7 +405,7 @@ uci2conf() {
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
-	
+
 # Defining variables for uci config
 #cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
 local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
@@ -729,6 +747,82 @@ rm -r "$workdir"
 
 }
 
+# schedule
+schedule() {
+	local section=$(uci show pcap-dnsproxy.@${TYPEDSECTION2}[-1] 2>/dev/null | cut -f2 -d'.' | cut -f1 -d'=' | sed -n '1p')
+	if [ -z "$section" ]; then return 1; fi
+	local map="uci_$TYPEDSECTION2"
+
+config_load $UCICFGFILE
+
+# Defining variables for uci config
+#cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
+local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
+	eval uci_list=(${uci_list//'/\'})
+local uci_count=${#uci_list[@]}
+# Get values of uci config
+for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
+#eval "config_set \"\$section\" \"\$_var\" \"\$$_var\"" # Only set to environment variables
+
+
+# Create schedule
+local _servs='/usr/bin/pcap-dnsproxy.sh update_white_full|/usr/bin/pcap-dnsproxy.sh update_routing_full'
+local _crontab='/etc/crontabs/root'
+local _dln
+
+local _cron=
+local _time='* *'
+local _day='*'
+local _week='*'
+
+# Get * * * * *
+if   [ "$aauto" == "0" ]; then
+	_dln=$(grep -En "$_servs" $_crontab 2>/dev/null | cut -f1 -d':')
+
+	# delete cron
+	if [ -n "$_dln" ]; then
+		_dln=$(echo $_dln | sed -E "s|([0-9]+)|\1d;|g")
+		eval "sed -i \"$_dln\" $_crontab"
+	fi
+	return 0
+
+elif [ "$aauto" == "1" ]; then
+
+	# general cron
+	if   [ "$aauto_cycle" == "week" ]; then [ -n "$aauto_week" ] && _week=$aauto_week || _week=3;
+	elif [ "$aauto_cycle" == "month" ]; then [ -n "$aauto_month" ] && _day=$aauto_month || _day=1;
+	else return 1;
+	fi
+	[ -n "$aauto_time" ] && _time="0 $aauto_time" || _time='0 9'
+
+	_cron="$_time $_day * $_week"
+
+elif [ "$aauto" == "2" ]; then
+
+	# crontab cron
+	[ -n "$aauto_cron" ] && _cron=$aauto_cron || _cron='0 9 * * 3'
+
+else return 1;
+fi
+
+
+	# Delete cron
+	_dln=$(grep -En "$_servs" $_crontab 2>/dev/null | cut -f1 -d':')
+	if [ -n "$_dln" ]; then
+		_dln=$(echo $_dln | sed -E "s|([0-9]+)|\1d;|g")
+		eval "sed -i \"$_dln\" $_crontab"
+	fi
+	# Create cron
+	if [ "$aauto_white" == "1" ]; then
+		[ -n "$aauto_white_src" ] && echo "$_cron /usr/bin/pcap-dnsproxy.sh update_white_full $aauto_white_src" >> $_crontab
+	fi
+	if [ "$aauto_route" == "1" ]; then
+		echo "$_cron /usr/bin/pcap-dnsproxy.sh update_routing_full" >> $_crontab
+	fi
+
+
+}
+
 uci2conf_full() {
 	local TypedSection="$TYPEDSECTION"
 	local ConfigFile="$CONFIGFILE"
@@ -796,15 +890,26 @@ restart_service() {
 
 update_white_full() {
 	local white="$WHITELIST"
+	local which="$1"
+	local type
+	if   [ "$which" == "main" ]; then type="git";
+	elif [ "$which" == "alt" ]; then type="zip";
+	fi
+	local main_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].white_url 2>/dev/null)"
+	local alt_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].alt_white_url 2>/dev/null)"
 
-	update_white "$1" "$2" $white
+	eval "local url=\"\$${which}_url\""
+
+	if [ -n "$url" ]; then update_white "$type" "$url" $white; fi
 
 }
 
 update_routing_full() {
 	local routing="$ROUTINGLIST"
+	local v4_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].routing_url 2>/dev/null)"
+	local v6_url="$(uci get pcap-dnsproxy.@${TYPEDSECTION2}[-1].routing_v6_url 2>/dev/null)"
 
-	update_routing "$1" "$2" $routing
+	if [ -n "$v4_url" -a -n "$v6_url" ]; then update_routing "$v4_url" "$v6_url" $routing; fi
 
 }
 
