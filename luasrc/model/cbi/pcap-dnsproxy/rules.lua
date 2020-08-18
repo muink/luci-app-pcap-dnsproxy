@@ -128,6 +128,7 @@ aauto_apply.write = function()
     --m.uci:save(conf)
     m.uci:commit(conf)
     m.uci:apply()
+	sys.call ("/usr/bin/pcap-dnsproxy.sh schedule")
 end
 
 
@@ -182,6 +183,7 @@ wsave.inputtitle = translate("Save & Apply")
 wsave.inputstyle = "apply"
 wsave.write = function()
     m.uci:apply()
+	sys.call ("/usr/bin/pcap-dnsproxy.sh schedule")
 end
 
 
@@ -232,6 +234,7 @@ rsave.inputtitle = translate("Save & Apply")
 rsave.inputstyle = "apply"
 rsave.write = function()
     m.uci:apply()
+	sys.call ("/usr/bin/pcap-dnsproxy.sh schedule")
 end
 
 
