@@ -12,7 +12,7 @@ local conf = packageName
 local config = "/etc/config/" .. conf
 
 local tmpfsVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'")))
-local tmpfsPort = tostring(util.trim(sys.exec("uci get " .. packageName .. ".@main[0].listen_port | sed 's/|/, /g'")))
+local tmpfsPort = tostring(util.trim(sys.exec("echo `netstat -lpntu | grep Pcap_DNSProxy | grep \"^udp\" | sed -En \"s|^.\*\\b([0-9]+\\\.[0-9]+\\\.[0-9]+\\\.[0-9]+):([0-9]+)\\b.\*\$|\\2|p\" | sort -nu` | sed 's/ /, /g'")))
 if not tmpfsVersion or tmpfsVersion == "" then
 	tmpfsStatusCode = -1
 	tmpfsVersion = ""
