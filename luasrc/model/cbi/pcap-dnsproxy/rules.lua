@@ -200,7 +200,7 @@ rstate = r:option(DummyValue, "_rstate", translate("Last update"))
 rstate.template = packageName .. "/status"
 rstate.value = RoutingTime
 
-rclear = r:option(Button, "_wclear", translate("List Cleanup"))
+rclear = r:option(Button, "_rclear", translate("List Cleanup"))
 rclear.inputtitle = translate("Cleanup")
 rclear.inputstyle = "apply"
 function rclear.write(self, section)
