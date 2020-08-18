@@ -65,7 +65,7 @@ pcap-dnsproxy 是一个专注于在标准 DNS 协议下，过滤污染拿到正�
    /etc/init.d/dnsmasq restart
    ```
 
-检查 /tmp/resolv.conf 和 /tmp/resolv.conf.auto 如果存在自动获取的dns  
+检查 `/tmp/resolv.conf` 和 `/tmp/resolv.conf.auto` 如果存在自动获取的dns  
 则需要关闭 wan 口的 '自动获取dns'
 
    ```bash
