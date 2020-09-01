@@ -39,12 +39,17 @@ ss.value = tmpfsStatus
 buttons = h:option(DummyValue, "_dummy")
 buttons.template = packageName .. "/buttons"
 
-take_over = h:option(Button, "_button0", translate("Take over system DNS request to pcap-dnsproxy"))
-take_over.inputtitle = translate("Take over DNS")
+if sys.call("netstat -lpntu | grep Pcap_DNSProxy") == 0 then
+	take_over = h:option(Button, "_button0", translate("Take over system DNS request to pcap-dnsproxy"))
+	take_over.inputtitle = translate("Take over DNS")
+else
+	take_over = h:option(Button, "_button0", translate("Restore system DNS"))
+	take_over.inputtitle = translate("Restore DNS")
+end
 take_over.inputstyle = "apply"
 function take_over.write (self, section)
 	sys.call ( "uci del dhcp.@dnsmasq[0].server")
-	sys.call ( "for v in \$(uci get pcap-dnsproxy.@main[0].listen_port | sed 's/|/ /g'); do uci add_list dhcp.@dnsmasq[0].server=\"::1#\$v\"; uci add_list dhcp.@dnsmasq[0].server=\"127.0.0.1#\$v\"; done")
+	sys.call ( "for v in \$(echo `netstat -lpntu | grep Pcap_DNSProxy | grep \"^udp\" | sed -En \"s|^.\*\\b([0-9]+\\\.[0-9]+\\\.[0-9]+\\\.[0-9]+):([0-9]+)\\b.\*\$|\\2|p\" | sort -nu`); do uci add_list dhcp.@dnsmasq[0].server=\"::1#\$v\"; uci add_list dhcp.@dnsmasq[0].server=\"127.0.0.1#\$v\"; done")
 	sys.call ( "uci commit dhcp")
 	sys.call ( "/etc/init.d/dnsmasq restart")
 end
