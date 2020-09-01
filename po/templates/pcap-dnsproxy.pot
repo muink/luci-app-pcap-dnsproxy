@@ -235,8 +235,8 @@ msgstr ""
 msgid "Edit IPFilter"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:31
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:51
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:33
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:33
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:33
 msgid "Empty file."
@@ -270,8 +270,8 @@ msgstr ""
 msgid "Fast in China but not provide Zip download"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:30
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:32
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:49
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:32
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:32
 msgid "File does not exist."
@@ -281,7 +281,7 @@ msgstr ""
 msgid "Filter Mode"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:17
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:18
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:77
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:17
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:17
@@ -685,8 +685,8 @@ msgstr ""
 msgid "Pcap_DNSProxy Server Name"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:30
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:32
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:49
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:32
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:32
 msgid "Please check your configuration or reinstall %s."
@@ -799,7 +799,7 @@ msgstr ""
 msgid "Saturday"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:21
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:60
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:21
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:21
 msgid "Save"
@@ -855,7 +855,7 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:43
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:45
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:26
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:26
 msgid "System config file: <code>%s</code>"
@@ -896,7 +896,7 @@ msgstr ""
 msgid "The system needs run in global proxy mode"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:15
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:16
 msgid ""
 "This form allows you to modify the content of the main pcap-dnsproxy "
 "configuration file"
@@ -986,7 +986,7 @@ msgstr ""
 msgid "Use Default"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:24
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:29
 msgid "User config file: <code>%s</code>"
 msgstr ""
 
@@ -1021,7 +1021,7 @@ msgid ""
 "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/FAQ.en.txt"
 msgstr ""
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:19
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:20
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:79
 msgid ""
 "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."

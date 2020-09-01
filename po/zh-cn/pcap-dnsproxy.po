@@ -245,8 +245,8 @@ msgstr "编辑 Hosts 文件"
 msgid "Edit IPFilter"
 msgstr "编辑 IPFilter 文件"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:31
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:51
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:33
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:33
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:33
 msgid "Empty file."
@@ -282,8 +282,8 @@ msgstr ""
 msgid "Fast in China but not provide Zip download"
 msgstr "在中国访问快速但不提供Zip下载"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:30
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:32
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:49
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:32
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:32
 msgid "File does not exist."
@@ -293,7 +293,7 @@ msgstr "文件不存在."
 msgid "Filter Mode"
 msgstr "分流模式"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:17
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:18
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:77
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:17
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:17
@@ -707,8 +707,8 @@ msgstr "Pcap_DNSProxy"
 msgid "Pcap_DNSProxy Server Name"
 msgstr "Pcap_DNSProxy 服务器主机名称"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:30
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:50
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:32
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:49
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:32
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:32
 msgid "Please check your configuration or reinstall %s."
@@ -821,7 +821,7 @@ msgstr "SOCKS 协议版本"
 msgid "Saturday"
 msgstr "周六"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:21
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:60
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:21
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:21
 msgid "Save"
@@ -877,7 +877,7 @@ msgstr "已停止"
 msgid "Sunday"
 msgstr "周日"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:43
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:45
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/hosts.lua:26
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/ipfilter.lua:26
 msgid "System config file: <code>%s</code>"
@@ -922,7 +922,7 @@ msgstr ""
 "建议当系统使用全局代理功能时启用\n"
 "将除本土外的所有请求直接交给系统而不作任何过滤等处理"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:15
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:16
 msgid ""
 "This form allows you to modify the content of the main pcap-dnsproxy "
 "configuration file"
@@ -1012,7 +1012,7 @@ msgstr "更新时间"
 msgid "Use Default"
 msgstr "使用缺省设置"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:24
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:29
 msgid "User config file: <code>%s</code>"
 msgstr "用户配置文件: <code>%s</code>"
 
@@ -1049,7 +1049,7 @@ msgstr ""
 "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/FAQ.zh-"
 "Hans.txt"
 
-#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:19
+#: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/configuration.lua:20
 #: applications/luci-app-pcap-dnsproxy/luasrc/model/cbi/pcap-dnsproxy/general.lua:79
 msgid ""
 "https://github.com/wongsyrone/Pcap_DNSProxy/blob/master/Documents/ReadMe.en."
