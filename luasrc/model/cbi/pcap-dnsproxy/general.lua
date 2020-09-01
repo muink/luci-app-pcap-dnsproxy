@@ -12,7 +12,7 @@ local conf = packageName
 local config = "/etc/config/" .. conf
 
 local tmpfsVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'")))
-local tmpfsPort = tostring(util.trim(sys.exec("uci get " .. packageName .. ".@main[0].listen_port | sed 's/|/, /g'")))
+local tmpfsPort = tostring(util.trim(sys.exec("echo `netstat -lpntu | grep Pcap_DNSProxy | grep \"^udp\" | sed -En \"s|^.\*\\b([0-9]+\\\.[0-9]+\\\.[0-9]+\\\.[0-9]+):([0-9]+)\\b.\*\$|\\2|p\" | sort -nu` | sed 's/ /, /g'")))
 if not tmpfsVersion or tmpfsVersion == "" then
 	tmpfsStatusCode = -1
 	tmpfsVersion = ""
@@ -39,14 +39,24 @@ ss.value = tmpfsStatus
 buttons = h:option(DummyValue, "_dummy")
 buttons.template = packageName .. "/buttons"
 
-app_sys = h:option(Button, "_button0", translate("Apply to System"))
+take_over = h:option(Button, "_button0", translate("Take over system DNS request to pcap-dnsproxy"))
+take_over.inputtitle = translate("Take over DNS")
+take_over.inputstyle = "apply"
+function take_over.write (self, section)
+	sys.call ( "uci del dhcp.@dnsmasq[0].server")
+	sys.call ( "for v in \$(uci get pcap-dnsproxy.@main[0].listen_port | sed 's/|/ /g'); do uci add_list dhcp.@dnsmasq[0].server=\"::1#\$v\"; uci add_list dhcp.@dnsmasq[0].server=\"127.0.0.1#\$v\"; done")
+	sys.call ( "uci commit dhcp")
+	sys.call ( "/etc/init.d/dnsmasq restart")
+end
+
+app_sys = h:option(Button, "_button1", translate("Apply to System"))
 app_sys.inputtitle = translate("Apply to System")
 app_sys.inputstyle = "apply"
 function app_sys.write (self, section)
 	sys.call ( "/usr/bin/pcap-dnsproxy.sh uci2conf_full")
 end
 
-load_sys = h:option(Button, "_button1", translate("Load from System"),
+load_sys = h:option(Button, "_button2", translate("Load from System"),
 	translate("You may need to revert&apply 'UNSAVED CHANGES' once"))
 load_sys.inputtitle = translate("Load from System")
 load_sys.inputstyle = "apply"
@@ -54,7 +64,7 @@ function load_sys.write (self, section)
 	sys.call ( "/usr/bin/pcap-dnsproxy.sh conf2uci_full")
 end
 
-resetall = h:option(Button, "_button2", translate("Reset All settings"),
+resetall = h:option(Button, "_button3", translate("Reset All settings"),
 	translate("You may need to revert&apply 'UNSAVED CHANGES' once"))
 resetall.inputtitle = translate("Reset All settings")
 resetall.inputstyle = "apply"
