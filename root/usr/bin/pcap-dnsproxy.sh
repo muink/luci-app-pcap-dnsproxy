@@ -406,6 +406,8 @@ uci2conf() {
 	done
 
 
+#config_load $UCICFGFILE
+
 # Defining variables for uci config
 #cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
 local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
