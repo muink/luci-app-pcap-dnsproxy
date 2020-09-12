@@ -415,7 +415,7 @@ local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 local uci_count=${#uci_list[@]}
 # Get values of uci config
 for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
-#eval "config_set \"\$section\" \"\$_var\" \"\$$_var\"" # Only set to environment variables
+#config_set "$section" "$_var" "${!_var}" # Only set to environment variables
 
 
 # Write $config file
@@ -426,7 +426,7 @@ local __FUNCTION
 
 for _var in "${uci_list[@]}"; do
 	# <$_var> not empty AND <$$_var> not empty
-	if [ -n "$_var" -a -n "$(eval echo \$$_var)" ]; then
+	if [ -n "$_var" -a -n "${!_var}" ]; then
 
 		_raw=`map_tab "$map" raw "$_var"` # ~~Also need process DynamicList like: 'HTTP CONNECT Header Field'~~ Consider not adding, can only added them from user conffile
 
@@ -452,7 +452,7 @@ for _var in "${uci_list[@]}"; do
 			# Normal uci element
 			else
 				# Write Normal conf
-				eval "_var=\"\$$_var\""
+				_var="${!_var}"
 				command="$command s~^\($_raw\) \([<=>]\).*\$~\1 \2 ${_var}~;"
 				#echo "Normal: ${_raw} = ${_var}" #debug test
 			fi
@@ -469,8 +469,8 @@ for _var in "${uci_list[@]}"; do
 done
 		#echo "$command"
 
-	if   [ "$map" == "$(eval echo \$$CONF_LIST_FIRST)" ]; then sed -i "1,/^\[.*\]$/            { $command }" $config;
-	elif [ "$map" == "$(eval echo \$$CONF_LIST_LAST)" ]; then  sed -i "/^\[$map\]$/,$          { $command }" $config;
+	if   [ "$map" == "${!CONF_LIST_FIRST}" ]; then sed -i "1,/^\[.*\]$/            { $command }" $config;
+	elif [ "$map" == "${!CONF_LIST_LAST}" ]; then  sed -i "/^\[$map\]$/,$          { $command }" $config;
 	else                                                       sed -i "/^\[$map\]$/,/^\[.*\]$/ { $command }" $config;
 	fi
 
@@ -764,7 +764,7 @@ local uci_list=`map_tab "$map" uci | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 local uci_count=${#uci_list[@]}
 # Get values of uci config
 for _var in "${uci_list[@]}"; do local $_var; config_get "$_var" "$section" "$_var"; done
-#eval "config_set \"\$section\" \"\$_var\" \"\$$_var\"" # Only set to environment variables
+#config_set "$section" "$_var" "${!_var}" # Only set to environment variables
 
 
 # Create schedule
@@ -837,7 +837,7 @@ uci2conf_full() {
 
 	# Apply Uci config to pcap-dnsproxy Main Config file
 	for _conf in "${CONF_LIST[@]}"; do
-		eval "config_foreach uci2conf \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\""
+		config_foreach uci2conf "$TypedSection" "${!_conf}" "$ConfigFile"
 	done
 
 	# Apply User config to pcap-dnsproxy Main Config file
@@ -856,7 +856,7 @@ conf2uci_full() {
 
 	# Apply pcap-dnsproxy Main Config file to Uci config
 	for _conf in "${CONF_LIST[@]}"; do
-		eval "conf2uci \"\$TypedSection\" \"\$$_conf\" \"\$ConfigFile\" \"\$PackageName\""
+		conf2uci "$TypedSection" "${!_conf}" "$ConfigFile" "$PackageName"
 	done
 
 }
@@ -923,7 +923,7 @@ CONF_LIST=`map_def nam | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 	eval CONF_LIST=(${CONF_LIST//'/\'})
 CONF_LIST_COUNT=${#CONF_LIST[@]}
      CONF_LIST_FIRST=${CONF_LIST[0]}
-eval CONF_LIST_LAST=\${CONF_LIST[$((${CONF_LIST_COUNT}-1))]}
+eval CONF_LIST_LAST=\${CONF_LIST[$[${CONF_LIST_COUNT}-1]]}
 
 # Define Map name and values
 for _var in "`map_def`"; do eval "${_var[@]}"; done
