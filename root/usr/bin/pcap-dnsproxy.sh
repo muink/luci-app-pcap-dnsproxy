@@ -440,7 +440,7 @@ for _var in "${uci_list[@]}"; do
 				eval "$__FUNCTION" >/dev/null
 				araw_list=`eval "$__FUNCTION" | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 					eval araw_list=(${araw_list//'/\'})
-                
+
 				# Write Function conf
 				for _tab in "${araw_list[@]}"; do
 					command="$command s~^\($(echo "$_tab" | cut -f1 -d=)\) \([<=>]\).*\$~\1 \2 $(echo "$_tab" | cut -f2 -d=)~;"
@@ -461,7 +461,7 @@ for _var in "${uci_list[@]}"; do
 			>&2 echo "uci2conf: The Element \"$_var\" not have relative element"; return 1
 			>&2 echo "This situation basically does not exist" >/dev/null
 		fi
-	
+
 	# <$_var> returns empty
 	else
 		echo "uci2conf: The Element \"$_var\" is empty" >/dev/null
@@ -484,7 +484,7 @@ conf2uci() {
 		else eval "local \$_var=\"\$1\"" && shift; fi
 	done
 
-	
+
 # Defining variables for conffile
 #cat <<< `map_tab "$@"` | sed -n "s/^/'/; s/$/'/ p"
 local raw_list=`map_tab "$map" raw | sed -n "s/^/'/; s/$/'/ p"` # "$@"
@@ -516,7 +516,7 @@ for _var in "${raw_list[@]}"; do
 				#eval "echo '$__FUNCTION'"
 			araw_list=`eval "$__FUNCTION" | sed -n "s/^/'/; s/$/'/ p"` # "$@"
 				eval araw_list=(${araw_list//'/\'})
-            
+
 			# Write Function conf
 			for _tab in "${araw_list[@]}"; do
 				uci_set "$pkgnm" "$section" "$(echo "$_tab" | cut -f1 -d=)" "$(echo "$_tab" | cut -f2 -d=)"
@@ -601,7 +601,7 @@ for _head in "${valid_head[@]}"; do
 
 	valid_param=$(echo `sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^[^\[^#]/ { s|^\(.\+\) =.*$|'\1'|g p }}" "$userconf" | sort | uniq`)
 		eval valid_param=(${valid_param//'/\'})
-	
+
 	for _param in "${valid_param[@]}"; do
 		_multi=$([ "$(map_tab "$_head" uci "$_param")" == "MULTICONF" ] && echo 1 || echo 0)
 
@@ -842,7 +842,7 @@ uci2conf_full() {
 
 	# Apply User config to pcap-dnsproxy Main Config file
 	userconf "$UserConfig" "$ConfigFile"
-	
+
 }
 
 conf2uci_full() {
@@ -871,7 +871,7 @@ userconf_full() {
 
 	# Apply User config to pcap-dnsproxy Main Config file
 	userconf "$UserConfig" "$ConfigFile"
-	
+
 }
 
 reset_full() {
@@ -934,4 +934,3 @@ for _var in "`map_def`"; do eval "${_var[@]}"; done
 
 
 $_FUNCTION "$@"
-
