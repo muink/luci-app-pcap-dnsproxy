@@ -791,18 +791,18 @@ if   [ "$aauto" == "0" ]; then
 elif [ "$aauto" == "1" ]; then
 
 	# general cron
-	if   [ "$aauto_cycle" == "week" ]; then [ -n "$aauto_week" ] && _week=$aauto_week || _week=3;
-	elif [ "$aauto_cycle" == "month" ]; then [ -n "$aauto_month" ] && _day=$aauto_month || _day=1;
+	if   [ "$aauto_cycle" == "week" ]; then _week=${aauto_week:-3};
+	elif [ "$aauto_cycle" == "month" ]; then _day=${aauto_month:-1};
 	else return 1;
 	fi
-	[ -n "$aauto_time" ] && _time="0 $aauto_time" || _time='0 9'
 
+	_time="0 ${aauto_time:-9}"
 	_cron="$_time $_day * $_week"
 
 elif [ "$aauto" == "2" ]; then
 
 	# crontab cron
-	[ -n "$aauto_cron" ] && _cron=$aauto_cron || _cron='0 9 * * 3'
+	_cron="${aauto_cron:-0 9 * * 3}"
 
 else return 1;
 fi
