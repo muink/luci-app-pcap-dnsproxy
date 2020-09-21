@@ -22,6 +22,11 @@ define Package/$(LUCI_NAME)/conffiles
 /etc/pcap-dnsproxy/user/
 endef
 
+define Package/$(LUCI_NAME)/prerm
+#!/bin/sh
+sed -i '/\/etc\/init.d\/pcap-dnsproxy/d; /\/usr\/bin\/pcap-dnsproxy.sh/d' /etc/crontabs/root
+endef
+
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
