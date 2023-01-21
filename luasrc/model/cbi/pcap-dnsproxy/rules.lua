@@ -130,6 +130,7 @@ proxy_protocol = a:option(ListValue, "proxy_protocol", translate("Proxy protocol
 proxy_protocol:value("http", "HTTP")
 proxy_protocol:value("https", "HTTPS")
 proxy_protocol:value("socks5", "SOCKS5")
+proxy_protocol:value("socks5h", "SOCKS5H")
 proxy_protocol.rmempty = true
 proxy_protocol:depends("proxy_enabled", "1")
 
