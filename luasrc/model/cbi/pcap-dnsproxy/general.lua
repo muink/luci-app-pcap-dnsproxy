@@ -51,7 +51,7 @@ if not (packageStatusCode == -1) then
 end
 
 
-if sys.call("netstat -lpntu | grep Pcap_DNSProxy") == 0 then
+if sys.exec("netstat -lpntu | grep Pcap_DNSProxy") == 0 then
 	take_over = h:option(Button, "_button0", translate("Take over system DNS request to pcap-dnsproxy"))
 	take_over.inputtitle = translate("Take over DNS")
 else

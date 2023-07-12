@@ -612,7 +612,7 @@ for _head in "${valid_head[@]}"; do
 			sed -i "$_firstone,/^\[.*\][ \t]*$/ { /$_param/ d }" "$sysconf"
 			sed -i "$_firstone i $(
 					sed -n "/^\[$_head\][ \t]*$/,/^\[.*\][ \t]*$/ { /^$_param [<=>][ \t]*.*$/ p }" "$userconf"\
-					| sed -n "s|^|PDNSP_REPLACE_NH|g; s|$|PDNSP_REPLACE_NT|g; p"
+					| sed -n "s|^|PDNSP_REPLACE_NH|g; s|$|PDNSP_REPLACE_NT|g; p"\
 				| xargs\
 				| sed -n "s|\\\\|\\\\\\\\|g; s|^PDNSP_REPLACE_NH||; s|PDNSP_REPLACE_NT PDNSP_REPLACE_NH|\\\n|g; s|PDNSP_REPLACE_NT$||; p"
 			)" "$sysconf"

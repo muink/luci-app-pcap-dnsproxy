@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020 muink <https://github.com/muink>
+# Copyright (C) 2020-2023 muink <https://github.com/muink>
 #
 # This is free software, licensed under the Apache License, Version 2.0
 # See /LICENSE for more information.
@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_NAME:=luci-app-pcap-dnsproxy
-PKG_VERSION:=0.4.9.13-20230125
+PKG_VERSION:=0.4.9.13-20230711
 #PKG_RELEASE:=20221006
 
 LUCI_TITLE:=LuCI for pcap-dnsproxy
