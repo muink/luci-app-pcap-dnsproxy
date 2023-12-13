@@ -55,8 +55,8 @@ if sys.exec("netstat -lpntu | grep Pcap_DNSProxy") == "" then
 	take_over = h:option(Button, "_button0", translate("Restore system DNS"))
 	take_over.inputtitle = translate("Restore DNS")
 else
-	take_over = h:option(Button, "_button0", translate("Take over system DNS request to pcap-dnsproxy"))
-	take_over.inputtitle = translate("Take over DNS")
+	take_over = h:option(Button, "_button0", translate("Forced Take over system DNS request to pcap-dnsproxy"), translate("May conflict with tools that use DNS Hijack features"))
+	take_over.inputtitle = translate("Forced Take over DNS")
 end
 take_over.inputstyle = "apply"
 function take_over.write (self, section)
