@@ -7,7 +7,7 @@ local m, s, o
 local fs    = require("nixio.fs")
 local sys	= require("luci.sys")
 local util  = require("luci.util")
-local input    = "/etc/pcap-dnsproxy/Hosts.conf-opkg"
+local input    = "/etc/pcap-dnsproxy/Hosts.conf.apk-new"
 local output = "/etc/pcap-dnsproxy/Hosts.conf"
 local userin   = "/etc/pcap-dnsproxy/user/Hosts"
 

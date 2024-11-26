@@ -7,7 +7,7 @@ local m, s, o
 local fs    = require("nixio.fs")
 local sys	= require("luci.sys")
 local util  = require("luci.util")
-local input    = "/etc/pcap-dnsproxy/IPFilter.conf-opkg"
+local input    = "/etc/pcap-dnsproxy/IPFilter.conf.apk-new"
 local output = "/etc/pcap-dnsproxy/IPFilter.conf"
 local userin   = "/etc/pcap-dnsproxy/user/IPFilter"
 

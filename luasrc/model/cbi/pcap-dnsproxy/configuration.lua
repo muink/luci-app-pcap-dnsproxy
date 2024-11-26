@@ -8,7 +8,7 @@ local fs	= require("nixio.fs")
 local sys	= require("luci.sys")
 local util	= require("luci.util")
 local uci = require("luci.model.uci").cursor()
-local input	= "/etc/pcap-dnsproxy/Config.conf-opkg"
+local input	= "/etc/pcap-dnsproxy/Config.conf.apk-new"
 local output = "/etc/pcap-dnsproxy/Config.conf"
 local userin   = "/etc/pcap-dnsproxy/user/Config"
 

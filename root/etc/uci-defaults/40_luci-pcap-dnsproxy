@@ -35,15 +35,15 @@ uci commit $pkgname
 ## master luci-app-pcap-dnsproxy config folder
 mkdir ${pkgdir}/user 2>/dev/null
 for _name in $cfglist; do
-	if [ ! -e "$pkgdir/${_name}.conf-opkg" ]; then
-		touch $pkgdir/${_name}.conf-opkg
-		cp -f $pkgdir/${_name}.conf $pkgdir/${_name}.conf-opkg 2>/dev/null
+	if [ ! -e "$pkgdir/${_name}.conf.apk-new" ]; then 
+		touch $pkgdir/${_name}.conf.apk-new
+		cp -f $pkgdir/${_name}.conf $pkgdir/${_name}.conf.apk-new 2>/dev/null 
 		sed -i '1 i ####\n' $pkgdir/${_name}.conf
 		[ "${_name}" == "Config" ] && /usr/bin/pcap-dnsproxy.sh reset_full
 	fi
 done
 for _name in $listlist; do
-	rm -f $pkgdir/${_name}-opkg 2>/dev/null
+	rm -f $pkgdir/${_name}.apk-new 2>/dev/null 
 done
 
 

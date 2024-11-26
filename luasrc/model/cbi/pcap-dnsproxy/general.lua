@@ -11,7 +11,7 @@ local packageName = "pcap-dnsproxy"
 local conf = packageName
 local config = "/etc/config/" .. conf
 
-local packageVersion = tostring(util.trim(sys.exec("opkg list-installed " .. packageName .. " | awk '{print $3}'"))) or nil
+local packageVersion = tostring(util.trim(sys.exec("apk list -I " .. packageName .. " | awk '{print $1}'"))) or nil
 local packageStatus, packageStatusCode
 local ubusStatus = util.ubus("service", "list", { name = packageName })
 
