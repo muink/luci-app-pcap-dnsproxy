@@ -1,9 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2020-2023 muink <https://github.com/muink>
-#
-# This is free software, licensed under the Apache License, Version 2.0
-# See /LICENSE for more information.
-#
+# Copyright (C) 2020-2024 muink <https://github.com/muink>
 
 include $(TOPDIR)/rules.mk
 
@@ -16,6 +13,9 @@ LUCI_DEPENDS:=+luci-compat +pcap-dnsproxy +bash +curl +unzip +coreutils-stat
 EXTRA_DEPENDS:=pcap-dnsproxy (>=0.4.9.12-20ee41d)
 
 LUCI_DESCRIPTION:=LuCI for Pcap_DNSProxy. Pcap_DNSProxy, A DNS Server to avoid contaminated result.
+
+PKG_MAINTAINER:=Anya Lin <hukk1996@gmail.com>
+PKG_LICENSE:=Apache-2.0
 
 define Package/$(LUCI_NAME)/conffiles
 /etc/config/pcap-dnsproxy
